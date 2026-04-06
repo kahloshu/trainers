@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#dcd9d9",
+                    "on-surface": "#1c1b1b",
+                    "surface-bright": "#fcf9f8",
+                    "surface-container-highest": "#e5e2e1",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#9bb4fe",
+                    "on-tertiary-fixed": "#390c00",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f6f3f2",
+                    "inverse-primary": "#b3c5ff",
+                    "on-primary-fixed": "#001849",
+                    "tertiary": "#a33200",
+                    "surface-variant": "#e5e2e1",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-tertiary-fixed-variant": "#832600",
+                    "primary-fixed": "#dae1ff",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#f3f0ef",
+                    "inverse-surface": "#313030",
+                    "on-secondary-fixed": "#001849",
+                    "secondary-fixed": "#dae1ff",
+                    "on-surface-variant": "#424656",
+                    "tertiary-container": "#cc4204",
+                    "surface-container": "#f0edec",
+                    "on-primary-container": "#f8f7ff",
+                    "secondary": "#425ca0",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#003fa4",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#fff6f4",
+                    "on-secondary-container": "#294487",
+                    "surface-container-high": "#ebe7e7",
+                    "surface": "#fcf9f8",
+                    "outline-variant": "#c2c6d8",
+                    "primary-container": "#0066ff",
+                    "on-secondary-fixed-variant": "#284386",
+                    "on-background": "#1c1b1b",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "outline": "#727687",
+                    "primary": "#0050cb",
+                    "surface-tint": "#0054d6",
+                    "secondary-fixed-dim": "#b3c5ff",
+                    "background": "#fcf9f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Lexend"],
+                    "body": ["Manrope"],
+                    "label": ["Lexend"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="bg-[#fcf9f8]/70 dark:bg-[#1c1b1b]/70 backdrop-blur-xl fixed top-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<button class="text-[#1c1b1b] dark:text-[#fcf9f8] hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-['Lexend'] font-bold tracking-tight uppercase text-2xl text-[#1c1b1b] dark:text-[#fcf9f8]">TRAINERS</h1>
+<button class="text-[#1c1b1b] dark:text-[#fcf9f8] hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-32 px-6 max-w-4xl mx-auto">
+<!-- Filter/Sort Bar -->
+<section class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline text-xs font-bold tracking-[0.05em] uppercase text-on-surface-variant">Expertise Categories</h2>
+<button class="flex items-center gap-2 font-headline text-[10px] font-bold tracking-[0.05em] uppercase text-primary">
+                    Sort by <span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-4 scroll-smooth">
+<button class="flex-shrink-0 bg-primary text-on-primary px-6 py-2 rounded-full font-label text-[11px] font-bold tracking-[0.05em] uppercase shadow-sm">All</button>
+<button class="flex-shrink-0 bg-surface-container-high text-on-surface px-6 py-2 rounded-full font-label text-[11px] font-bold tracking-[0.05em] uppercase hover:bg-surface-container-highest transition-colors">Strength</button>
+<button class="flex-shrink-0 bg-surface-container-high text-on-surface px-6 py-2 rounded-full font-label text-[11px] font-bold tracking-[0.05em] uppercase hover:bg-surface-container-highest transition-colors">Yoga</button>
+<button class="flex-shrink-0 bg-surface-container-high text-on-surface px-6 py-2 rounded-full font-label text-[11px] font-bold tracking-[0.05em] uppercase hover:bg-surface-container-highest transition-colors">HIIT</button>
+<button class="flex-shrink-0 bg-surface-container-high text-on-surface px-6 py-2 rounded-full font-label text-[11px] font-bold tracking-[0.05em] uppercase hover:bg-surface-container-highest transition-colors">Rehab</button>
+<button class="flex-shrink-0 bg-surface-container-high text-on-surface px-6 py-2 rounded-full font-label text-[11px] font-bold tracking-[0.05em] uppercase hover:bg-surface-container-highest transition-colors">Endurance</button>
+</div>
+</section>
+<!-- Trainer List -->
+<section class="grid gap-12">
+<!-- Trainer Card 1 -->
+<article class="bg-surface-container-lowest overflow-hidden group transition-all duration-300">
+<div class="relative h-[480px] overflow-hidden rounded-xl bg-surface-container-low">
+<img alt="MARCUS VANCE" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-in-out" data-alt="dramatic low-angle portrait of a muscular athlete in a dark gym environment with harsh high-contrast side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUUMcQgfBLeO4J-2B_9cXtoN7hyd7P8dGX6TVWQzlvx36tD_7lP6YiSh69xx-JsGpsGxOMPpObRcJ2Lkl2OjU7Lv4ZRtjkuNIRjpa6eHAIq3NsWf_VYqM8w_K3xgfqRxuBNDaF2ajmXD3WZMHV3UCPtjhGBGwss6a5XfveYvUZM-a_VOe0tOOTQRZXoWMtWBsouQO3CQJMBDSRMY8jl0mjP0z9dTD7Co5K6y8Jw8pHmA4KJnkx4Us45FsPBYkJwI6sILqXuG9KUk8"/>
+<div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-on-surface/90 to-transparent">
+<div class="flex items-center gap-2 mb-2">
+<div class="flex items-center text-primary-fixed-dim">
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label text-xs font-bold ml-1">4.9</span>
+</div>
+<span class="text-surface-variant/60 font-label text-[10px] tracking-widest uppercase">(128 REVIEWS)</span>
+</div>
+<h3 class="font-headline text-4xl font-extrabold text-white tracking-tighter uppercase mb-2 leading-none">MARCUS VANCE</h3>
+<p class="font-label text-[11px] font-bold tracking-widest text-primary uppercase">Olympic Weightlifting Specialist</p>
+</div>
+</div>
+<div class="pt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex-1">
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="bg-surface-container-low text-on-surface-variant font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded uppercase">STRENGTH</span>
+<span class="bg-surface-container-low text-on-surface-variant font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded uppercase">POWERLIFTING</span>
+</div>
+<p class="text-on-surface-variant font-body text-sm leading-relaxed max-w-lg">
+                            Focused on technical mastery and explosive performance. Marcus blends elite-level bio-mechanics with relentless intensity.
+                        </p>
+</div>
+<button class="bg-gradient-to-br from-[#0050cb] to-[#0066ff] text-on-primary px-10 py-4 rounded-xl font-headline text-xs font-bold tracking-widest uppercase hover:opacity-90 active:scale-95 transition-all shadow-[0px_4px_40px_rgba(0,80,203,0.15)]">
+                        Book Session
+                    </button>
+</div>
+</article>
+<!-- Trainer Card 2 -->
+<article class="bg-surface-container-lowest overflow-hidden group transition-all duration-300">
+<div class="relative h-[480px] overflow-hidden rounded-xl bg-surface-container-low">
+<img alt="ELARA CHEN" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-in-out" data-alt="energetic woman in athletic gear during a mid-action jump in a bright minimalist fitness studio with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDTDOR182ra6mBBvAWGxzoqXO8FmSuwplxllK0k_mg59EPMl4yGzbiTrGyGaJY6FyR7y44KhfYYc9aTO8Rtb_zh6d98zMo8LdLgDvGYTqXEczgOY0MxaGPd3LStJAWRBJwuZnpCTIHXcb66kSQEfgF_SFRBdGzTtJSBXDknE434S51gVZb1Cpbh7DNe94aOgZ4lusoUVvSX2oddPEV72cot0b44HXUvfrB2qgO_fxZL7tF7YGtgytl4spey3nIGoXs4ReoAZMD2m0"/>
+<div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-on-surface/90 to-transparent">
+<div class="flex items-center gap-2 mb-2">
+<div class="flex items-center text-primary-fixed-dim">
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label text-xs font-bold ml-1">5.0</span>
+</div>
+<span class="text-surface-variant/60 font-label text-[10px] tracking-widest uppercase">(245 REVIEWS)</span>
+</div>
+<h3 class="font-headline text-4xl font-extrabold text-white tracking-tighter uppercase mb-2 leading-none">ELARA CHEN</h3>
+<p class="font-label text-[11px] font-bold tracking-widest text-primary uppercase">HIIT &amp; Metabolic Conditioning</p>
+</div>
+</div>
+<div class="pt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex-1">
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="bg-surface-container-low text-on-surface-variant font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded uppercase">ENDURANCE</span>
+<span class="bg-surface-container-low text-on-surface-variant font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded uppercase">CALISTHENICS</span>
+</div>
+<p class="text-on-surface-variant font-body text-sm leading-relaxed max-w-lg">
+                            Designing high-velocity journeys for the human body. Elara specializes in fat loss and athletic agility for the modern performer.
+                        </p>
+</div>
+<button class="bg-gradient-to-br from-[#0050cb] to-[#0066ff] text-on-primary px-10 py-4 rounded-xl font-headline text-xs font-bold tracking-widest uppercase hover:opacity-90 active:scale-95 transition-all shadow-[0px_4px_40px_rgba(0,80,203,0.15)]">
+                        Book Session
+                    </button>
+</div>
+</article>
+<!-- Trainer Card 3 -->
+<article class="bg-surface-container-lowest overflow-hidden group transition-all duration-300">
+<div class="relative h-[480px] overflow-hidden rounded-xl bg-surface-container-low">
+<img alt="DAVID ROSS" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-in-out" data-alt="serene portrait of a yoga practitioner in a deep stretch against a clean off-white architectural background with sharp shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBqj2zSo0v_irtwp4JDVu1aUnrAWl2-I1Ed949eT91NrL3Yb37KKO9vuKVjTBGBI4RgE1fCnbm79XBMZOWk2e5vuXIqgCEqY4eB_rNSVX1sz1shcXY1O0z0i0CegX0Libpt-u3cB981WOx10MnFOn1fzA4jOKQAKtqmz3V502hFEK3ziA3ANma9f9m_KzdJFHOxhOkwKkkk09qVnLokoemqEFhsVD7eu6pGamXqnwdERlz_-A_qQk7UeaQU1ujVg-VO2PQpKpczjg"/>
+<div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-on-surface/90 to-transparent">
+<div class="flex items-center gap-2 mb-2">
+<div class="flex items-center text-primary-fixed-dim">
+<span class="material-symbols-outlined text-sm" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label text-xs font-bold ml-1">4.8</span>
+</div>
+<span class="text-surface-variant/60 font-label text-[10px] tracking-widest uppercase">(92 REVIEWS)</span>
+</div>
+<h3 class="font-headline text-4xl font-extrabold text-white tracking-tighter uppercase mb-2 leading-none">DAVID ROSS</h3>
+<p class="font-label text-[11px] font-bold tracking-widest text-primary uppercase">Kinetic Recovery &amp; Mobility</p>
+</div>
+</div>
+<div class="pt-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex-1">
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="bg-surface-container-low text-on-surface-variant font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded uppercase">MOBILITY</span>
+<span class="bg-surface-container-low text-on-surface-variant font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded uppercase">REHAB</span>
+</div>
+<p class="text-on-surface-variant font-body text-sm leading-relaxed max-w-lg">
+                            David integrates functional movement with active recovery to help athletes perform longer and stronger without injury.
+                        </p>
+</div>
+<button class="bg-gradient-to-br from-[#0050cb] to-[#0066ff] text-on-primary px-10 py-4 rounded-xl font-headline text-xs font-bold tracking-widest uppercase hover:opacity-90 active:scale-95 transition-all shadow-[0px_4px_40px_rgba(0,80,203,0.15)]">
+                        Book Session
+                    </button>
+</div>
+</article>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-[#fcf9f8]/70 dark:bg-[#1c1b1b]/70 backdrop-blur-xl fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 z-50 shadow-[0px_-4px_40px_rgba(28,27,27,0.06)]">
+<a class="flex flex-col items-center justify-center text-[#1c1b1b]/40 dark:text-[#fcf9f8]/40 p-3 hover:text-[#0050cb] dark:hover:text-[#0066ff] transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home_max">home_max</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#0050cb] to-[#0066ff] text-white rounded-xl p-3 active:scale-90 transition-transform duration-150 shadow-lg" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#1c1b1b]/40 dark:text-[#fcf9f8]/40 p-3 hover:text-[#0050cb] dark:hover:text-[#0066ff] transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#1c1b1b]/40 dark:text-[#fcf9f8]/40 p-3 hover:text-[#0050cb] dark:hover:text-[#0066ff] transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</a>
+</nav>
+</body></html>

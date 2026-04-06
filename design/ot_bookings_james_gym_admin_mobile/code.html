@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>James Gym | OT Request Management</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#ffb59f",
+                    "secondary-fixed-dim": "#c6c6c9",
+                    "surface-bright": "#f8f9fa",
+                    "on-tertiary-fixed-variant": "#832707",
+                    "outline-variant": "#c4c5d5",
+                    "on-tertiary-container": "#ff8561",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#444653",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#751d00",
+                    "primary-fixed": "#dce1ff",
+                    "on-secondary-fixed": "#1a1c1e",
+                    "on-secondary-container": "#636467",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container": "#edeeef",
+                    "surface-tint": "#3557bc",
+                    "on-error": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "inverse-surface": "#2e3132",
+                    "surface-dim": "#d9dadb",
+                    "on-primary-fixed-variant": "#153ea3",
+                    "primary-fixed-dim": "#b5c4ff",
+                    "inverse-primary": "#b5c4ff",
+                    "primary": "#002068",
+                    "on-surface": "#191c1d",
+                    "on-primary": "#ffffff",
+                    "secondary": "#5d5e61",
+                    "on-primary-container": "#8aa4ff",
+                    "on-tertiary-fixed": "#3a0a00",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#4f1100",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#00164e",
+                    "on-secondary-fixed-variant": "#454749",
+                    "tertiary-fixed": "#ffdbd1",
+                    "secondary-container": "#e2e2e5",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-fixed": "#e2e2e5",
+                    "primary-container": "#003399",
+                    "outline": "#747684",
+                    "background": "#f8f9fa",
+                    "on-background": "#191c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .font-manrope { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar (From JSON) -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#003399]" data-icon="fitness_center">fitness_center</span>
+<h1 class="text-xl font-black text-[#002068] dark:text-white tracking-widest font-manrope">JAMES GYM</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 hover:opacity-70 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="text-[#003399] hover:opacity-70 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] w-full"></div>
+</header>
+<main class="pt-24 pb-32 px-5 max-w-2xl mx-auto">
+<!-- Power Summary (Design System Section 5) -->
+<section class="mb-10 flex items-end justify-between">
+<div class="space-y-1">
+<p class="text-xs font-bold font-manrope uppercase tracking-[0.15em] text-[#003399]">Pending Requests</p>
+<div class="flex items-baseline gap-2">
+<span class="text-5xl font-black font-manrope text-primary">18</span>
+<span class="text-sm font-semibold text-secondary mb-1">/ 124 Total</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<div class="flex -space-x-2">
+<img alt="Admin 1" class="w-8 h-8 rounded-full border-2 border-surface" data-alt="professional male portrait avatar with warm soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH5ZkKujGJdyMqFyD0qHSPRqPMUOrcMHzHAy4L6leUNWfOMb2AgOFI4mXScM2ccf-3u7Dc_gjyPNooW1gL8gIRzNWkvo5GC1DlX4oq8R-XjiD6gPyE-0vTd8gsLOYjr99YSzQbOWIJ3wCr76qVu4DuHCO5nsYjXF7konRP1Je1kcPcV3RJ6tlFvlPULoridtCXuHrPmqyBP4BGNTCumPZYZYvjnoLnVzxbp5R86B2w7I9nc3ZngSwWUCBBNa34sVRmJCnv08oeBog"/>
+<img alt="Admin 2" class="w-8 h-8 rounded-full border-2 border-surface" data-alt="professional female portrait avatar with clean studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDcjF6Cpn9Q84mDMBcYZAQU9S1IIJgFx8tYYwdIR1tSHBA6XhJTxmGlzRL_xnwAhUr3afxvbANv--3VJd1XxgEipzIItmLV0x1S2p7FvlUZfqM-AhzLBN-pFYOrauKW6WwRjD6FbiywdoZHJOd35wj86esdhdNzpaCUCIjBxTbm0Qnqt4ix3eQ7utHkRvlYhVT0TUdKsTCrzgdcxL7r2E7hJ-5n98Bp1ai6rk87MEtE1VQZCgZx2-gtiWzBRgETAH3c53WB7Nm0H0"/>
+</div>
+<span class="text-[10px] font-bold tracking-widest text-secondary-fixed-variant uppercase">Team Active</span>
+</div>
+</section>
+<!-- List Section -->
+<div class="space-y-4">
+<!-- Booking Card Item 1 (Pending) -->
+<div class="bg-surface-container-lowest rounded-full p-4 flex items-center justify-between transition-all duration-200 active:scale-[0.98] active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-sm">
+<img alt="Marcus Chen" data-alt="portrait of a focused young man in athletic wear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJDIYgLNSadkxljO9dLpnhXjeCu99AIutCPGP9w5BsCP-K3mJ-sM0BzHXo84_zFD_-WJG48pnzBRl7PPwbemgXDD5R_wpQDUGIzPizISAw4EYH06dwJwV6cKhmzuAVR3YnE_88q1738xJaRiboDepsZ50SQsQWdqrI7L1Pq_TGX4jcUMhJIeUmD2tYUwGfGEdcR1DknKQDOQ7Zh7G4w428d29ZkaxObuLP2_jFgETvsqWiHplaKOV8lvLGCIxKWb-BcOd4DwAa-eM"/>
+</div>
+<div>
+<h3 class="text-sm font-bold text-on-surface">Marcus Chen</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-primary-container" data-icon="person">person</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-tight">Coach Sarah J.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-[10px] font-bold text-on-surface-variant">OCT 24, 09:00 AM</span>
+<span class="px-2 py-0.5 bg-[#003399]/10 text-[#003399] rounded-full text-[9px] font-black tracking-widest uppercase">PENDING</span>
+</div>
+</div>
+<!-- Booking Card Item 2 (Confirmed) -->
+<div class="bg-surface-container-lowest rounded-full p-4 flex items-center justify-between transition-all duration-200 active:scale-[0.98] active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-secondary-container flex items-center justify-center text-on-secondary-fixed font-bold text-sm">
+<img alt="Elena Rodriguez" data-alt="portrait of a woman in workout gear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO_0UuicYw4rTEBrz0Afaa3sKY-GKGySNd0f2vNnHaGq9YmbV7At0cgm9k5Wtakpy8c3FbWUx_KPrRx9ynAFyhALGC0WTQGRXemUjKhGTfRKscUlwKZfMB9xPwlCHArtiIqyFimQkicyWuzFZ90mlhYvNpwDqgKcXC9o9jnOaJ5DbCxvTYKKbH1M64U_1V66Mt_g1EDrqHL6405hAt-7DmlrS0sy4fzlYC4c_isFldFf9WpqBQx57lB7ZT8R_XFlkxNXCVO8Inbt4"/>
+</div>
+<div>
+<h3 class="text-sm font-bold text-on-surface">Elena Rodriguez</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-primary-container" data-icon="person">person</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-tight">Coach Alex M.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-[10px] font-bold text-on-surface-variant">OCT 24, 10:30 AM</span>
+<span class="px-2 py-0.5 bg-on-secondary-container/10 text-on-secondary-container rounded-full text-[9px] font-black tracking-widest uppercase">CONFIRMED</span>
+</div>
+</div>
+<!-- Booking Card Item 3 (Pending) -->
+<div class="bg-surface-container-lowest rounded-full p-4 flex items-center justify-between transition-all duration-200 active:scale-[0.98] active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-sm">
+<img alt="David Park" data-alt="smiling man in gym apparel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcHq98Bpc1EyNFHa8Oo90KgZBt9HPqwjIVUOurS1Yk32Y2omA8Pb7bsTYEbL34UNPXFJ3fzpE_sQbaVfcM7fOb9n57Ob7UptbdkKzMgOFCfbaBQFfqdOmnJaaUkaulth6qjCe0kkqZ_cnqxexMr4iBKKI2oEBGZQDuvRO-2S4OM_O83vAn-QmWCf1YYWzwjZzXB33rgP7SGMkv442_Yhl8sW_8UAd3oMX7SpOfLcm9OOjd6o_zWvQIQvfTtxhLY2XBFAkIXIRYK0E"/>
+</div>
+<div>
+<h3 class="text-sm font-bold text-on-surface">David Park</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-primary-container" data-icon="person">person</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-tight">Coach Sarah J.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-[10px] font-bold text-on-surface-variant">OCT 24, 11:45 AM</span>
+<span class="px-2 py-0.5 bg-[#003399]/10 text-[#003399] rounded-full text-[9px] font-black tracking-widest uppercase">PENDING</span>
+</div>
+</div>
+<!-- Booking Card Item 4 (Completed) -->
+<div class="bg-surface-container-lowest rounded-full p-4 flex items-center justify-between opacity-60">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-outline-variant flex items-center justify-center text-white font-bold text-sm">
+<span>JW</span>
+</div>
+<div>
+<h3 class="text-sm font-bold text-on-surface">James Wilson</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-primary-container" data-icon="person">person</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-tight">Coach Alex M.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-[10px] font-bold text-on-surface-variant">OCT 24, 07:00 AM</span>
+<span class="px-2 py-0.5 bg-surface-variant text-on-surface-variant rounded-full text-[9px] font-black tracking-widest uppercase">COMPLETED</span>
+</div>
+</div>
+<!-- Booking Card Item 5 (Pending) -->
+<div class="bg-surface-container-lowest rounded-full p-4 flex items-center justify-between transition-all duration-200 active:scale-[0.98] active:bg-surface-container-high">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-sm">
+<img alt="Sophia Lee" data-alt="portrait of a woman athlete" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA336h-SvZvTf3LKTTwZNQpVrlXqbdEIKtig8hpxPpYMHtiKltq5qd9GjU2Wum87JqX96g4oxbsZWsL9bklEftwPk4gysPd3KcfvjYng2VPJ9EbIVB3lBsecb1r8041Eefmf8Y6jGW01kB6woXjPU58fBILZCdw3_lTeL3Ysc-L_7sKO_0yGWGDjz6Czaf5C39aBRoBVQ5ANQP9YkFA62QbLx56SbisEmPxw2DBN-VRML-VAQbwI-8DG1fiRs5dyE-jICOIbXt6y_U"/>
+</div>
+<div>
+<h3 class="text-sm font-bold text-on-surface">Sophia Lee</h3>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-primary-container" data-icon="person">person</span>
+<span class="text-[11px] font-semibold text-secondary uppercase tracking-tight">Coach Sarah J.</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-[10px] font-bold text-on-surface-variant">OCT 24, 02:00 PM</span>
+<span class="px-2 py-0.5 bg-[#003399]/10 text-[#003399] rounded-full text-[9px] font-black tracking-widest uppercase">PENDING</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (From JSON) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-50">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider uppercase">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="groups">groups</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider uppercase">Trainers</span>
+</a>
+<!-- Active Tab: Bookings -->
+<a class="flex flex-col items-center justify-center text-[#003399] dark:text-[#3366ff] bg-[#003399]/5 dark:bg-[#3366ff]/10 rounded-xl px-3 py-2 transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="event_available" style="font-variation-settings: 'FILL' 1;">event_available</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider uppercase">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="rate_review">rate_review</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider uppercase">Reviews</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] transition-transform active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_today">calendar_today</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider uppercase">Schedule</span>
+</a>
+</nav>
+</body></html>

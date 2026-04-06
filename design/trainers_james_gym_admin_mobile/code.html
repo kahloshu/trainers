@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#ffb59f",
+                    "secondary-fixed-dim": "#c6c6c9",
+                    "surface-bright": "#f8f9fa",
+                    "on-tertiary-fixed-variant": "#832707",
+                    "outline-variant": "#c4c5d5",
+                    "on-tertiary-container": "#ff8561",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#444653",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#751d00",
+                    "primary-fixed": "#dce1ff",
+                    "on-secondary-fixed": "#1a1c1e",
+                    "on-secondary-container": "#636467",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container": "#edeeef",
+                    "surface-tint": "#3557bc",
+                    "on-error": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "inverse-surface": "#2e3132",
+                    "surface-dim": "#d9dadb",
+                    "on-primary-fixed-variant": "#153ea3",
+                    "primary-fixed-dim": "#b5c4ff",
+                    "inverse-primary": "#b5c4ff",
+                    "primary": "#002068",
+                    "on-surface": "#191c1d",
+                    "on-primary": "#ffffff",
+                    "secondary": "#5d5e61",
+                    "on-primary-container": "#8aa4ff",
+                    "on-tertiary-fixed": "#3a0a00",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#4f1100",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#00164e",
+                    "on-secondary-fixed-variant": "#454749",
+                    "tertiary-fixed": "#ffdbd1",
+                    "secondary-container": "#e2e2e5",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-fixed": "#e2e2e5",
+                    "primary-container": "#003399",
+                    "outline": "#747684",
+                    "background": "#f8f9fa",
+                    "on-background": "#191c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#003399] dark:text-[#3366ff]" data-icon="fitness_center">fitness_center</span>
+<h1 class="text-xl font-black text-[#002068] dark:text-white tracking-widest font-['Manrope']">JAMES GYM</h1>
+</div>
+<button class="text-slate-500 dark:text-slate-400 hover:opacity-70 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] w-full"></div>
+</header>
+<main class="pt-24 pb-32 px-6">
+<!-- Power Summary Header -->
+<section class="mb-8">
+<span class="font-label text-[10px] font-bold tracking-[0.2em] text-primary uppercase opacity-60">Management Console</span>
+<h2 class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mt-1">Elite Trainers</h2>
+<div class="flex items-center gap-2 mt-4">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+<span class="font-label text-xs font-semibold text-secondary tracking-wide">12 Active Professionals</span>
+</div>
+</section>
+<!-- Trainer List -->
+<div class="space-y-6">
+<!-- Marcus Thorne Card -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,29,0.04)] flex flex-col gap-5">
+<div class="flex items-start gap-4">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Marcus Thorne" class="w-full h-full object-cover" data-alt="professional portrait of a confident male fitness trainer with athletic build in a modern gym setting with soft moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEamsOaFGgUygcQv0WH-nBPSfqOFEHAEFX_lXC5kE_fmIepnzR86XxfWOsLvF4Rxc51wHNCNtBKJB7e61-HqcqN0PwHdXSRo_epf2MhHErkFVv9P-uhL4Iu7lqAcyr4jPWUo4wVf2RMj-n3v7ShIrdK2-NBjzeXldR_KjyJjWyq2lQhu8NzEiNg9J8gN-JSGxrIF_BL5rkHL1nVym2bG2x34jV5eGLsHscb3XCTg7RwlpDlIjC8bSY16LDwGcTQY2LkRDqACcAoGo"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Marcus Thorne</h3>
+<p class="text-sm font-medium text-secondary mt-0.5">Strength &amp; Conditioning</p>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-tertiary-container" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface">4.9</span>
+</div>
+</div>
+<div class="flex gap-2 mt-3">
+<span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-primary/5 text-primary-container rounded">Elite</span>
+<span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-secondary-container/30 text-secondary rounded">10+ Years</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-highest text-on-surface py-3 rounded-lg font-bold text-xs tracking-widest uppercase active:scale-95 transition-transform">
+                        Edit
+                    </button>
+<button class="bg-gradient-to-br from-primary-container to-primary text-white py-3 rounded-lg font-bold text-xs tracking-widest uppercase active:scale-95 transition-transform">
+                        Schedule
+                    </button>
+</div>
+</div>
+<!-- Elena Vance Card -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,29,0.04)] flex flex-col gap-5">
+<div class="flex items-start gap-4">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="Elena Vance" class="w-full h-full object-cover" data-alt="cinematic close-up of a professional female fitness coach with sharp focus and warm natural sunlight highlight on face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBctZjqFhzpZE_GbClv3EOvN26IutF9Y4y0O-ntr5kDlNEMcI2DLxVS8-GgoytTMQBLp4ZcM5ztBGAoNIVMLjn_lDTA1CB9Qu0nLQ76s2rEXib35BqBt0cOUcAU_tS4v1AUXkLTHXsG3uvCHYI8SfYuywf3hVlPZwPIVlQkpB0lE_j-s-HVOIii_VEdEQ5-sA-65-rRZhsByKmrqir7MBfC-xyeQ_EmaMh5K5LA40S1G7NDN62cpO7wWdvqn-Kqr_8lyQXuajx_c_w"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">Elena Vance</h3>
+<p class="text-sm font-medium text-secondary mt-0.5">Pilates &amp; Mobility</p>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-tertiary-container" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface">5.0</span>
+</div>
+</div>
+<div class="flex gap-2 mt-3">
+<span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-primary/5 text-primary-container rounded">Certified</span>
+<span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-secondary-container/30 text-secondary rounded">Morning Only</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-highest text-on-surface py-3 rounded-lg font-bold text-xs tracking-widest uppercase active:scale-95 transition-transform">
+                        Edit
+                    </button>
+<button class="bg-gradient-to-br from-primary-container to-primary text-white py-3 rounded-lg font-bold text-xs tracking-widest uppercase active:scale-95 transition-transform">
+                        Schedule
+                    </button>
+</div>
+</div>
+<!-- David Chen Card -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,29,0.04)] flex flex-col gap-5">
+<div class="flex items-start gap-4">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-low">
+<img alt="David Chen" class="w-full h-full object-cover" data-alt="athletic asian male trainer in professional sportswear standing in a minimalist white-walled gym interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwyU2HAE_PbvrjutTLpXTtB6FODqYDSNjIIeXnQoHrtK1La5MvuVndOJvn3Yq5fXuj6_GN4f33izyk17ltyi5vB3ADkv1SpzCaSuSGsN779it-BSu_GBRnc8DojzHLl5ft1vmEO8RyDf0IRk0WFae2EcyKWvGnJn_Xnr-LIgpNPbZKJH31X307rUMywm9B-HjYsmBo5JHbXIjxlX9Pg5nJUWXmR86rRGV3WsHWOEPFDW22c4TPa6rHyejh97hW3sBOEKztKDYpAlE"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline text-lg font-bold text-on-surface">David Chen</h3>
+<p class="text-sm font-medium text-secondary mt-0.5">HIIT Specialist</p>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px] text-tertiary-container" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface">4.8</span>
+</div>
+</div>
+<div class="flex gap-2 mt-3">
+<span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-primary/5 text-primary-container rounded">Senior</span>
+<span class="text-[10px] font-bold tracking-wider uppercase px-2 py-1 bg-secondary-container/30 text-secondary rounded">Performance</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-container-highest text-on-surface py-3 rounded-lg font-bold text-xs tracking-widest uppercase active:scale-95 transition-transform">
+                        Edit
+                    </button>
+<button class="bg-gradient-to-br from-primary-container to-primary text-white py-3 rounded-lg font-bold text-xs tracking-widest uppercase active:scale-95 transition-transform">
+                        Schedule
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-br from-primary-container to-primary text-white rounded-xl shadow-lg flex items-center justify-center active:scale-90 transition-transform duration-200 z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] flex justify-around items-center px-4 py-3 pb-safe z-50 rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#003399] dark:text-[#3366ff] bg-[#003399]/5 dark:bg-[#3366ff]/10 rounded-xl px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Trainers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Reviews</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Schedule</span>
+</a>
+</nav>
+</body></html>

@@ -1,26 +1,140 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Digital Obsidian Surface Layers ── */
+  --bg:              #0e0e0e;   /* base layer */
+  --bg-2:            #131313;   /* structural sections */
+  --surface:         #1a1a1a;   /* containers */
+  --surface-2:       #1f1f1f;
+  --surface-high:    #262626;   /* floating / active */
+  --surface-bright:  #2c2c2c;   /* hover states */
+
+  /* ── No-Line Rule: borders via opacity only as ghost fallback ── */
+  --border:          rgba(255,255,255,0.06);
+  --border-subtle:   rgba(255,255,255,0.04);
+
+  /* ── Text ── */
+  --text-primary:    #ffffff;
+  --text-secondary:  #a0a0a0;
+  --text-muted:      #5a5a5a;
+
+  /* ── Primary: high-frequency pulse blue ── */
+  --accent:          #8eabff;
+  --accent-2:        #156aff;
+  --accent-hover:    #0066ff;
+  --accent-subtle:   rgba(142,171,255,0.10);
+  --accent-glow:     rgba(142,171,255,0.08);
+
+  /* ── Gold (rating) ── */
+  --gold:            #c9a96e;
+
+  /* ── Status ── */
+  --danger:  #f87171;
+  --success: #34d399;
+
+  /* ── Font ── */
+  --font: var(--font-lexend), -apple-system, "Apple SD Gothic Neo", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { font-size: 16px; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  letter-spacing: -0.01em;
 }
+
+/* ── Card: tonal lift, no border ── */
+.card {
+  background: var(--surface-high);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ── Section block ── */
+.section-block {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* ── Scrollbar ── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Chip ── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 15px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: var(--surface-high);
+  color: var(--text-secondary);
+  border: none;
+}
+.chip.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+/* ── Primary Button: gradient CTA ── */
+.btn-primary {
+  background: linear-gradient(135deg, #8eabff 0%, #156aff 100%);
+  color: #000000;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  padding: 15px 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s ease;
+  border: none;
+}
+.btn-primary:active { opacity: 0.82; }
+.btn-primary:disabled {
+  background: var(--surface-high);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* ── Bottom Nav: glassmorphism ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: rgba(26,26,26,0.70);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--border-subtle);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 50;
+}
+
+/* ── Page scroll padding ── */
+.page-scroll { padding-bottom: 80px; }
+
+/* ── Divider (ghost fallback only) ── */
+.divider { height: 1px; background: var(--border-subtle); }

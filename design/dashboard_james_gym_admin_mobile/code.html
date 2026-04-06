@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>James Gym Admin Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#ffb59f",
+                    "secondary-fixed-dim": "#c6c6c9",
+                    "surface-bright": "#f8f9fa",
+                    "on-tertiary-fixed-variant": "#832707",
+                    "outline-variant": "#c4c5d5",
+                    "on-tertiary-container": "#ff8561",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#444653",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#751d00",
+                    "primary-fixed": "#dce1ff",
+                    "on-secondary-fixed": "#1a1c1e",
+                    "on-secondary-container": "#636467",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container": "#edeeef",
+                    "surface-tint": "#3557bc",
+                    "on-error": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "inverse-surface": "#2e3132",
+                    "surface-dim": "#d9dadb",
+                    "on-primary-fixed-variant": "#153ea3",
+                    "primary-fixed-dim": "#b5c4ff",
+                    "inverse-primary": "#b5c4ff",
+                    "primary": "#002068",
+                    "on-surface": "#191c1d",
+                    "on-primary": "#ffffff",
+                    "secondary": "#5d5e61",
+                    "on-primary-container": "#8aa4ff",
+                    "on-tertiary-fixed": "#3a0a00",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#4f1100",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed": "#00164e",
+                    "on-secondary-fixed-variant": "#454749",
+                    "tertiary-fixed": "#ffdbd1",
+                    "secondary-container": "#e2e2e5",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-fixed": "#e2e2e5",
+                    "primary-container": "#003399",
+                    "outline": "#747684",
+                    "background": "#f8f9fa",
+                    "on-background": "#191c1d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); }
+        .james-gradient { background: linear-gradient(135deg, #003399 0%, #002068 100%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#003399] dark:text-[#3366ff]" data-icon="fitness_center">fitness_center</span>
+<h1 class="text-xl font-black text-[#002068] dark:text-white tracking-widest font-['Manrope']">JAMES GYM</h1>
+</div>
+<button class="hover:opacity-70 transition-opacity active:scale-95 duration-150 text-slate-500">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<main class="pt-24 px-6 space-y-8">
+<!-- Welcome Section -->
+<section class="space-y-1">
+<p class="font-label text-xs font-semibold tracking-[0.1em] text-on-surface-variant/70 uppercase">Administration Overview</p>
+<h2 class="font-headline text-3xl font-extrabold text-on-surface tracking-tight">Today's Pulse</h2>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<div class="grid grid-cols-2 gap-4">
+<!-- OT Requests -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-none shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary-container" data-icon="history">history</span>
+<span class="text-[10px] font-bold text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full tracking-wider uppercase">OT</span>
+</div>
+<div>
+<div class="font-headline text-2xl font-bold">24</div>
+<p class="font-label text-[10px] text-on-surface-variant font-medium tracking-wide uppercase opacity-70">OT requests</p>
+</div>
+</div>
+<!-- Pending Requests -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-none shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary" data-icon="pending_actions">pending_actions</span>
+<div class="h-2 w-2 rounded-full bg-tertiary"></div>
+</div>
+<div>
+<div class="font-headline text-2xl font-bold">08</div>
+<p class="font-label text-[10px] text-on-surface-variant font-medium tracking-wide uppercase opacity-70">Pending</p>
+</div>
+</div>
+<!-- Completed Classes -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-none shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary" data-icon="task_alt">task_alt</span>
+</div>
+<div>
+<div class="font-headline text-2xl font-bold">142</div>
+<p class="font-label text-[10px] text-on-surface-variant font-medium tracking-wide uppercase opacity-70">Completed</p>
+</div>
+</div>
+<!-- Active Trainers -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-none shadow-sm flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary" data-icon="badge">badge</span>
+</div>
+<div>
+<div class="font-headline text-2xl font-bold">18</div>
+<p class="font-label text-[10px] text-on-surface-variant font-medium tracking-wide uppercase opacity-70">Active staff</p>
+</div>
+</div>
+</div>
+<!-- Recent OT Requests List -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h3 class="font-headline text-xl font-bold text-on-surface tracking-tight">Recent OT Requests</h3>
+<a class="text-[10px] font-bold text-primary-container tracking-[0.1em] uppercase" href="#">View All</a>
+</div>
+<div class="space-y-3">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="h-12 w-12 rounded-full bg-surface-container overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="Close-up portrait of a fit man at the gym with dramatic lighting and professional aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmtlRii229DEduIMCY-Xzh2oAzTBOGwV2rpD3YBHz2iKei2DLUYymOaMnG1Jo6tfyYqAvLLGQWXRPKBEAp1AM4kvB6Tr1l3rsvs7SmATVY9yyqAXXSL_r8ZV2NuzNAHgBCx6PVDIsiDCr2PuvJVA9983BgAyVjyh4KEQHPVmCt506AX0WudsY2js48HczlXKZh8PmfeUuDVpEtLGcWfzdQzkVG70BtbQX-W5g2_ry8kIOZSBQTK-3Mlc55Mo-5c7DLH63VviNYdaA"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline text-sm font-bold text-on-surface truncate">Alex Rivera</h4>
+<p class="font-label text-xs text-on-surface-variant/70">Trainer: Marcus Thorne</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="text-[9px] font-black px-2 py-1 bg-surface-container-high text-on-surface-variant rounded-md tracking-widest uppercase">PENDING</span>
+<span class="text-[9px] text-on-surface-variant/50 font-medium">10m ago</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="h-12 w-12 rounded-full bg-surface-container overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="Close-up portrait of an athletic woman in a modern gym environment with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgIeyQateRmnhLm79Gesq_r8YcWMEbjMtVYHpavi6M2mDbfZMbPthuHj7_qEMyGWHRqdxdCqZserL0ABdODMrfm1_rAWX1koOBgfII0o5q0SxgVWrx8J-CQ6YpxoPq5_9lhfGBCXnt_ax1jtHuiPCUgFFxjAuOGUU7MOUYCzZzs1iOAAGmf8OFjMg-lC1NUtuHYbwPULJQCosgh8Z32v7DAhJWDHgb6N0QtnPiJ1sOQLRnHAWILTeUixW5DUVmxECV-nO-7_U8Fgw"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline text-sm font-bold text-on-surface truncate">Sarah Jenkins</h4>
+<p class="font-label text-xs text-on-surface-variant/70">Trainer: Elena Rodriguez</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="text-[9px] font-black px-2 py-1 bg-primary-container text-white rounded-md tracking-widest uppercase">CONFIRMED</span>
+<span class="text-[9px] text-on-surface-variant/50 font-medium">42m ago</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center gap-4">
+<div class="h-12 w-12 rounded-full bg-surface-container overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="Headshot of a middle-aged male personal trainer with a confident smile in a bright fitness studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9S5UeswOI0D9l-gEveqMKHB1Xb091_9lcy-c_wgOWQmX3AZRwZdXJIzzyQFs2fbMJaoTt3zhoQpXKp1JcW2WfGqwN5RV3992Tq0MkNQ6yfUuSPVHDueiWiFrY575b4lSNpifABJTidb8EOEbMvxudRolEVCavLlN5nvSD6URE6ktjUx8FLLgu-VnOsuG04-8ieUrXpPyJUuRZ3tiGXKry6mVYksYhZuHL8MvMTxS6tk0_9M9uj8KqEGRhAF9MNM4kAytrBMAzGLs"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline text-sm font-bold text-on-surface truncate">David Chen</h4>
+<p class="font-label text-xs text-on-surface-variant/70">Trainer: Marcus Thorne</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="text-[9px] font-black px-2 py-1 bg-surface-container-high text-on-surface-variant rounded-md tracking-widest uppercase">PENDING</span>
+<span class="text-[9px] text-on-surface-variant/50 font-medium">1h ago</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Gym Floor Layout Map Placeholder -->
+<section class="space-y-4">
+<h3 class="font-headline text-xl font-bold text-on-surface tracking-tight">Active Floor Activity</h3>
+<div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-surface-container shadow-inner">
+<div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&amp;w=2070&amp;auto=format&amp;fit=crop')] bg-cover" data-alt="Abstract architectural shot of a modern gym floor with minimalist equipment and clean lines"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="text-center">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="map">map</span>
+<p class="text-[10px] font-black uppercase tracking-widest text-primary-container mt-2">Live Heatmap View</p>
+</div>
+</div>
+<!-- Interactive Dots (Simulated) -->
+<div class="absolute top-1/4 left-1/3 h-2 w-2 rounded-full bg-primary animate-pulse"></div>
+<div class="absolute bottom-1/3 right-1/4 h-2 w-2 rounded-full bg-primary animate-pulse"></div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-50 rounded-t-2xl">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center text-[#003399] dark:text-[#3366ff] bg-[#003399]/5 dark:bg-[#3366ff]/10 rounded-xl px-3 py-2 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Dashboard</span>
+</a>
+<!-- Trainers -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Trainers</span>
+</a>
+<!-- Bookings -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Bookings</span>
+</a>
+<!-- Reviews -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Reviews</span>
+</a>
+<!-- Schedule -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-2 hover:text-[#003399] dark:hover:text-white active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] font-semibold tracking-wider uppercase mt-1">Schedule</span>
+</a>
+</nav>
+</body></html>

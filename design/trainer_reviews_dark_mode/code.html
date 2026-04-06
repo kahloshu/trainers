@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#490006",
+                        "on-secondary": "#000a73",
+                        "on-primary-fixed-variant": "#00276c",
+                        "on-secondary-container": "#c9cdff",
+                        "surface": "#0e0e0e",
+                        "surface-container-high": "#20201f",
+                        "on-secondary-fixed-variant": "#3a45ac",
+                        "primary": "#8eabff",
+                        "background": "#0e0e0e",
+                        "secondary-fixed-dim": "#babfff",
+                        "surface-dim": "#0e0e0e",
+                        "error-dim": "#d7383b",
+                        "surface-bright": "#2c2c2c",
+                        "surface-container-highest": "#262626",
+                        "on-tertiary-fixed": "#400042",
+                        "on-error-container": "#ffa8a3",
+                        "secondary-container": "#2f3aa1",
+                        "surface-variant": "#262626",
+                        "on-tertiary-fixed-variant": "#6c1a6c",
+                        "tertiary-fixed": "#f797f0",
+                        "secondary-fixed": "#cbceff",
+                        "on-secondary-fixed": "#19248e",
+                        "tertiary-dim": "#e88ae1",
+                        "surface-container": "#1a1a1a",
+                        "tertiary-container": "#f797f0",
+                        "on-primary-container": "#001e58",
+                        "secondary": "#8a95ff",
+                        "secondary-dim": "#8a95ff",
+                        "on-tertiary": "#6d1b6d",
+                        "on-tertiary-container": "#610e63",
+                        "outline-variant": "#484847",
+                        "primary-container": "#799dff",
+                        "on-background": "#ffffff",
+                        "surface-tint": "#8eabff",
+                        "on-primary": "#002971",
+                        "outline": "#767575",
+                        "tertiary-fixed-dim": "#e88ae1",
+                        "on-surface": "#ffffff",
+                        "error-container": "#9f0519",
+                        "error": "#ff716c",
+                        "surface-container-low": "#131313",
+                        "on-primary-fixed": "#000000",
+                        "inverse-primary": "#0055d7",
+                        "tertiary": "#ffaaf7",
+                        "primary-fixed-dim": "#638eff",
+                        "primary-fixed": "#799dff",
+                        "primary-dim": "#156aff",
+                        "inverse-surface": "#fcf9f8",
+                        "inverse-on-surface": "#565555",
+                        "surface-container-lowest": "#000000",
+                        "on-surface-variant": "#adaaaa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Lexend"],
+                        "body": ["Lexend"],
+                        "label": ["Lexend"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 0px; height: 0px; }
+        .glass-panel {
+            background: rgba(38, 38, 38, 0.6);
+            backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-[#0e0e0e] shadow-[0_0_20px_rgba(0,102,255,0.08)]">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="hover:bg-[#2c2c2c] transition-colors p-2 rounded-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white">menu</span>
+</button>
+<h1 class="text-2xl font-black tracking-tighter text-white font-['Lexend'] tracking-tight">KINETIC</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-[#2c2c2c] transition-colors p-2 rounded-full active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white">search</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-4xl mx-auto">
+<!-- Hero Score Section -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+<div class="text-center md:text-left">
+<div class="text-[5rem] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-primary to-primary-dim">4.9</div>
+<div class="flex items-center justify-center md:justify-start gap-1 mt-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+<p class="mt-4 text-on-surface-variant font-medium uppercase tracking-widest text-[10px]">Based on 1,428 athlete reviews</p>
+</div>
+<!-- Rating Breakdown -->
+<div class="flex-grow w-full space-y-3">
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">5</span>
+<div class="h-2 flex-grow bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%]"></div>
+</div>
+<span class="text-xs text-on-surface-variant w-8">85%</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">4</span>
+<div class="h-2 flex-grow bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[12%]"></div>
+</div>
+<span class="text-xs text-on-surface-variant w-8">12%</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">3</span>
+<div class="h-2 flex-grow bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[2%]"></div>
+</div>
+<span class="text-xs text-on-surface-variant w-8">2%</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">2</span>
+<div class="h-2 flex-grow bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[1%]"></div>
+</div>
+<span class="text-xs text-on-surface-variant w-8">1%</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold w-4">1</span>
+<div class="h-2 flex-grow bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[0%]"></div>
+</div>
+<span class="text-xs text-on-surface-variant w-8">0%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Chips -->
+<div class="flex gap-3 mb-8 overflow-x-auto custom-scrollbar pb-2">
+<button class="px-6 py-2 bg-primary text-on-primary-fixed font-bold text-xs rounded-lg whitespace-nowrap active:scale-95 transition-transform">All Reviews</button>
+<button class="px-6 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs rounded-lg border border-outline-variant/15 whitespace-nowrap active:scale-95 transition-transform">With Photos</button>
+<button class="px-6 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs rounded-lg border border-outline-variant/15 whitespace-nowrap active:scale-95 transition-transform">Top Rated</button>
+<button class="px-6 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs rounded-lg border border-outline-variant/15 whitespace-nowrap active:scale-95 transition-transform">Recent</button>
+</div>
+<!-- Review Cards -->
+<div class="space-y-6">
+<!-- Review 1 -->
+<article class="bg-surface-container-low p-6 rounded-lg hover:bg-surface-container-high transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden ring-2 ring-primary/20">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of Marcus Reed, a muscular athlete with a focused expression in a gym setting with dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSmWi6WXMdNWCUZXkjM1SXkzO3BHm07YYhkUMTW7W9M6YirjTHRw7DR6oif1X5QV799TW5V73T8Hn_gxHenhM0DI_DlEdKA7dCZ1qXjEU4-ZHTANwjuwiVVHxKFce5ubWFiL8WZ526PIwD7RrUekzn_uwkVVY7DwQFd4iOk-Siwc0myO4pC-Lr2icPGwKtIWxChpd17Txzs9As1EpnurzZ9YjqDxZvPi0mJD0aqu47OMX4jJ-R57sbnxNY_MuW54ogGYlMwdC5akM"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Marcus Reed</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Verified Athlete • 2 days ago</p>
+</div>
+</div>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<blockquote class="text-lg leading-relaxed text-on-surface font-medium mb-4 italic">
+                    "The progression tracking in this program is unparalleled. I've hit PRs three weeks in a row under this training regimen. Highly focused and results-driven."
+                </blockquote>
+<div class="flex gap-2">
+<div class="w-20 h-20 rounded bg-surface-container overflow-hidden grayscale hover:grayscale-0 transition-all">
+<img class="w-full h-full object-cover" data-alt="Dumbbells on a rack in a high-end gym with atmospheric blue lighting and steel textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfKxq6IH7l3WugdC1Z9j_TgjJXEUGIeehElljhm6A-YAXls0YmKgctxwjCpyUBvVr3FMdAXpqC4mZFhmfPqdg7WLe6sGUoePig2YjLRvN8BQ2zDW80oeDmzt_YV4t-ozNN5UI6_xuV147c4LhpS6AXbHwfj8-GA4Y-X_P4NB3LoRIv_A2hFxUCgzmMSAZgo6Ke2PL9SZ5C9bdHV_AWVUNNTeLOxPdoM6XzlB2YuaC6YOfRz1zA3gf8vGSDAhO7klo62Ps2uD1YHHk"/>
+</div>
+</div>
+</article>
+<!-- Review 2 -->
+<article class="bg-surface-container-low p-6 rounded-lg hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden ring-2 ring-primary/20">
+<img class="w-full h-full object-cover" data-alt="Elena Vance, a fit woman smiling after a workout, wearing athletic gear in a modern studio environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfvxa4k_VYCs10GHnpjgL85bFAHlUhdZERxocRu6XPojaRFkwj5KoJmnLhIqz8O78YhNpS31s7GV1mudMj9E7j7XKny2uk43ZW0IiLhFAY8BaYDXSpMbhnG8tjDUfW_VC3z6S4FtIwI9OVsfzBUg9PLQ2moaWXf1uzbjpXOwfub5vtOS5UHcOoHl1ngVED_nYAISfP1Ox9AO7iU4ItfUOfcKRqd-1miQvewEUBrDCl-AYW8U9Vg2ppU9ynalZSLuUNU9dxfjz1gr4"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Elena Vance</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Marathon Runner • 1 week ago</p>
+</div>
+</div>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<blockquote class="text-lg leading-relaxed text-on-surface font-medium italic">
+                    "Transitioning from standard cardio to these kinetic explosive movements transformed my endurance. Every session feels like a masterclass in physiology."
+                </blockquote>
+</article>
+<!-- Review 3 -->
+<article class="bg-surface-container-low p-6 rounded-lg hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden ring-2 ring-primary/20">
+<img class="w-full h-full object-cover" data-alt="David Chen, a athletic man in his 30s standing against a dark architectural background in gym attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkMeakepoWDg8V1rNtsCqh14kc--zikRmkCLHJxA5lsxCbhtIfBCj86_iFDLE0K__5_F2uHQSzXv2z8EDEkpNgwxN8YGLuyQpXxNRSKjqSsQBpI1KgXTgyfzDWvG8OZUnQgFFWEnAxT96zeKT2AdxnT1ZIgSoBOK0EbA3y5ebRP-pMpG9nCMvIZYLfgAdtgJNq1ooznyZeHEZmm4talCY1wxp4_Jm5Hhu-4bQjBlE1JgtYHVBf1-JZupbp9uYPeKhJGs1BOZO2t18"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">David Chen</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Pro Cyclist • 2 weeks ago</p>
+</div>
+</div>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+</div>
+<blockquote class="text-lg leading-relaxed text-on-surface font-medium italic">
+                    "Incredible technical knowledge. The form cues alone are worth the investment. Occasionally intense but exactly what elite athletes need to break plateaus."
+                </blockquote>
+</article>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-[2rem] bg-[#0e0e0e]/60 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center h-20 px-4 pb-safe">
+<a class="flex flex-col items-center justify-center text-gray-500 opacity-60 hover:text-white transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Lexend'] text-[10px] uppercase tracking-widest font-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#0066FF] scale-110 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-['Lexend'] text-[10px] uppercase tracking-widest font-bold mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 opacity-60 hover:text-white transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span class="font-['Lexend'] text-[10px] uppercase tracking-widest font-bold mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-500 opacity-60 hover:text-white transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Lexend'] text-[10px] uppercase tracking-widest font-bold mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

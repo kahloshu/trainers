@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800;900&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#ebe7e7",
+                    "secondary-container": "#9bb4fe",
+                    "tertiary-container": "#cc4204",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "secondary": "#425ca0",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#fcf9f8",
+                    "on-primary-container": "#f8f7ff",
+                    "inverse-surface": "#313030",
+                    "secondary-fixed-dim": "#b3c5ff",
+                    "inverse-on-surface": "#f3f0ef",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#e5e2e1",
+                    "outline-variant": "#c2c6d8",
+                    "on-surface": "#1c1b1b",
+                    "surface": "#fcf9f8",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#dae1ff",
+                    "inverse-primary": "#b3c5ff",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#0054d6",
+                    "primary-container": "#0066ff",
+                    "on-secondary-fixed-variant": "#284386",
+                    "on-surface-variant": "#424656",
+                    "primary": "#0050cb",
+                    "on-tertiary-container": "#fff6f4",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#dcd9d9",
+                    "on-tertiary-fixed-variant": "#832600",
+                    "primary-fixed": "#dae1ff",
+                    "on-primary-fixed-variant": "#003fa4",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-primary-fixed": "#001849",
+                    "outline": "#727687",
+                    "surface-container": "#f0edec",
+                    "on-background": "#1c1b1b",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-tertiary-fixed": "#390c00",
+                    "on-secondary-container": "#294487",
+                    "background": "#fcf9f8",
+                    "surface-container-low": "#f6f3f2",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdbd0",
+                    "tertiary": "#a33200",
+                    "on-secondary-fixed": "#001849"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Lexend"],
+                    "body": ["Manrope"],
+                    "label": ["Lexend"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-nav { backdrop-filter: blur(24px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/70 dark:bg-[#1c1b1b]/70 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#1c1b1b] dark:text-[#fcf9f8] active:scale-95 duration-200">menu</button>
+<span class="text-2xl font-black tracking-tighter text-[#1c1b1b] dark:text-[#fcf9f8] font-lexend uppercase">KINETIC</span>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8">
+<a class="font-lexend tracking-tight font-bold uppercase text-[#1c1b1b] dark:text-[#fcf9f8] hover:opacity-80 transition-opacity" href="#">Home</a>
+<a class="font-lexend tracking-tight font-bold uppercase text-[#0050cb] hover:opacity-80 transition-opacity" href="#">Explore</a>
+<a class="font-lexend tracking-tight font-bold uppercase text-[#1c1b1b] dark:text-[#fcf9f8] hover:opacity-80 transition-opacity" href="#">Bookings</a>
+</nav>
+<button class="material-symbols-outlined text-[#1c1b1b] dark:text-[#fcf9f8] active:scale-95 duration-200">search</button>
+</div>
+</div>
+</header>
+<main class="pt-16 pb-32">
+<!-- Hero Gallery Section -->
+<section class="relative w-full overflow-hidden">
+<div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-2 px-4 py-6">
+<div class="snap-center shrink-0 w-[85vw] md:w-[45vw] aspect-[4/5] relative group">
+<img class="w-full h-full object-cover rounded-xl shadow-2xl" data-alt="Intense close-up portrait of a professional fitness trainer in a dark high-contrast gym environment with dramatic side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIhfDqRYlvdxkSMukGVwmlCFJRRljW4ZVQRmkT798EGuhSuhSTV0YKdnQtst2MlKHVZ-YR8K2st1CvcbNPAVrJtVbCGup6FU0HKEcy1ydy4gCBIBDdMmsnen0-ZFhrJcoWETsQbosnvHLobN2l--7jmC4Ld7uIPIH_Nj1GKGG7SKwRwVMH3ynBqrzqhiYzFl-XdiUnr0CbpDUhr5a441rv7TewF_GaKPnKIkx6NtWa2-XHaK1xpK1aDg16LuT5PlqsPJ-C8uPsgRU"/>
+<div class="absolute bottom-6 left-6 z-10">
+<span class="bg-primary text-on-primary font-label text-[10px] px-3 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">Elite Performance</span>
+<h1 class="text-white font-headline text-4xl md:text-6xl font-black leading-none uppercase tracking-tighter">MARCUS<br/>VANCE</h1>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-xl"></div>
+</div>
+<div class="snap-center shrink-0 w-[85vw] md:w-[45vw] aspect-[4/5] relative">
+<img class="w-full h-full object-cover rounded-xl shadow-lg" data-alt="Fitness trainer performing a powerful kettlebell swing in a brutalist concrete gym space with harsh cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQuXubgAUXjg8bMI32K8mfN-2ZZmg2Qq7Oqfsu3k5XHmm99MDmWyCZGP4p9W4ex0KaYZQc0Hpf6QMzwuDlV4rhrfRUxrAsQ8L8xjs4wMv8Xq3js18GySO9LObMNIRlFsdovVki2tOwhumcDDGaGEyndMJYHh2979X3Z-Ee0xYcaAIuK_7iienK0rC3bTZi4y8-BqGo86r1lpcBOCyTA4fbnWUtsSTnJvmsgVqvouUn1OWBDX9FDD8_laukQlwpzMfX1JZr2authqE"/>
+<div class="absolute inset-0 bg-black/10 rounded-xl"></div>
+</div>
+<div class="snap-center shrink-0 w-[85vw] md:w-[45vw] aspect-[4/5] relative">
+<img class="w-full h-full object-cover rounded-xl shadow-lg" data-alt="Low angle shot of a trainer focusing during a barbell lift, dramatic shadows and highlighted muscle definition" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd1cE7p-W7M5z6CN3NRahuKhQPkZqi7JHFtefSI3ffh16lG4zu4iuCDcN9BjHW6zzCiiyQz6UeCNClrVs8Ka_GtprWlVaAkSC4sOjknGSUpOSal0m659ZFj1OF8nvYdDSLxHdH-wfq7DDPfzqcQVeK4NWAl2zr9Ct1CLJL54QrMIbNwVbT1Z0tuxDJCJKyeA_FYjBc-MFmC-bRnBRDBf9y3C_WVGa0ChlIJ0aZYhtWgJUwpmJUoQEOT37AcsM0OlmHwLxyS3vQBpc"/>
+</div>
+</div>
+<!-- Rating & Stats Overlay -->
+<div class="px-6 -mt-10 relative z-20">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_40px_rgba(28,27,27,0.06)] flex justify-between items-center max-w-4xl mx-auto">
+<div class="flex flex-col">
+<div class="flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-headline font-bold text-xl">4.9</span>
+<span class="text-on-surface-variant text-xs ml-1">(124 Reviews)</span>
+</div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Client Rating</span>
+</div>
+<div class="w-px h-10 bg-outline-variant/20"></div>
+<div class="text-center">
+<div class="font-headline font-bold text-xl">12+</div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Years Exp.</span>
+</div>
+<div class="w-px h-10 bg-outline-variant/20"></div>
+<div class="text-center">
+<div class="font-headline font-bold text-xl">500+</div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Sessions</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bio & Content Grid -->
+<section class="max-w-4xl mx-auto px-6 mt-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+<!-- Left Column: Details -->
+<div class="md:col-span-2 space-y-12">
+<div>
+<h2 class="font-headline text-xs uppercase tracking-[0.2em] text-primary mb-4">The Narrative</h2>
+<p class="text-on-surface-variant leading-relaxed text-lg font-body">
+                        Marcus Vance specializes in biometric-driven strength conditioning and metabolic mobility. His philosophy centers on the <span class="text-on-surface font-semibold">Kinetic Blueprint</span>—an individualized approach that treats every movement as an architectural event. Formerly a lead performance coach for olympic athletes, Marcus now bridges the gap between pro-level science and everyday high-performance living.
+                    </p>
+</div>
+<div class="grid grid-cols-1 gap-8">
+<div>
+<h2 class="font-headline text-xs uppercase tracking-[0.2em] text-primary mb-6">Expertise &amp; Focus</h2>
+<div class="flex flex-wrap gap-3">
+<span class="bg-surface-container-high px-4 py-2 rounded-full font-label text-xs uppercase tracking-wider">Olympic Weightlifting</span>
+<span class="bg-surface-container-high px-4 py-2 rounded-full font-label text-xs uppercase tracking-wider">Metabolic Conditioning</span>
+<span class="bg-surface-container-high px-4 py-2 rounded-full font-label text-xs uppercase tracking-wider">Post-Injury Rehab</span>
+<span class="bg-surface-container-high px-4 py-2 rounded-full font-label text-xs uppercase tracking-wider">High-Intensity Power</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-xl">
+<h2 class="font-headline text-xs uppercase tracking-[0.2em] text-primary mb-6">Career Highlights</h2>
+<ul class="space-y-4">
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary mt-1">verified</span>
+<div>
+<h4 class="font-headline font-bold text-sm uppercase">Lead Performance Coach</h4>
+<p class="text-on-surface-variant text-sm">International Sports Institute (2018-2022)</p>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary mt-1">verified</span>
+<div>
+<h4 class="font-headline font-bold text-sm uppercase">Author: "The Load Principle"</h4>
+<p class="text-on-surface-variant text-sm">Top-selling performance optimization journal</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar -->
+<div class="space-y-8">
+<div>
+<h2 class="font-headline text-xs uppercase tracking-[0.2em] text-primary mb-6">Certifications</h2>
+<div class="space-y-6">
+<div class="border-l-2 border-outline-variant/30 pl-4 py-1">
+<h4 class="font-headline font-bold text-xs uppercase">NSCA - CSCS</h4>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-widest mt-1">Strength &amp; Conditioning Specialist</p>
+</div>
+<div class="border-l-2 border-outline-variant/30 pl-4 py-1">
+<h4 class="font-headline font-bold text-xs uppercase">NASM - PES</h4>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-widest mt-1">Performance Enhancement Specialist</p>
+</div>
+<div class="border-l-2 border-outline-variant/30 pl-4 py-1">
+<h4 class="font-headline font-bold text-xs uppercase">Precision Nutrition L2</h4>
+<p class="text-on-surface-variant text-[10px] uppercase tracking-widest mt-1">Advanced Performance Nutrition</p>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-highest rounded-xl">
+<h2 class="font-headline text-xs uppercase tracking-[0.2em] mb-4">Availability</h2>
+<div class="flex items-center gap-2 text-primary font-bold text-sm mb-4">
+<span class="material-symbols-outlined text-lg">event_available</span>
+<span>Next Session: Tomorrow, 8:00 AM</span>
+</div>
+<div class="flex justify-between text-xs mb-2">
+<span class="text-on-surface-variant">Single Session</span>
+<span class="font-bold">$120</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">10-Session Block</span>
+<span class="font-bold">$1,050</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button Area (Contextual for Booking) -->
+<div class="fixed bottom-24 left-0 right-0 px-6 z-40 md:static md:mt-12 md:max-w-4xl md:mx-auto md:px-0">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-black py-5 rounded-xl uppercase tracking-widest text-lg shadow-[0_12px_40px_rgba(0,80,203,0.25)] active:scale-95 duration-200 flex items-center justify-center gap-3">
+<span>Book Session</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-[24px] bg-[#fcf9f8]/70 dark:bg-[#1c1b1b]/70 backdrop-blur-2xl shadow-[0_-4px_40px_rgba(28,27,27,0.06)]">
+<div class="flex justify-around items-center h-20 px-4 pb-safe w-full">
+<a class="flex flex-col items-center justify-center text-[#1c1b1b]/40 dark:text-[#fcf9f8]/40 hover:text-[#0050cb] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">home_max</span>
+<span class="font-lexend text-[10px] uppercase font-bold tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#0050cb] bg-[#0050cb]/5 rounded-xl px-4 py-1 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-lexend text-[10px] uppercase font-bold tracking-widest mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#1c1b1b]/40 dark:text-[#fcf9f8]/40 hover:text-[#0050cb] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span class="font-lexend text-[10px] uppercase font-bold tracking-widest mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#1c1b1b]/40 dark:text-[#fcf9f8]/40 hover:text-[#0050cb] transition-colors active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">person_outline</span>
+<span class="font-lexend text-[10px] uppercase font-bold tracking-widest mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>
