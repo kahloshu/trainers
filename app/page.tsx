@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { getAllTrainers, shuffleTrainers, TRAINERS } from "@/app/data/trainers";
+import { getAllTrainers, shuffleTrainers } from "@/app/data/trainers";
+import type { Trainer } from "@/app/data/trainers";
 import TrainerCard from "@/app/components/TrainerCard";
 import CategoryFilter from "@/app/components/CategoryFilter";
 import BottomNav from "@/app/components/BottomNav";
@@ -17,15 +18,15 @@ function SearchIcon() {
 
 export default function TrainerListPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [shuffled, setShuffled] = useState<typeof TRAINERS>(TRAINERS);
+  const [shuffled, setShuffled] = useState<Trainer[]>([]);
 
   useEffect(() => {
-    setShuffled(shuffleTrainers(getAllTrainers()));
+    getAllTrainers().then((trainers) => setShuffled(shuffleTrainers(trainers)));
   }, []);
 
   const filtered = useMemo(() => {
     if (selectedCategory === "all") return shuffled;
-    return shuffled.filter((t) => t.tags.includes(selectedCategory));
+    return shuffled.filter((t: Trainer) => t.tags.includes(selectedCategory));
   }, [selectedCategory, shuffled]);
 
   return (
@@ -74,7 +75,7 @@ export default function TrainerListPage() {
       <main className="page-scroll">
         {filtered.length > 0 ? (
           <div className="flex flex-col gap-3 pt-3 pb-4">
-            {filtered.map((trainer) => (
+            {filtered.map((trainer: Trainer) => (
               <TrainerCard key={trainer.id} trainer={trainer} />
             ))}
             <div className="text-center pt-3 pb-6">

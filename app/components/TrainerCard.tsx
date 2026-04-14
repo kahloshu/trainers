@@ -57,12 +57,28 @@ export default function TrainerCard({ trainer }: Props) {
           </span>
         </div>
 
+        {/* 상위 노출 뱃지 */}
+        {trainer.featured && (
+          <div
+            className="absolute top-3 left-3 flex items-center rounded-full px-2.5"
+            style={{
+              height: 22,
+              background: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+              boxShadow: "0 2px 8px rgba(251,191,36,0.35)",
+            }}
+          >
+            <span className="text-[10px] font-bold tracking-[0.12em] uppercase leading-none" style={{ color: "#000" }}>
+              NEW TRAINER
+            </span>
+          </div>
+        )}
+
         {/* 경력 뱃지 */}
         <div
-          className="absolute top-3 right-3 rounded-full px-2.5 py-1"
-          style={{ background: "rgba(14,14,14,0.65)", backdropFilter: "blur(24px)" }}
+          className="absolute top-3 right-3 flex items-center rounded-full px-2.5"
+          style={{ height: 22, background: "rgba(14,14,14,0.65)", backdropFilter: "blur(24px)" }}
         >
-          <span className="text-[11px] font-medium tracking-[0.05em] uppercase" style={{ color: "rgba(255,255,255,0.8)" }}>
+          <span className="text-[11px] font-medium tracking-[0.05em] uppercase leading-none" style={{ color: "rgba(255,255,255,0.8)" }}>
             {trainer.careerYears}yr
           </span>
         </div>

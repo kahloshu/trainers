@@ -1,8 +1,9 @@
 "use client";
 
-import { use, useState, useRef } from "react";
+import { use, useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getTrainerById } from "@/app/data/trainers";
+import { getTrainerById, type Trainer } from "@/app/data/trainers";
+import { addApplication } from "@/app/data/applications";
 import { notFound } from "next/navigation";
 
 /* ────────────── 아이콘 ────────────── */
@@ -170,11 +171,9 @@ export default function ApplyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const trainerData = getTrainerById(id);
-  if (!trainerData) notFound();
-  const trainer = trainerData;
-
   const router = useRouter();
+
+  const [trainer, setTrainer] = useState<Trainer | null | "loading">("loading");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [purposes, setPurposes] = useState<string[]>([]);
@@ -182,6 +181,10 @@ export default function ApplyPage({
   const [times, setTimes] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    getTrainerById(id).then((t) => setTrainer(t ?? null));
+  }, [id]);
 
   /* 에러 포커스용 ref */
   const nameRef = useRef<HTMLInputElement>(null);
@@ -207,6 +210,13 @@ export default function ApplyPage({
     ref.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  if (trainer === "loading") return (
+    <div className="min-h-dvh animate-pulse" style={{ background: "#1e1e1e" }}>
+      <div className="h-14 mx-4 mt-4 rounded-2xl" style={{ background: "#252525" }} />
+    </div>
+  );
+  if (trainer === null) notFound();
+
   async function handleSubmit() {
     if (!name.trim()) { scrollTo(nameRef); return; }
     if (phone.length < 12) { scrollTo(phoneRef); return; }
@@ -214,7 +224,17 @@ export default function ApplyPage({
     if (times.length === 0) { scrollTo(timesRef); return; }
 
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 900));
+    await addApplication({
+      applicantName:  name.trim(),
+      applicantPhone: phone,
+      trainerId:      id,
+      trainerName:    trainer.name,
+      purposes,
+      preferredDays:  days,
+      preferredTimes: times,
+      userMessage:    message,
+      status:         "pending",
+    });
     router.push(`/trainer/${id}/apply/done?name=${encodeURIComponent(name)}&trainer=${encodeURIComponent(trainer.name)}&days=${days.join(",")}&times=${times.join(",")}`);
   }
 

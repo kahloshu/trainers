@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getStats } from "@/app/data/applications";
-import { REVIEWS } from "@/app/data/trainers";
+import { useState, useEffect } from "react";
+import { getAllApplications } from "@/app/data/applications";
 
 function HomeIcon({ active }: { active: boolean }) {
   return (
@@ -79,12 +79,16 @@ const NAV = [
 
 export default function AdminBottomNav() {
   const pathname = usePathname();
-  const stats = getStats();
-  const reviewCount = REVIEWS.length;
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    getAllApplications().then((apps) => {
+      setPendingCount(apps.filter((a) => a.status === "pending").length);
+    });
+  }, []);
 
   const badges: Record<string, number> = {
-    "/admin/applications": stats.pending,
-    "/admin/reviews": reviewCount,
+    "/admin/applications": pendingCount,
   };
 
   return (

@@ -1,0 +1,178 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+/* ── 아이콘 ── */
+function GridIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+function ClipboardIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M9 4V3C9 2.45 9.45 2 10 2H14C14.55 2 15 2.45 15 3V4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M9 11H15M9 15H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+function PersonIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M4 20C4 17.24 7.58 15 12 15C16.42 15 20 17.24 20 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+function StarIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+        stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function ChevronIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function BarChartIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="12" width="4" height="9" rx="1" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="10" y="7" width="4" height="14" rx="1" stroke="currentColor" strokeWidth="1.7" />
+      <rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+/* ── 네비게이션 항목 ── */
+const NAV_ITEMS = [
+  { href: "/dashboard",              label: "개요",       Icon: GridIcon,      exact: true },
+  { href: "/dashboard/applications", label: "신청 관리",  Icon: ClipboardIcon, exact: false },
+  { href: "/dashboard/trainers",     label: "트레이너",   Icon: PersonIcon,    exact: false },
+  { href: "/dashboard/reviews",      label: "후기 관리",  Icon: StarIcon,      exact: false },
+  { href: "/dashboard/stats",        label: "통계",       Icon: BarChartIcon,  exact: false },
+];
+
+interface SidebarProps {
+  collapsed: boolean;
+}
+
+export default function Sidebar({ collapsed }: SidebarProps) {
+  const pathname = usePathname();
+
+  function isActive(href: string, exact: boolean) {
+    return exact ? pathname === href : pathname.startsWith(href);
+  }
+
+  return (
+    <aside
+      className="flex flex-col h-full transition-all duration-200"
+      style={{
+        width: collapsed ? 64 : 232,
+        background: "#111111",
+        borderRight: "1px solid rgba(255,255,255,0.05)",
+        flexShrink: 0,
+      }}
+    >
+      {/* 로고 */}
+      <div
+        className="flex items-center gap-3 px-4 py-5"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", height: 64 }}
+      >
+        <div
+          className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{ background: "linear-gradient(135deg, #8eabff 0%, #156aff 100%)" }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M3 9L12 2L21 9V20C21 20.55 20.55 21 20 21H15V15H9V21H4C3.45 21 3 20.55 3 20V9Z"
+              fill="rgba(0,0,0,0.6)" />
+          </svg>
+        </div>
+        {!collapsed && (
+          <div className="overflow-hidden">
+            <p className="text-[14px] font-bold leading-tight whitespace-nowrap" style={{ color: "#ffffff" }}>
+              James Gym
+            </p>
+            <p className="text-[10px] whitespace-nowrap" style={{ color: "#3a3a3a" }}>
+              Admin Dashboard
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* 네비 */}
+      <nav className="flex-1 py-3 px-2 flex flex-col gap-0.5 overflow-y-auto">
+        {!collapsed && (
+          <p
+            className="text-[10px] font-semibold tracking-[0.18em] uppercase px-3 py-2"
+            style={{ color: "#2a2a2a" }}
+          >
+            메뉴
+          </p>
+        )}
+
+        {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
+          const active = isActive(href, exact);
+          return (
+            <Link
+              key={href}
+              href={href}
+              title={collapsed ? label : undefined}
+              className="flex items-center gap-3 rounded-xl transition-all group"
+              style={{
+                padding: collapsed ? "10px 13px" : "10px 12px",
+                justifyContent: collapsed ? "center" : "flex-start",
+                background: active ? "rgba(142,171,255,0.10)" : "transparent",
+                color: active ? "#8eabff" : "#5a5a5a",
+              }}
+              onMouseEnter={(e) => {
+                if (!active) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+              }}
+              onMouseLeave={(e) => {
+                if (!active) (e.currentTarget as HTMLElement).style.background = "transparent";
+              }}
+            >
+              <span className="flex-shrink-0">
+                <Icon />
+              </span>
+              {!collapsed && (
+                <>
+                  <span className="flex-1 text-[13.5px] font-medium whitespace-nowrap">{label}</span>
+                  {active && (
+                    <span style={{ color: "#8eabff", opacity: 0.5 }}>
+                      <ChevronIcon />
+                    </span>
+                  )}
+                </>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* 하단 */}
+      {!collapsed && (
+        <div
+          className="px-4 py-4"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+        >
+          <p className="text-[11px]" style={{ color: "#2a2a2a" }}>
+            v2.0 · Supabase 연동됨
+          </p>
+        </div>
+      )}
+    </aside>
+  );
+}

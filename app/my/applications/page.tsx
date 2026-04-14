@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  APPLICATIONS,
+  getAllApplications,
   STATUS_LABEL,
   DAY_LABEL,
   TIME_LABEL,
   timeAgoLabel,
+  type Application,
   type AppStatus,
 } from "@/app/data/applications";
 import BottomNav from "@/app/components/BottomNav";
@@ -24,10 +25,10 @@ type TabId = (typeof TABS)[number]["id"];
 
 /* ── 상태 스타일 ── */
 const STATUS_STYLE: Record<AppStatus, { bg: string; text: string; dot: string }> = {
-  pending:   { bg: "rgba(248,113,113,0.10)",   text: "#f87171", dot: "#f87171" },
-  confirmed: { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
-  completed: { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
-  cancelled: { bg: "rgba(90,90,90,0.10)", text: "#a0a0a0", dot: "#5a5a5a" },
+  pending:   { bg: "rgba(248,113,113,0.10)",  text: "#f87171", dot: "#f87171" },
+  confirmed: { bg: "rgba(234,179,8,0.10)",    text: "#fbbf24", dot: "#eab308" },
+  completed: { bg: "rgba(52,211,153,0.10)",   text: "#34d399", dot: "#10b981" },
+  cancelled: { bg: "rgba(90,90,90,0.10)",     text: "#a0a0a0", dot: "#5a5a5a" },
 };
 
 /* ── 아이콘 ── */
@@ -59,7 +60,7 @@ function StarIcon() {
 }
 
 /* ── 신청 카드 ── */
-function AppCard({ app }: { app: (typeof APPLICATIONS)[number] }) {
+function AppCard({ app }: { app: Application }) {
   const style = STATUS_STYLE[app.status];
   const canWriteReview = app.status === "completed";
 
@@ -78,7 +79,6 @@ function AppCard({ app }: { app: (typeof APPLICATIONS)[number] }) {
             {app.purposes.join(" · ")}
           </p>
         </div>
-        {/* 상태 뱃지 */}
         <span
           className="flex items-center gap-1.5 text-[11.5px] font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
           style={{ background: style.bg, color: style.text }}
@@ -88,47 +88,42 @@ function AppCard({ app }: { app: (typeof APPLICATIONS)[number] }) {
         </span>
       </div>
 
-      {/* 구분선 */}
       <div className="h-px mx-4" style={{ background: "rgba(255,255,255,0.04)" }} />
 
-      {/* 중간: 선호 일정 */}
+      {/* 희망 일정 */}
       <div className="px-4 py-3 flex flex-wrap gap-1.5">
-        {app.preferredDays.map((d) => (
+        {app.preferredDays.map((d: string) => (
           <span
             key={d}
             className="text-[11px] font-medium px-2 py-0.5 rounded-full"
             style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}
           >
-            {DAY_LABEL[d]}
+            {DAY_LABEL[d] ?? d}
           </span>
         ))}
-        {app.preferredTimes.map((t) => (
+        {app.preferredTimes.map((t: string) => (
           <span
             key={t}
             className="text-[11px] font-medium px-2 py-0.5 rounded-full"
             style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}
           >
-            {TIME_LABEL[t]}
+            {TIME_LABEL[t] ?? t}
           </span>
         ))}
       </div>
 
-      {/* 관리자 메모 (있을 때만) */}
+      {/* 관리자 메모 */}
       {app.adminNote && (
         <div
           className="mx-4 mb-3 px-3 py-2.5 rounded-xl"
           style={{ background: "rgba(142,171,255,0.06)", border: "1px solid rgba(142,171,255,0.12)" }}
         >
-          <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#8eabff" }}>
-            관리자 메모
-          </p>
-          <p className="text-[12px] leading-relaxed" style={{ color: "#a0a0a0" }}>
-            {app.adminNote}
-          </p>
+          <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#8eabff" }}>관리자 메모</p>
+          <p className="text-[12px] leading-relaxed" style={{ color: "#a0a0a0" }}>{app.adminNote}</p>
         </div>
       )}
 
-      {/* 하단: 시간 + 후기 버튼 */}
+      {/* 하단: 시간 + 버튼 */}
       <div className="flex items-center justify-between px-4 pb-3.5">
         <p className="text-[11px]" style={{ color: "#3a3a3a" }}>
           {timeAgoLabel(app.createdMinutesAgo)} 신청
@@ -193,18 +188,23 @@ function EmptyState({ tab }: { tab: TabId }) {
 
 /* ── 페이지 ── */
 export default function MyApplicationsPage() {
+  const [apps, setApps]         = useState<Application[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>("all");
 
-  const filtered = APPLICATIONS.filter((a) =>
+  useEffect(() => {
+    getAllApplications().then(setApps);
+  }, []);
+
+  const filtered = apps.filter((a: Application) =>
     activeTab === "all" ? true : a.status === activeTab
   );
 
   const counts: Record<TabId, number> = {
-    all:       APPLICATIONS.length,
-    pending:   APPLICATIONS.filter((a) => a.status === "pending").length,
-    confirmed: APPLICATIONS.filter((a) => a.status === "confirmed").length,
-    completed: APPLICATIONS.filter((a) => a.status === "completed").length,
-    cancelled: APPLICATIONS.filter((a) => a.status === "cancelled").length,
+    all:       apps.length,
+    pending:   apps.filter((a: Application) => a.status === "pending").length,
+    confirmed: apps.filter((a: Application) => a.status === "confirmed").length,
+    completed: apps.filter((a: Application) => a.status === "completed").length,
+    cancelled: apps.filter((a: Application) => a.status === "cancelled").length,
   };
 
   return (
@@ -263,7 +263,7 @@ export default function MyApplicationsPage() {
       <main className="page-scroll px-4 pt-3">
         {filtered.length > 0 ? (
           <div className="flex flex-col gap-3">
-            {filtered.map((app) => (
+            {filtered.map((app: Application) => (
               <AppCard key={app.id} app={app} />
             ))}
             <p className="text-center text-[12px] py-4" style={{ color: "#131313" }}>

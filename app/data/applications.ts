@@ -1,3 +1,6 @@
+import { supabase } from "@/lib/supabase";
+
+/* ── 타입 ── */
 export type AppStatus = "pending" | "confirmed" | "completed" | "cancelled";
 
 export type Application = {
@@ -12,159 +15,133 @@ export type Application = {
   userMessage: string;
   adminNote: string;
   status: AppStatus;
-  createdMinutesAgo: number; // 표시용
+  createdAt: string;       // ISO 문자열
+  createdMinutesAgo: number; // 표시용 (computed)
 };
 
-export const APPLICATIONS: Application[] = [
-  {
-    id: "a1",
-    applicantName: "이*영",
-    applicantPhone: "010-****-5678",
-    trainerId: "1",
-    trainerName: "김민준",
-    purposes: ["다이어트", "근력 향상"],
-    preferredDays: ["weekday", "saturday"],
-    preferredTimes: ["morning", "afternoon"],
-    userMessage: "허리 디스크 병력 있습니다. 무리하지 않는 선에서 진행 부탁드립니다.",
-    adminNote: "",
-    status: "pending",
-    createdMinutesAgo: 2,
-  },
-  {
-    id: "a2",
-    applicantName: "박*준",
-    applicantPhone: "010-****-2341",
-    trainerId: "2",
-    trainerName: "박서연",
-    purposes: ["체형 교정"],
-    preferredDays: ["weekday"],
-    preferredTimes: ["evening"],
-    userMessage: "",
-    adminNote: "",
-    status: "pending",
-    createdMinutesAgo: 13,
-  },
-  {
-    id: "a3",
-    applicantName: "최*호",
-    applicantPhone: "010-****-9012",
-    trainerId: "3",
-    trainerName: "이강훈",
-    purposes: ["체력 증진"],
-    preferredDays: ["saturday", "sunday"],
-    preferredTimes: ["morning"],
-    userMessage: "",
-    adminNote: "트레이너에게 전달 완료. 목요일 오전 확인 예정.",
-    status: "confirmed",
-    createdMinutesAgo: 75,
-  },
-  {
-    id: "a4",
-    applicantName: "정*민",
-    applicantPhone: "010-****-3344",
-    trainerId: "5",
-    trainerName: "정동현",
-    purposes: ["재활·통증"],
-    preferredDays: ["weekday"],
-    preferredTimes: ["afternoon"],
-    userMessage: "무릎 통증으로 계단 오르기가 힘듭니다.",
-    adminNote: "",
-    status: "pending",
-    createdMinutesAgo: 142,
-  },
-  {
-    id: "a5",
-    applicantName: "한*진",
-    applicantPhone: "010-****-5566",
-    trainerId: "1",
-    trainerName: "김민준",
-    purposes: ["근력 향상"],
-    preferredDays: ["weekday"],
-    preferredTimes: ["morning"],
-    userMessage: "",
-    adminNote: "3월 15일 오전 10시 확정.",
-    status: "confirmed",
-    createdMinutesAgo: 380,
-  },
-  {
-    id: "a6",
-    applicantName: "오*수",
-    applicantPhone: "010-****-7788",
-    trainerId: "4",
-    trainerName: "최유진",
-    purposes: ["다이어트", "필라테스"],
-    preferredDays: ["saturday"],
-    preferredTimes: ["afternoon", "evening"],
-    userMessage: "",
-    adminNote: "",
-    status: "completed",
-    createdMinutesAgo: 2880,
-  },
-  {
-    id: "a7",
-    applicantName: "류*훈",
-    applicantPhone: "010-****-9900",
-    trainerId: "5",
-    trainerName: "정동현",
-    purposes: ["재활·통증"],
-    preferredDays: ["weekday"],
-    preferredTimes: ["morning", "afternoon"],
-    userMessage: "어깨 충돌 증후군 진단 받았습니다.",
-    adminNote: "의사 소견서 확인 필요.",
-    status: "completed",
-    createdMinutesAgo: 4320,
-  },
-  {
-    id: "a8",
-    applicantName: "강*혁",
-    applicantPhone: "010-****-1122",
-    trainerId: "6",
-    trainerName: "한수빈",
-    purposes: ["체력 증진"],
-    preferredDays: ["sunday"],
-    preferredTimes: ["afternoon"],
-    userMessage: "",
-    adminNote: "",
-    status: "cancelled",
-    createdMinutesAgo: 5760,
-  },
-];
+/* ── DB 행 변환 ── */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function rowToApp(row: any): Application {
+  const createdAt       = row.created_at as string;
+  const createdMinutesAgo = Math.floor(
+    (Date.now() - new Date(createdAt).getTime()) / 60000
+  );
+  return {
+    id:               row.id,
+    applicantName:    row.applicant_name,
+    applicantPhone:   row.applicant_phone,
+    trainerId:        row.trainer_id,
+    trainerName:      row.trainer_name,
+    purposes:         row.purposes ?? [],
+    preferredDays:    row.preferred_days ?? [],
+    preferredTimes:   row.preferred_times ?? [],
+    userMessage:      row.user_message ?? "",
+    adminNote:        row.admin_note ?? "",
+    status:           row.status as AppStatus,
+    createdAt,
+    createdMinutesAgo,
+  };
+}
 
+/* ── CRUD ── */
+
+export async function getAllApplications(): Promise<Application[]> {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) { console.error("[getAllApplications]", error); return []; }
+  return (data ?? []).map(rowToApp);
+}
+
+export async function getApplicationById(id: string): Promise<Application | null> {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) { console.error("[getApplicationById]", error); return null; }
+  return data ? rowToApp(data) : null;
+}
+
+export async function addApplication(
+  app: Omit<Application, "id" | "createdAt" | "createdMinutesAgo" | "adminNote">
+): Promise<void> {
+  const { error } = await supabase.from("applications").insert({
+    applicant_name:  app.applicantName,
+    applicant_phone: app.applicantPhone,
+    trainer_id:      app.trainerId,
+    trainer_name:    app.trainerName,
+    purposes:        app.purposes,
+    preferred_days:  app.preferredDays,
+    preferred_times: app.preferredTimes,
+    user_message:    app.userMessage,
+    admin_note:      "",
+    status:          app.status,
+  });
+  if (error) console.error("[addApplication]", error);
+}
+
+export async function updateApplicationStatus(
+  id: string,
+  status: AppStatus
+): Promise<void> {
+  const { error } = await supabase
+    .from("applications")
+    .update({ status })
+    .eq("id", id);
+  if (error) console.error("[updateApplicationStatus]", error);
+}
+
+export async function updateApplicationTrainer(
+  id: string,
+  trainerId: string,
+  trainerName: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("applications")
+    .update({ trainer_id: trainerId, trainer_name: trainerName })
+    .eq("id", id);
+  if (error) console.error("[updateApplicationTrainer]", error);
+}
+
+export async function updateApplicationNote(
+  id: string,
+  adminNote: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("applications")
+    .update({ admin_note: adminNote })
+    .eq("id", id);
+  if (error) console.error("[updateApplicationNote]", error);
+}
+
+/* ── 레이블 (정적) ── */
 export const STATUS_LABEL: Record<AppStatus, string> = {
-  pending: "대기 중",
+  pending:   "대기 중",
   confirmed: "확정됨",
   completed: "완료",
   cancelled: "취소됨",
 };
 
 export const DAY_LABEL: Record<string, string> = {
-  weekday: "평일",
+  weekday:  "평일",
   saturday: "토요일",
-  sunday: "일요일",
+  sunday:   "일요일",
 };
 
 export const TIME_LABEL: Record<string, string> = {
-  morning: "오전",
+  morning:   "오전",
   afternoon: "오후",
-  evening: "저녁",
+  evening:   "저녁",
 };
 
 export function timeAgoLabel(minutes: number): string {
-  if (minutes < 1) return "방금 전";
+  if (minutes < 1)  return "방금 전";
   if (minutes < 60) return `${minutes}분 전`;
   const h = Math.floor(minutes / 60);
-  if (h < 24) return `${h}시간 전`;
+  if (h < 24)       return `${h}시간 전`;
   const d = Math.floor(h / 24);
-  if (d < 7) return `${d}일 전`;
+  if (d < 7)        return `${d}일 전`;
   return `${Math.floor(d / 7)}주 전`;
-}
-
-/* 통계 */
-export function getStats() {
-  return {
-    pending:   APPLICATIONS.filter((a) => a.status === "pending").length,
-    confirmed: APPLICATIONS.filter((a) => a.status === "confirmed").length,
-    completed: APPLICATIONS.filter((a) => a.status === "completed").length,
-    total:     APPLICATIONS.length,
-  };
 }

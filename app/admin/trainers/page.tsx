@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { getAllTrainers, deleteTrainer, type Trainer } from "@/app/data/trainers";
+import { getAllTrainers, deleteTrainer, toggleFeatured } from "@/app/data/trainers";
+import type { Trainer } from "@/app/data/trainers";
 import AdminBottomNav from "@/app/admin/components/AdminBottomNav";
 
 /* ── 탭 ── */
@@ -14,7 +15,7 @@ const TABS = [
 type TabId = (typeof TABS)[number]["id"];
 
 /* ── 로컬 상태용 타입 ── */
-type TrainerWithState = Trainer & { isActive: boolean };
+type TrainerWithState = Trainer & { isActive: boolean; isFeatured: boolean };
 
 /* ── 아이콘 ── */
 function PlusIcon() {
@@ -74,6 +75,17 @@ function TrashIcon() {
       <polyline points="3 6 5 6 21 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"
         stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function PinIcon({ filled }: { filled?: boolean }) {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 2l2.4 6.4L21 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.6-.87L12 2z"
+        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+        fill={filled ? "currentColor" : "none"}
+      />
     </svg>
   );
 }
@@ -218,10 +230,12 @@ function TrainerCard({
   trainer,
   onToggle,
   onDelete,
+  onFeature,
 }: {
   trainer: TrainerWithState;
   onToggle: (t: TrainerWithState) => void;
   onDelete: (t: TrainerWithState) => void;
+  onFeature: (t: TrainerWithState) => void;
 }) {
   return (
     <div
@@ -243,6 +257,14 @@ function TrainerCard({
             <span className="text-[15px] font-semibold truncate" style={{ color: "#ffffff" }}>
               {trainer.name} 트레이너
             </span>
+            {trainer.isFeatured && (
+              <span
+                className="flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: "rgba(251,191,36,0.12)", color: "#fbbf24" }}
+              >
+                ★ 상위 노출
+              </span>
+            )}
             <span
               className="flex-shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full"
               style={{
@@ -283,6 +305,34 @@ function TrainerCard({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* 카드 하단 액션 — 상위 노출 */}
+      <div
+        className="flex items-center justify-between px-4 py-2.5 border-t"
+        style={{ borderColor: "rgba(255,255,255,0.04)" }}
+      >
+        <span className="text-[12px]" style={{ color: "#5a5a5a" }}>상위 노출</span>
+        <button
+          onClick={() => onFeature(trainer)}
+          className="relative flex-shrink-0 transition-all duration-200"
+          style={{ width: 44, height: 26 }}
+          aria-label="상위 노출 토글"
+        >
+          <span
+            className="absolute inset-0 rounded-full transition-colors duration-200"
+            style={{ background: trainer.isFeatured ? "#fbbf24" : "#262626" }}
+          />
+          <span
+            className="absolute top-[3px] rounded-full transition-all duration-200"
+            style={{
+              width: 20, height: 20,
+              background: "#fff",
+              left: trainer.isFeatured ? 21 : 3,
+              boxShadow: "0 1px 4px rgba(0,0,0,0.4)",
+            }}
+          />
+        </button>
       </div>
 
       {/* 카드 하단 액션 */}
@@ -360,7 +410,9 @@ export default function AdminTrainersPage() {
   const [toast, setToast] = useState("");
 
   useEffect(() => {
-    setTrainers(getAllTrainers().map((t) => ({ ...t, isActive: true })));
+    getAllTrainers().then((list) =>
+      setTrainers(list.map((t: Trainer) => ({ ...t, isActive: true, isFeatured: t.featured ?? false })))
+    );
   }, []);
 
   /* 탭별 카운트 */
@@ -396,15 +448,31 @@ export default function AdminTrainersPage() {
     setTimeout(() => setToast(""), 2200);
   }
 
+  /* 상위 노출 토글 */
+  async function handleFeature(trainer: TrainerWithState) {
+    await toggleFeatured(trainer.id);
+    setTrainers((prev) => {
+      const updated = prev.map((t) =>
+        t.id === trainer.id ? { ...t, isFeatured: !t.isFeatured } : t
+      );
+      return [...updated.filter((t) => t.isFeatured), ...updated.filter((t) => !t.isFeatured)];
+    });
+    const msg = trainer.isFeatured
+      ? `${trainer.name} 트레이너 상위 노출이 해제되었습니다.`
+      : `${trainer.name} 트레이너가 상위에 노출됩니다.`;
+    setToast(msg);
+    setTimeout(() => setToast(""), 2200);
+  }
+
   /* 삭제 확인 */
   function handleDelete(trainer: TrainerWithState) {
     setPendingDelete(trainer);
   }
 
   /* 삭제 실행 */
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!pendingDelete) return;
-    deleteTrainer(pendingDelete.id);
+    await deleteTrainer(pendingDelete.id);
     setTrainers((prev) => prev.filter((t) => t.id !== pendingDelete.id));
     const msg = `${pendingDelete.name} 트레이너가 삭제되었습니다.`;
     setPendingDelete(null);
@@ -504,6 +572,7 @@ export default function AdminTrainersPage() {
                 trainer={trainer}
                 onToggle={handleToggle}
                 onDelete={handleDelete}
+                onFeature={handleFeature}
               />
             ))}
             <p

@@ -1,14 +1,17 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import {
-  APPLICATIONS,
+  getApplicationById,
+  updateApplicationStatus,
+  updateApplicationNote,
   STATUS_LABEL,
   DAY_LABEL,
   TIME_LABEL,
   timeAgoLabel,
+  type Application,
   type AppStatus,
 } from "@/app/data/applications";
 
@@ -187,19 +190,43 @@ function Toast({ message }: { message: string }) {
   );
 }
 
+/* ── 로딩 스켈레톤 ── */
+function Skeleton() {
+  return (
+    <div className="min-h-dvh animate-pulse" style={{ background: "#0e0e0e" }}>
+      <div className="h-14 px-4 flex items-center" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <div className="w-9 h-9 rounded-full" style={{ background: "#1a1a1a" }} />
+      </div>
+      <div className="px-4 pt-4 flex flex-col gap-3">
+        {[1,2,3,4].map((i) => (
+          <div key={i} className="h-20 rounded-2xl" style={{ background: "#1a1a1a" }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── 페이지 ── */
 export default function AppDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
 
-  const found = APPLICATIONS.find((a) => a.id === id);
-  if (!found) notFound();
-
-  const [app, setApp]           = useState(found);
-  const [note, setNote]         = useState(app.adminNote);
+  const [app, setApp]             = useState<Application | null | "loading">("loading");
+  const [note, setNote]           = useState("");
   const [noteSaved, setNoteSaved] = useState(false);
-  const [modal, setModal]       = useState<null | "confirm" | "complete" | "cancel">(null);
-  const [toast, setToast]       = useState("");
+  const [modal, setModal]         = useState<null | "confirm" | "complete" | "cancel">(null);
+  const [toast, setToast]         = useState("");
+
+  useEffect(() => {
+    getApplicationById(id).then((found) => {
+      if (!found) { setApp(null); return; }
+      setApp(found);
+      setNote(found.adminNote);
+    });
+  }, [id]);
+
+  if (app === "loading") return <Skeleton />;
+  if (app === null) notFound();
 
   const days  = app.preferredDays.map((d)  => DAY_LABEL[d]  ?? d).join(", ");
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
@@ -212,16 +239,18 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
   }
 
   /* 메모 저장 */
-  function saveNote() {
-    setApp((prev) => ({ ...prev, adminNote: note }));
+  async function saveNote() {
+    await updateApplicationNote(id, note);
+    setApp((prev) => prev && prev !== "loading" ? { ...prev, adminNote: note } : prev);
     setNoteSaved(true);
     showToast("메모가 저장되었습니다.");
     setTimeout(() => setNoteSaved(false), 1800);
   }
 
   /* 상태 변경 */
-  function changeStatus(newStatus: AppStatus) {
-    setApp((prev) => ({ ...prev, status: newStatus }));
+  async function changeStatus(newStatus: AppStatus) {
+    await updateApplicationStatus(id, newStatus);
+    setApp((prev) => prev && prev !== "loading" ? { ...prev, status: newStatus } : prev);
     setModal(null);
     const labels: Record<AppStatus, string> = {
       confirmed: "확정 처리되었습니다.",

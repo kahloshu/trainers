@@ -125,9 +125,8 @@ export default function AdminTrainerDetailPage({
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    const found = getTrainerById(id);
-    setTrainer(found ?? null);
-    setReviews(getReviewsByTrainerId(id));
+    getTrainerById(id).then((found) => setTrainer(found ?? null));
+    getReviewsByTrainerId(id).then(setReviews);
   }, [id]);
 
   if (trainer === "loading") return <Skeleton />;

@@ -211,18 +211,19 @@ export default function TrainerEditPage({
   const originalRef = useRef<{ ratingAvg: number; reviewCount: number }>({ ratingAvg: 0, reviewCount: 0 });
 
   useEffect(() => {
-    const found = getTrainerById(id);
-    if (!found) { setMissing(true); return; }
-    setName(found.name);
-    setSpec(found.specialty);
-    setYears(String(found.careerYears));
-    setBio(found.shortBio);
-    setIntro(found.introduction);
-    setCerts(found.certifications);
-    setTags(found.tags);
-    setImageUrl(found.profileImage ?? "");
-    originalRef.current = { ratingAvg: found.ratingAvg, reviewCount: found.reviewCount };
-    setLoaded(true);
+    getTrainerById(id).then((found) => {
+      if (!found) { setMissing(true); return; }
+      setName(found.name);
+      setSpec(found.specialty);
+      setYears(String(found.careerYears));
+      setBio(found.shortBio);
+      setIntro(found.introduction);
+      setCerts(found.certifications);
+      setTags(found.tags);
+      setImageUrl(found.profileImage ?? "");
+      originalRef.current = { ratingAvg: found.ratingAvg, reviewCount: found.reviewCount };
+      setLoaded(true);
+    });
   }, [id]);
   const certRef  = useRef<HTMLInputElement>(null);
   const fileRef  = useRef<HTMLInputElement>(null);
@@ -230,9 +231,19 @@ export default function TrainerEditPage({
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setImageUrl(reader.result as string);
-    reader.readAsDataURL(file);
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const MAX = 600;
+      const ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      const canvas = document.createElement("canvas");
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      setImageUrl(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.src = objectUrl;
   }
 
   const isValid = name.trim() && spec.trim() && years.trim() && bio.trim();
@@ -262,8 +273,10 @@ export default function TrainerEditPage({
   async function handleSave() {
     if (!isValid) return;
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 700));
-    updateTrainer({
+    await new Promise((r) => setTimeout(r, 400));
+    const imgKb = Math.round((imageUrl.length * 3) / 4 / 1024);
+    console.log(`[저장] 이미지 크기: ${imgKb}KB, profileImage 길이: ${imageUrl.length}`);
+    const ok = await updateTrainer({
       id,
       name:          name.trim(),
       specialty:     spec.trim(),
@@ -276,7 +289,13 @@ export default function TrainerEditPage({
       ratingAvg:     originalRef.current.ratingAvg,
       reviewCount:   originalRef.current.reviewCount,
     });
+    console.log(`[저장] updateTrainer 결과: ${ok ? "성공" : "실패"}`);
     setSubmitting(false);
+    if (!ok) {
+      setToast("저장 실패: 저장 공간이 부족합니다.");
+      setTimeout(() => setToast(""), 2500);
+      return;
+    }
     setToast("저장되었습니다.");
     setTimeout(() => { setToast(""); router.push("/admin/trainers"); }, 1400);
   }

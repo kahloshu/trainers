@@ -1,0 +1,422 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import {
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, Cell, Legend,
+} from "recharts";
+import { getAllApplications, type Application, type AppStatus } from "@/app/data/applications";
+import { getAllTrainers, type Trainer } from "@/app/data/trainers";
+
+/* ── 공통 차트 색 ── */
+const C = {
+  blue:    "#8eabff",
+  green:   "#34d399",
+  yellow:  "#fbbf24",
+  red:     "#f87171",
+  muted:   "#2a2a2a",
+  surface: "#141414",
+  border:  "rgba(255,255,255,0.05)",
+};
+
+/* ── Tooltip 공통 스타일 ── */
+const TOOLTIP_STYLE = {
+  contentStyle: { background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, fontSize: 12, color: "#d0d0d0" },
+  itemStyle:    { color: "#d0d0d0" },
+  cursor:       { fill: "rgba(255,255,255,0.03)" },
+};
+
+/* ─────────────────────── 유틸 ─────────────────────── */
+
+/** ISO → "YYYY-MM-DD" */
+function toDay(iso: string) { return iso.slice(0, 10); }
+
+/** 최근 N일 날짜 배열 생성 */
+function lastNDays(n: number): string[] {
+  const result: string[] = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    result.push(d.toISOString().slice(0, 10));
+  }
+  return result;
+}
+
+/** "YYYY-MM-DD" → "M/D" */
+function fmtDay(s: string) {
+  const [, m, d] = s.split("-");
+  return `${Number(m)}/${Number(d)}`;
+}
+
+/* ─────────────────────── 서브 컴포넌트 ─────────────────────── */
+
+/** KPI 카드 */
+function KpiCard({
+  label, value, sub, color, trend,
+}: {
+  label: string;
+  value: number | string;
+  sub?: string;
+  color: string;
+  trend?: { value: number; up: boolean };
+}) {
+  return (
+    <div className="rounded-2xl p-5 flex flex-col gap-3"
+      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
+      <div className="flex items-center justify-between">
+        <p className="text-[12px] font-medium" style={{ color: "#5a5a5a" }}>{label}</p>
+        {trend && (
+          <span
+            className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
+            style={{
+              background: trend.up ? "rgba(52,211,153,0.10)" : "rgba(248,113,113,0.10)",
+              color: trend.up ? "#34d399" : "#f87171",
+            }}
+          >
+            {trend.up ? "▲" : "▼"} {Math.abs(trend.value)}%
+          </span>
+        )}
+      </div>
+      <div>
+        <p className="text-[32px] font-bold leading-none" style={{ color }}>{value}</p>
+        {sub && <p className="text-[12px] mt-1.5" style={{ color: "#3a3a3a" }}>{sub}</p>}
+      </div>
+    </div>
+  );
+}
+
+/** 섹션 카드 래퍼 */
+function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl overflow-hidden"
+      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
+      <div className="px-5 py-4" style={{ borderBottom: `1px solid ${C.border}` }}>
+        <p className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>{title}</p>
+        {sub && <p className="text-[12px] mt-0.5" style={{ color: "#3a3a3a" }}>{sub}</p>}
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
+
+/** 기간 선택 탭 */
+function PeriodTab({
+  value, options, onChange,
+}: {
+  value: number;
+  options: { label: string; value: number }[];
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="flex gap-1">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          onClick={() => onChange(o.value)}
+          className="px-3 py-1 rounded-lg text-[12px] font-medium transition-all"
+          style={{
+            background: value === o.value ? "rgba(142,171,255,0.12)" : "transparent",
+            color:      value === o.value ? C.blue : "#3a3a3a",
+            border:     `1px solid ${value === o.value ? "rgba(142,171,255,0.25)" : "transparent"}`,
+          }}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ─────────────────────── 페이지 ─────────────────────── */
+
+const STATUS_KO: Record<AppStatus, string> = {
+  pending: "대기", confirmed: "확정", completed: "완료", cancelled: "취소",
+};
+const DAY_KO: Record<string, string> = { weekday: "평일", saturday: "토요일", sunday: "일요일" };
+const TIME_KO: Record<string, string> = { morning: "오전", afternoon: "오후", evening: "저녁" };
+
+const PERIOD_OPTIONS = [
+  { label: "7일",  value: 7  },
+  { label: "30일", value: 30 },
+  { label: "90일", value: 90 },
+];
+
+export default function StatsPage() {
+  const [apps, setApps]         = useState<Application[]>([]);
+  const [trainers, setTrainers] = useState<Trainer[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [period, setPeriod]     = useState(30);
+
+  useEffect(() => {
+    Promise.all([getAllApplications(), getAllTrainers()]).then(([a, t]) => {
+      setApps(a);
+      setTrainers(t);
+      setLoading(false);
+    });
+  }, []);
+
+  /* ── KPI 계산 ── */
+  const kpi = useMemo(() => {
+    const total     = apps.length;
+    const pending   = apps.filter((a) => a.status === "pending").length;
+    const confirmed = apps.filter((a) => a.status === "confirmed").length;
+    const completed = apps.filter((a) => a.status === "completed").length;
+    const convRate  = total > 0 ? Math.round((completed / total) * 100) : 0;
+    return { total, pending, confirmed, completed, convRate };
+  }, [apps]);
+
+  /* ── 신청 추이 (기간별) ── */
+  const trendData = useMemo(() => {
+    const days = lastNDays(period);
+    const map: Record<string, { total: number; completed: number }> = {};
+    days.forEach((d) => { map[d] = { total: 0, completed: 0 }; });
+    apps.forEach((a) => {
+      const d = toDay(a.createdAt);
+      if (map[d]) {
+        map[d].total++;
+        if (a.status === "completed") map[d].completed++;
+      }
+    });
+    return days.map((d) => ({ date: fmtDay(d), ...map[d] }));
+  }, [apps, period]);
+
+  /* ── 트레이너별 현황 ── */
+  const trainerData = useMemo(() => {
+    return trainers.map((t) => {
+      const ta = apps.filter((a) => a.trainerId === t.id);
+      return {
+        name:      t.name,
+        신청:      ta.length,
+        확정:      ta.filter((a) => a.status === "confirmed" || a.status === "completed").length,
+        완료:      ta.filter((a) => a.status === "completed").length,
+      };
+    }).sort((a, b) => b.신청 - a.신청);
+  }, [apps, trainers]);
+
+  /* ── 요일별 신청 ── */
+  const dayData = useMemo(() => {
+    const keys = ["weekday", "saturday", "sunday"];
+    const map: Record<string, number> = { weekday: 0, saturday: 0, sunday: 0 };
+    apps.forEach((a) => {
+      a.preferredDays.forEach((d) => { if (map[d] !== undefined) map[d]++; });
+    });
+    return keys.map((k) => ({ name: DAY_KO[k], value: map[k] }));
+  }, [apps]);
+
+  /* ── 시간대별 신청 ── */
+  const timeData = useMemo(() => {
+    const keys = ["morning", "afternoon", "evening"];
+    const map: Record<string, number> = { morning: 0, afternoon: 0, evening: 0 };
+    apps.forEach((a) => {
+      a.preferredTimes.forEach((t) => { if (map[t] !== undefined) map[t]++; });
+    });
+    return keys.map((k) => ({ name: TIME_KO[k], value: map[k] }));
+  }, [apps]);
+
+  /* ── 상태 분포 ── */
+  const statusData = useMemo(() => {
+    const map: Record<string, number> = { pending: 0, confirmed: 0, completed: 0, cancelled: 0 };
+    apps.forEach((a) => { map[a.status]++; });
+    const colors: Record<string, string> = {
+      pending: C.red, confirmed: C.yellow, completed: C.green, cancelled: C.muted,
+    };
+    return (Object.keys(map) as AppStatus[]).map((k) => ({
+      name: STATUS_KO[k], value: map[k], color: colors[k],
+    }));
+  }, [apps]);
+
+  /* ── 로딩 스켈레톤 ── */
+  if (loading) {
+    return (
+      <div className="p-6 flex flex-col gap-4 animate-pulse">
+        <div className="grid grid-cols-4 gap-3">
+          {[1,2,3,4].map((i) => <div key={i} className="h-28 rounded-2xl" style={{ background: C.surface }} />)}
+        </div>
+        {[1,2,3].map((i) => <div key={i} className="h-64 rounded-2xl" style={{ background: C.surface }} />)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-[1200px] flex flex-col gap-5">
+
+      {/* ── KPI 카드 ── */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <KpiCard label="전체 신청" value={kpi.total}     color="#ffffff"  sub="누적 신청 건수" />
+        <KpiCard label="대기 중"   value={kpi.pending}   color={C.red}    sub="응답 필요" />
+        <KpiCard label="확정됨"    value={kpi.confirmed} color={C.yellow} sub="일정 조율 중" />
+        <KpiCard label="완료"      value={kpi.completed} color={C.green}  sub="OT 완료" />
+        <KpiCard label="전환율"    value={`${kpi.convRate}%`} color={C.blue} sub="신청 → 완료 비율" />
+      </div>
+
+      {/* ── 신청 추이 ── */}
+      <Section
+        title="신청 추이"
+        sub="일별 신청 건수 및 완료 건수"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-0.5 rounded-full" style={{ background: C.blue }} />
+              <span className="text-[11px]" style={{ color: "#5a5a5a" }}>신청</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-0.5 rounded-full" style={{ background: C.green }} />
+              <span className="text-[11px]" style={{ color: "#5a5a5a" }}>완료</span>
+            </div>
+          </div>
+          <PeriodTab value={period} options={PERIOD_OPTIONS} onChange={setPeriod} />
+        </div>
+        <ResponsiveContainer width="100%" height={220}>
+          <AreaChart data={trendData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+            <defs>
+              <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={C.blue}  stopOpacity={0.25} />
+                <stop offset="100%" stopColor={C.blue} stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="gGreen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={C.green}  stopOpacity={0.2} />
+                <stop offset="100%" stopColor={C.green} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false}
+              interval={period <= 7 ? 0 : period <= 30 ? 4 : 13} />
+            <YAxis tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+            <Tooltip {...TOOLTIP_STYLE} />
+            <Area type="monotone" dataKey="total" name="신청" stroke={C.blue} strokeWidth={2}
+              fill="url(#gBlue)" dot={false} activeDot={{ r: 4, fill: C.blue }} />
+            <Area type="monotone" dataKey="completed" name="완료" stroke={C.green} strokeWidth={2}
+              fill="url(#gGreen)" dot={false} activeDot={{ r: 4, fill: C.green }} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </Section>
+
+      {/* ── 트레이너별 현황 ── */}
+      <Section title="트레이너별 현황" sub="신청 · 확정 · 완료 건수 비교">
+        {trainerData.length === 0 ? (
+          <p className="text-[13px] py-8 text-center" style={{ color: "#3a3a3a" }}>데이터 없음</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={Math.max(180, trainerData.length * 48)}>
+            <BarChart
+              data={trainerData}
+              layout="vertical"
+              margin={{ top: 0, right: 16, bottom: 0, left: 8 }}
+              barCategoryGap="28%"
+              barGap={3}
+            >
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: "#a0a0a0" }} tickLine={false} axisLine={false} width={60} />
+              <Tooltip {...TOOLTIP_STYLE} />
+              <Legend
+                wrapperStyle={{ fontSize: 11, color: "#5a5a5a", paddingTop: 12 }}
+                iconType="circle" iconSize={8}
+              />
+              <Bar dataKey="신청" fill={C.blue}   radius={[0, 4, 4, 0]} maxBarSize={14} />
+              <Bar dataKey="확정" fill={C.yellow} radius={[0, 4, 4, 0]} maxBarSize={14} />
+              <Bar dataKey="완료" fill={C.green}  radius={[0, 4, 4, 0]} maxBarSize={14} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </Section>
+
+      {/* ── 하단 3열: 요일 / 시간대 / 상태분포 ── */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+
+        {/* 요일별 */}
+        <Section title="요일별 신청" sub="선택된 희망 요일 분포">
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={dayData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#5a5a5a" }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+              <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [v, "신청 수"]} />
+              <Bar dataKey="value" name="신청 수" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                {dayData.map((_, i) => (
+                  <Cell key={i} fill={[C.blue, C.yellow, C.green][i % 3]} fillOpacity={0.85} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          {/* 수치 보조 */}
+          <div className="flex gap-3 mt-3">
+            {dayData.map((d, i) => (
+              <div key={d.name} className="flex-1 text-center">
+                <p className="text-[18px] font-bold" style={{ color: [C.blue, C.yellow, C.green][i % 3] }}>{d.value}</p>
+                <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{d.name}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* 시간대별 */}
+        <Section title="시간대별 신청" sub="선택된 희망 시간대 분포">
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={timeData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#5a5a5a" }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+              <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [v, "신청 수"]} />
+              <Bar dataKey="value" name="신청 수" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                {timeData.map((_, i) => (
+                  <Cell key={i} fill={[C.yellow, C.blue, C.red][i % 3]} fillOpacity={0.85} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="flex gap-3 mt-3">
+            {timeData.map((d, i) => (
+              <div key={d.name} className="flex-1 text-center">
+                <p className="text-[18px] font-bold" style={{ color: [C.yellow, C.blue, C.red][i % 3] }}>{d.value}</p>
+                <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{d.name}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* 상태 분포 */}
+        <Section title="상태 분포" sub="전체 신청의 현재 상태">
+          <div className="flex flex-col gap-3 mt-1">
+            {statusData.map((s) => {
+              const pct = kpi.total > 0 ? Math.round((s.value / kpi.total) * 100) : 0;
+              return (
+                <div key={s.name}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[12.5px]" style={{ color: "#a0a0a0" }}>{s.name}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] font-semibold" style={{ color: s.color }}>{s.value}</span>
+                      <span className="text-[11px]" style={{ color: "#3a3a3a" }}>{pct}%</span>
+                    </div>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{ width: `${pct}%`, background: s.color, opacity: 0.8 }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 전환율 강조 */}
+          <div
+            className="mt-5 px-4 py-3.5 rounded-xl flex items-center justify-between"
+            style={{ background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)" }}
+          >
+            <div>
+              <p className="text-[11px]" style={{ color: "#3a3a3a" }}>신청 → 완료 전환율</p>
+              <p className="text-[22px] font-bold mt-0.5" style={{ color: C.green }}>{kpi.convRate}%</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[11px]" style={{ color: "#3a3a3a" }}>완료</p>
+              <p className="text-[16px] font-semibold" style={{ color: "#ffffff" }}>{kpi.completed} / {kpi.total}</p>
+            </div>
+          </div>
+        </Section>
+      </div>
+
+    </div>
+  );
+}

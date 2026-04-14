@@ -215,9 +215,19 @@ export default function TrainerNewPage() {
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setImageUrl(reader.result as string);
-    reader.readAsDataURL(file);
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const MAX = 600;
+      const ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      const canvas = document.createElement("canvas");
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      setImageUrl(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.src = objectUrl;
   }
 
   const isValid = name.trim() && spec.trim() && years.trim() && bio.trim();
@@ -248,8 +258,8 @@ export default function TrainerNewPage() {
     if (!isValid) return;
     setSubmitting(true);
     await new Promise((r) => setTimeout(r, 700));
-    addTrainer({
-      id: `new-${Date.now()}`,
+    await addTrainer({
+      id: `t-${Date.now()}`,
       name:          name.trim(),
       specialty:     spec.trim(),
       careerYears:   Number(years),
@@ -257,8 +267,6 @@ export default function TrainerNewPage() {
       introduction:  intro.trim(),
       certifications: certs,
       tags,
-      ratingAvg:   0,
-      reviewCount: 0,
       profileImage: imageUrl,
     });
     setSubmitting(false);

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
-  APPLICATIONS,
+  getAllApplications,
+  updateApplicationStatus,
   STATUS_LABEL,
   DAY_LABEL,
   TIME_LABEL,
@@ -273,33 +274,35 @@ function EmptyState({ status }: { status: AppStatus | "all" }) {
 /* ── 페이지 ── */
 export default function AdminApplicationsPage() {
   const [activeTab, setActiveTab] = useState<AppStatus | "all">("pending");
-  const [apps, setApps] = useState(APPLICATIONS);
+  const [apps, setApps] = useState<Application[]>([]);
+
+  useEffect(() => {
+    getAllApplications().then(setApps);
+  }, []);
 
   /* 탭별 카운트 */
   const counts = useMemo(() => ({
     all:       apps.length,
-    pending:   apps.filter((a) => a.status === "pending").length,
-    confirmed: apps.filter((a) => a.status === "confirmed").length,
-    completed: apps.filter((a) => a.status === "completed").length,
-    cancelled: apps.filter((a) => a.status === "cancelled").length,
+    pending:   apps.filter((a: Application) => a.status === "pending").length,
+    confirmed: apps.filter((a: Application) => a.status === "confirmed").length,
+    completed: apps.filter((a: Application) => a.status === "completed").length,
+    cancelled: apps.filter((a: Application) => a.status === "cancelled").length,
   }), [apps]);
 
   /* 필터된 목록 */
   const filtered = useMemo(
-    () => activeTab === "all" ? apps : apps.filter((a) => a.status === activeTab),
+    () => activeTab === "all" ? apps : apps.filter((a: Application) => a.status === activeTab),
     [apps, activeTab]
   );
 
-  /* 확정/완료 처리 (로컬 mock) */
-  function handleConfirm(id: string) {
-    setApps((prev) =>
-      prev.map((a) => {
-        if (a.id !== id) return a;
-        return {
-          ...a,
-          status: a.status === "pending" ? "confirmed" : "completed",
-        };
-      })
+  /* 확정/완료 처리 */
+  async function handleConfirm(id: string) {
+    const app = apps.find((a: Application) => a.id === id);
+    if (!app) return;
+    const newStatus: AppStatus = app.status === "pending" ? "confirmed" : "completed";
+    await updateApplicationStatus(id, newStatus);
+    setApps((prev: Application[]) =>
+      prev.map((a: Application) => a.id === id ? { ...a, status: newStatus } : a)
     );
   }
 
