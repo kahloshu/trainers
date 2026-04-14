@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTrainerById, getReviewsByTrainerId } from "@/app/data/trainers";
@@ -73,6 +73,82 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((i) =>
         i <= Math.round(rating) ? <StarFilled key={i} size={size} /> : <StarEmpty key={i} size={size} />
+      )}
+    </div>
+  );
+}
+
+/* ── 갤러리 슬라이더 ── */
+function GallerySlider({ images }: { images: string[] }) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  if (images.length === 0) return null;
+
+  function onScroll() {
+    if (!sliderRef.current) return;
+    const idx = Math.round(
+      sliderRef.current.scrollLeft / sliderRef.current.offsetWidth
+    );
+    setActiveIdx(idx);
+  }
+
+  function scrollTo(idx: number) {
+    sliderRef.current?.scrollTo({
+      left: idx * (sliderRef.current.offsetWidth),
+      behavior: "smooth",
+    });
+    setActiveIdx(idx);
+  }
+
+  return (
+    <div className="mt-1 mb-1">
+      <div className="px-4 mb-3">
+        <h2 className="text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#2f80ed" }}>
+          갤러리
+        </h2>
+      </div>
+
+      {/* 슬라이드 */}
+      <div
+        ref={sliderRef}
+        onScroll={onScroll}
+        className="flex overflow-x-auto scrollbar-hide"
+        style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
+      >
+        {images.map((url, i) => (
+          <div
+            key={i}
+            className="flex-shrink-0 w-full"
+            style={{ scrollSnapAlign: "start", aspectRatio: "4/3" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={url} alt={`갤러리 ${i + 1}`} className="w-full h-full object-cover" />
+          </div>
+        ))}
+      </div>
+
+      {/* 인디케이터 */}
+      {images.length > 1 && (
+        <div className="flex items-center justify-center gap-1.5 mt-3">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(i)}
+              style={{
+                width:        i === activeIdx ? "18px" : "6px",
+                height:       "6px",
+                borderRadius: "3px",
+                background:   i === activeIdx ? "#2f80ed" : "#383838",
+                transition:   "all 0.2s ease",
+                flexShrink:   0,
+              }}
+            />
+          ))}
+          <span className="ml-2 text-[11px]" style={{ color: "#6b7280" }}>
+            {activeIdx + 1} / {images.length}
+          </span>
+        </div>
       )}
     </div>
   );
@@ -203,6 +279,9 @@ export default function TrainerDetailPage({
           </div>
         </div>
       </div>
+
+      {/* ── 갤러리 슬라이더 ── */}
+      <GallerySlider images={trainer.galleryImages ?? []} />
 
       {/* ── 본문 (스크롤) ── */}
       <div className="flex flex-col gap-3 px-4 pt-4 pb-32">

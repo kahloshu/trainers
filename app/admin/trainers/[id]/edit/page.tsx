@@ -208,7 +208,7 @@ export default function TrainerEditPage({
   const [submitting, setSubmitting] = useState(false);
   const [toast,    setToast]    = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const originalRef = useRef<{ ratingAvg: number; reviewCount: number }>({ ratingAvg: 0, reviewCount: 0 });
+  const originalRef = useRef<{ ratingAvg: number; reviewCount: number; galleryImages: string[] }>({ ratingAvg: 0, reviewCount: 0, galleryImages: [] });
 
   useEffect(() => {
     getTrainerById(id).then((found) => {
@@ -221,7 +221,7 @@ export default function TrainerEditPage({
       setCerts(found.certifications);
       setTags(found.tags);
       setImageUrl(found.profileImage ?? "");
-      originalRef.current = { ratingAvg: found.ratingAvg, reviewCount: found.reviewCount };
+      originalRef.current = { ratingAvg: found.ratingAvg, reviewCount: found.reviewCount, galleryImages: found.galleryImages ?? [] };
       setLoaded(true);
     });
   }, [id]);
@@ -286,6 +286,7 @@ export default function TrainerEditPage({
       certifications: certs,
       tags,
       profileImage:  imageUrl,
+      galleryImages: originalRef.current.galleryImages ?? [],
       ratingAvg:     originalRef.current.ratingAvg,
       reviewCount:   originalRef.current.reviewCount,
     });

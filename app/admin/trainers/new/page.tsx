@@ -267,7 +267,8 @@ export default function TrainerNewPage() {
       introduction:  intro.trim(),
       certifications: certs,
       tags,
-      profileImage: imageUrl,
+      profileImage:  imageUrl,
+      galleryImages: [],
     });
     setSubmitting(false);
     setToast("등록되었습니다.");

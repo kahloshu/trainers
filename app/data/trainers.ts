@@ -13,6 +13,7 @@ export type Trainer = {
   ratingAvg: number;
   reviewCount: number;
   profileImage: string;
+  galleryImages: string[];  // Supabase Storage public URLs
   featured?: boolean;
   isActive?: boolean;      // 활성/비활성
   branch?: string;         // 지점
@@ -43,6 +44,7 @@ function rowToTrainer(row: any): Trainer {
     ratingAvg:      Number(row.rating_avg),
     reviewCount:    row.review_count,
     profileImage:   row.profile_image ?? "",
+    galleryImages:  row.gallery_images ?? [],
     featured:       row.featured ?? false,
     isActive:       row.is_active ?? true,
     branch:         row.branch ?? "",
@@ -100,6 +102,7 @@ export async function addTrainer(t: Omit<Trainer, "ratingAvg" | "reviewCount">):
     rating_avg:     0,
     review_count:   0,
     profile_image:  t.profileImage,
+    gallery_images: t.galleryImages ?? [],
     featured:       false,
     is_active:      t.isActive ?? true,
     branch:         t.branch ?? "",
@@ -121,6 +124,7 @@ export async function updateTrainer(t: Trainer): Promise<boolean> {
     rating_avg:     t.ratingAvg,
     review_count:   t.reviewCount,
     profile_image:  t.profileImage,
+    gallery_images: t.galleryImages ?? [],
     featured:       t.featured ?? false,
     is_active:      t.isActive ?? true,
     branch:         t.branch ?? "",
@@ -203,6 +207,37 @@ export function shuffleTrainers(trainers: Trainer[]): Trainer[] {
   const featured = trainers.filter((t) => t.featured && (t.isActive !== false));
   const rest     = [...trainers.filter((t) => !t.featured && (t.isActive !== false))].sort(() => Math.random() - 0.5);
   return [...featured, ...rest];
+}
+
+/* ── 갤러리 이미지 Storage ── */
+
+/** 갤러리 이미지 1장 업로드 → public URL 반환 */
+export async function uploadGalleryImage(
+  trainerId: string,
+  blob: Blob,
+  ext: string
+): Promise<string | null> {
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const path = `trainers/${trainerId}/gallery/${filename}`;
+  const { error } = await supabase.storage
+    .from("trainer-images")
+    .upload(path, blob, { contentType: "image/jpeg", upsert: false });
+  if (error) { console.error("[uploadGalleryImage]", error); return null; }
+  const { data } = supabase.storage.from("trainer-images").getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/** 갤러리 이미지 여러 장 삭제 (Storage에서 제거) */
+export async function deleteGalleryImages(urls: string[]): Promise<void> {
+  const paths = urls
+    .map((url) => {
+      const m = url.match(/\/trainer-images\/(.+)$/);
+      return m ? m[1] : null;
+    })
+    .filter((p): p is string => p !== null);
+  if (paths.length === 0) return;
+  const { error } = await supabase.storage.from("trainer-images").remove(paths);
+  if (error) console.error("[deleteGalleryImages]", error);
 }
 
 /* ── 카테고리 (정적) ── */

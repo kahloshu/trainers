@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { addTrainer, BRANCHES } from "@/app/data/trainers";
+import GalleryManager, { type GalleryManagerRef } from "../../components/GalleryManager";
 
 async function compressImage(file: File): Promise<string> {
   return new Promise((resolve) => {
@@ -108,7 +109,8 @@ export default function DashboardTrainerNewPage() {
   const [tagInput, setTagInput]         = useState("");
   const [saving, setSaving]             = useState(false);
   const [error, setError]               = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileRef    = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<GalleryManagerRef>(null);
 
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -131,12 +133,17 @@ export default function DashboardTrainerNewPage() {
     if (!name.trim())      { setError("이름을 입력하세요."); return; }
     if (!specialty.trim()) { setError("전문 분야를 입력하세요."); return; }
     setError(""); setSaving(true);
+    const newId = `t-${Date.now()}`;
+    const galleryImages = galleryRef.current
+      ? await galleryRef.current.save(newId)
+      : [];
     await addTrainer({
-      id: `t-${Date.now()}`,
+      id: newId,
       name: name.trim(), specialty: specialty.trim(),
       careerYears: Number(careerYears) || 1,
       shortBio: shortBio.trim(), introduction: introduction.trim(),
       branch, profileImage, certifications, tags,
+      galleryImages,
       isActive: true, featured: false, displayOrder: 0,
     });
     setSaving(false);
@@ -222,6 +229,10 @@ export default function DashboardTrainerNewPage() {
                     </div>
                   ))}
                 </div>}
+          </Card>
+
+          <Card title="갤러리 사진">
+            <GalleryManager ref={galleryRef} initialUrls={[]} />
           </Card>
 
           <Card title="전문 분야 태그">

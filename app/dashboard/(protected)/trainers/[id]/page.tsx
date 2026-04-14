@@ -9,6 +9,7 @@ import {
   BRANCHES,
   type Trainer,
 } from "@/app/data/trainers";
+import GalleryManager, { type GalleryManagerRef } from "../../components/GalleryManager";
 
 /* ── 이미지 압축 ── */
 async function compressImage(file: File): Promise<string> {
@@ -152,7 +153,8 @@ export default function DashboardTrainerEditPage({
   const [saving, setSaving]             = useState(false);
   const [saved, setSaved]               = useState(false);
   const [error, setError]               = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileRef    = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<GalleryManagerRef>(null);
 
   useEffect(() => {
     getTrainerById(id).then((found) => {
@@ -204,6 +206,9 @@ export default function DashboardTrainerEditPage({
     if (!specialty.trim()) { setError("전문 분야를 입력하세요."); return; }
     setError("");
     setSaving(true);
+    const galleryImages = galleryRef.current
+      ? await galleryRef.current.save(id)
+      : trainer.galleryImages;
     const ok = await updateTrainer({
       ...trainer,
       name:          name.trim(),
@@ -215,6 +220,7 @@ export default function DashboardTrainerEditPage({
       profileImage,
       certifications,
       tags,
+      galleryImages,
     });
     setSaving(false);
     if (ok) {
@@ -361,6 +367,14 @@ export default function DashboardTrainerEditPage({
                 ))}
               </div>
             )}
+          </Card>
+
+          {/* 갤러리 사진 */}
+          <Card title="갤러리 사진">
+            <GalleryManager
+              ref={galleryRef}
+              initialUrls={trainer.galleryImages}
+            />
           </Card>
 
           {/* 전문 분야 태그 */}
