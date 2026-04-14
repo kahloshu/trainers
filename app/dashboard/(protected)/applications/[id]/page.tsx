@@ -186,7 +186,7 @@ export default function DashboardAppDetailPage({
   }, [id]);
 
   if (app === "loading") return <Skeleton />;
-  if (app === null) notFound();
+  if (!app) return notFound();
 
   const days  = app.preferredDays.map((d) => DAY_LABEL[d]  ?? d).join(", ");
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
@@ -225,6 +225,7 @@ export default function DashboardAppDetailPage({
 
   /* ── 트레이너 배정 ── */
   async function saveTrainer() {
+    if (!app || app === "loading") return;
     const t = trainers.find((tr) => tr.id === selectedTrainerId);
     if (!t || (t.id === app.trainerId)) { setTrainerEdit(false); return; }
     setTrainerSaving(true);

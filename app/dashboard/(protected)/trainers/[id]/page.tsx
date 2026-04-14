@@ -199,6 +199,7 @@ export default function DashboardTrainerEditPage({
 
   /* ── 저장 ── */
   async function handleSave() {
+    if (!trainer || trainer === "loading") return;
     if (!name.trim()) { setError("이름을 입력하세요."); return; }
     if (!specialty.trim()) { setError("전문 분야를 입력하세요."); return; }
     setError("");

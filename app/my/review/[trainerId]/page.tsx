@@ -1,8 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getTrainerById } from "@/app/data/trainers";
+import { getTrainerById, type Trainer } from "@/app/data/trainers";
 import { notFound } from "next/navigation";
 
 /* ────────────── 상수 ────────────── */
@@ -170,20 +170,29 @@ export default function ReviewPage({
   params: Promise<{ trainerId: string }>;
 }) {
   const { trainerId } = use(params);
-  const trainerData = getTrainerById(trainerId);
-  if (!trainerData) notFound();
-  const trainer = trainerData;
-
   const router = useRouter();
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+
+  const [trainer, setTrainer]   = useState<Trainer | null | "loading">("loading");
+  const [rating, setRating]     = useState(0);
+  const [comment, setComment]   = useState("");
   const [adminNote, setAdminNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    getTrainerById(trainerId).then((found) => {
+      setTrainer(found ?? null);
+    });
+  }, [trainerId]);
+
+  if (trainer === "loading") {
+    return <div className="min-h-dvh" style={{ background: "#1e1e1e" }} />;
+  }
+  if (!trainer) return notFound();
 
   const isValid = rating > 0 && comment.trim().length > 0;
 
   async function handleSubmit() {
-    if (!isValid) return;
+    if (!isValid || !trainer || trainer === "loading") return;
     setSubmitting(true);
     await new Promise((r) => setTimeout(r, 800));
     router.push(

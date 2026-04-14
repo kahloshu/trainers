@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { REVIEWS, TRAINERS, type Review } from "@/app/data/trainers";
+import { getAllReviews, getAllTrainers, type Review, type Trainer } from "@/app/data/trainers";
 import AdminBottomNav from "@/app/admin/components/AdminBottomNav";
 
-/* ── 타입 확장 (is_visible 로컬 상태용) ── */
+/* ── 타입 확장 ── */
 type ReviewWithVisibility = Review & { isVisible: boolean };
 
 /* ── 탭 정의 ── */
@@ -125,8 +125,6 @@ function ReviewCard({
           </span>
         </div>
 
-        {/* 비공개 메모 인디케이터 */}
-        {/* (실제 adminNote는 Review 타입에 없으므로 샘플로 일부만 표시) */}
         {review.rating <= 3 && (
           <div
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl"
@@ -139,7 +137,6 @@ function ReviewCard({
           </div>
         )}
 
-        {/* 비공개 처리 안내 */}
         {!review.isVisible && (
           <div
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl"
@@ -155,7 +152,6 @@ function ReviewCard({
 
       {/* 카드 하단 액션 */}
       <div className="flex border-t" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
-        {/* 공개/비공개 토글 */}
         <button
           onClick={() => onToggle(review.id)}
           className="flex-1 py-3 flex items-center justify-center gap-1.5 text-[12.5px] font-semibold transition-opacity active:opacity-70"
@@ -168,10 +164,8 @@ function ReviewCard({
           )}
         </button>
 
-        {/* 구분 */}
         <div className="w-px" style={{ background: "rgba(255,255,255,0.04)" }} />
 
-        {/* 상세 보기 */}
         <Link
           href={`/admin/reviews/${review.id}`}
           className="flex items-center justify-center gap-1 px-5 py-3 text-[12.5px] font-medium transition-opacity active:opacity-70"
@@ -214,11 +208,15 @@ function EmptyState({ tab }: { tab: TabId }) {
 /* ── 페이지 ── */
 export default function AdminReviewsPage() {
   const [activeTab, setActiveTab] = useState<TabId>("all");
+  const [reviews, setReviews]     = useState<ReviewWithVisibility[]>([]);
+  const [trainers, setTrainers]   = useState<Trainer[]>([]);
 
-  /* isVisible 상태를 로컬로 관리 */
-  const [reviews, setReviews] = useState<ReviewWithVisibility[]>(
-    REVIEWS.map((r) => ({ ...r, isVisible: true }))
-  );
+  useEffect(() => {
+    getAllReviews().then((data) =>
+      setReviews(data.map((r) => ({ ...r, isVisible: true })))
+    );
+    getAllTrainers().then(setTrainers);
+  }, []);
 
   /* 탭별 카운트 */
   const counts = useMemo(() => ({
@@ -230,7 +228,6 @@ export default function AdminReviewsPage() {
 
   /* 필터 */
   const filtered = useMemo(() => {
-    if (activeTab === "all")     return reviews;
     if (activeTab === "visible") return reviews.filter((r) => r.isVisible);
     if (activeTab === "hidden")  return reviews.filter((r) => !r.isVisible);
     if (activeTab === "noted")   return reviews.filter((r) => r.rating <= 3);
@@ -246,7 +243,7 @@ export default function AdminReviewsPage() {
 
   /* 트레이너명 조회 */
   function getTrainerName(trainerId: string) {
-    return TRAINERS.find((t) => t.id === trainerId)?.name ?? "—";
+    return trainers.find((t) => t.id === trainerId)?.name ?? "—";
   }
 
   /* 평균 평점 */
@@ -272,7 +269,6 @@ export default function AdminReviewsPage() {
             </h1>
           </div>
 
-          {/* 평균 평점 */}
           <div
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
             style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.2)" }}
@@ -324,7 +320,6 @@ export default function AdminReviewsPage() {
       {/* ── 목록 ── */}
       <main className="page-scroll px-4 pt-3">
 
-        {/* 결과 수 + 공개 현황 */}
         <div className="flex items-center justify-between mb-3">
           <p className="text-[12px]" style={{ color: "#3a3a3a" }}>
             {filtered.length}건

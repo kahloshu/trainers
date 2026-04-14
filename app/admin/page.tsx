@@ -1,14 +1,17 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  APPLICATIONS,
+  getAllApplications,
   STATUS_LABEL,
   DAY_LABEL,
   TIME_LABEL,
   timeAgoLabel,
-  getStats,
+  type Application,
   type AppStatus,
 } from "@/app/data/applications";
-import { REVIEWS } from "@/app/data/trainers";
+import { getAllReviews, type Review } from "@/app/data/trainers";
 import AdminBottomNav from "@/app/admin/components/AdminBottomNav";
 
 /* ── 날짜 ── */
@@ -20,10 +23,10 @@ function todayLabel() {
 
 /* ── 상태 뱃지 색상 ── */
 const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }> = {
-  pending:   { bg: "rgba(248,113,113,0.10)",   text: "#f87171", dot: "#f87171" },
-  confirmed: { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
-  completed: { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
-  cancelled: { bg: "rgba(90,90,90,0.10)", text: "#a0a0a0", dot: "#5a5a5a" },
+  pending:   { bg: "rgba(248,113,113,0.10)",  text: "#f87171", dot: "#f87171" },
+  confirmed: { bg: "rgba(234,179,8,0.10)",    text: "#fbbf24", dot: "#eab308" },
+  completed: { bg: "rgba(52,211,153,0.10)",   text: "#34d399", dot: "#10b981" },
+  cancelled: { bg: "rgba(90,90,90,0.10)",     text: "#a0a0a0", dot: "#5a5a5a" },
 };
 
 /* ── 아이콘 ── */
@@ -68,11 +71,7 @@ function StatusBadge({ status }: { status: AppStatus }) {
 function StatCard({
   label, count, color, sub, href,
 }: {
-  label: string;
-  count: number;
-  color: string;
-  sub?: string;
-  href: string;
+  label: string; count: number; color: string; sub?: string; href: string;
 }) {
   return (
     <Link
@@ -94,8 +93,8 @@ function StatCard({
 }
 
 /* ── 최근 신청 카드 ── */
-function RecentAppCard({ app }: { app: (typeof APPLICATIONS)[0] }) {
-  const days = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
+function RecentAppCard({ app }: { app: Application }) {
+  const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
 
   return (
@@ -104,7 +103,6 @@ function RecentAppCard({ app }: { app: (typeof APPLICATIONS)[0] }) {
       className="flex flex-col gap-2.5 p-4 rounded-2xl border transition-opacity active:opacity-70"
       style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}
     >
-      {/* 1행: 이름 + 상태 + 시간 */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>
@@ -117,7 +115,6 @@ function RecentAppCard({ app }: { app: (typeof APPLICATIONS)[0] }) {
         </span>
       </div>
 
-      {/* 2행: 트레이너 */}
       <div className="flex items-center gap-1.5">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="8" r="4" stroke="#3a3a3a" strokeWidth="1.6" />
@@ -129,7 +126,6 @@ function RecentAppCard({ app }: { app: (typeof APPLICATIONS)[0] }) {
         </span>
       </div>
 
-      {/* 3행: 희망 일정 */}
       <div className="flex items-center gap-3">
         <span className="text-[12px]" style={{ color: "#5a5a5a" }}>
           {days}
@@ -138,7 +134,6 @@ function RecentAppCard({ app }: { app: (typeof APPLICATIONS)[0] }) {
         </span>
       </div>
 
-      {/* 관리자 메모 있을 때 */}
       {app.adminNote && (
         <div
           className="flex items-start gap-1.5 px-2.5 py-2 rounded-xl"
@@ -158,7 +153,7 @@ function RecentAppCard({ app }: { app: (typeof APPLICATIONS)[0] }) {
 }
 
 /* ── 최근 후기 카드 ── */
-function RecentReviewCard({ review }: { review: (typeof REVIEWS)[0] }) {
+function RecentReviewCard({ review }: { review: Review }) {
   const daysLabel = review.daysAgo === 0 ? "오늘"
     : review.daysAgo < 7 ? `${review.daysAgo}일 전`
     : `${Math.floor(review.daysAgo / 7)}주 전`;
@@ -171,7 +166,7 @@ function RecentReviewCard({ review }: { review: (typeof REVIEWS)[0] }) {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
-          {[1,2,3,4,5].map((i) => (
+          {[1, 2, 3, 4, 5].map((i) => (
             <StarFilled key={i} color={i <= review.rating ? "#c9a96e" : "#131313"} />
           ))}
           <span className="ml-1 text-[12px] font-semibold" style={{ color: "#c9a96e" }}>
@@ -186,10 +181,6 @@ function RecentReviewCard({ review }: { review: (typeof REVIEWS)[0] }) {
       <div className="flex items-center justify-between">
         <span className="text-[11.5px]" style={{ color: "#5a5a5a" }}>
           {review.authorMasked}
-        </span>
-        <span className="text-[11.5px]" style={{ color: "#5a5a5a" }}>
-          {/* 트레이너명 찾기 */}
-          {REVIEWS.find((r) => r.id === review.id) && ""}
         </span>
       </div>
     </Link>
@@ -224,9 +215,23 @@ function SectionHeader({ title, href, count }: { title: string; href: string; co
 
 /* ── 페이지 ── */
 export default function AdminHomePage() {
-  const stats = getStats();
-  const recentApps = APPLICATIONS.filter((a) => a.status === "pending").slice(0, 3);
-  const recentReviews = REVIEWS.slice(0, 3);
+  const [apps, setApps]       = useState<Application[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    getAllApplications().then(setApps);
+    getAllReviews().then(setReviews);
+  }, []);
+
+  const stats = {
+    total:     apps.length,
+    pending:   apps.filter((a) => a.status === "pending").length,
+    confirmed: apps.filter((a) => a.status === "confirmed").length,
+    completed: apps.filter((a) => a.status === "completed").length,
+  };
+
+  const recentApps    = apps.filter((a) => a.status === "pending").slice(0, 3);
+  const recentReviews = reviews.slice(0, 3);
 
   return (
     <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
@@ -245,7 +250,6 @@ export default function AdminHomePage() {
               관리자 대시보드
             </h1>
           </div>
-          {/* 관리자 아바타 */}
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold"
             style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff", border: "1px solid rgba(142,171,255,0.2)" }}
@@ -258,7 +262,7 @@ export default function AdminHomePage() {
 
       <main className="page-scroll">
 
-        {/* ── 처리 필요 배너 (pending > 0일 때) ── */}
+        {/* ── 처리 필요 배너 ── */}
         {stats.pending > 0 && (
           <Link
             href="/admin/applications"
@@ -281,49 +285,19 @@ export default function AdminHomePage() {
             현황 요약
           </p>
           <div className="grid grid-cols-2 gap-2.5">
-            <StatCard
-              label="신규 신청"
-              count={stats.pending}
-              color="#f87171"
-              sub="건"
-              href="/admin/applications?status=pending"
-            />
-            <StatCard
-              label="확정 대기"
-              count={stats.confirmed}
-              color="#fbbf24"
-              sub="건"
-              href="/admin/applications?status=confirmed"
-            />
-            <StatCard
-              label="완료"
-              count={stats.completed}
-              color="#34d399"
-              sub="건"
-              href="/admin/applications?status=completed"
-            />
-            <StatCard
-              label="전체 신청"
-              count={stats.total}
-              color="#a0a0a0"
-              sub="건"
-              href="/admin/applications"
-            />
+            <StatCard label="신규 신청"  count={stats.pending}   color="#f87171" sub="건" href="/admin/applications?status=pending" />
+            <StatCard label="확정 대기"  count={stats.confirmed} color="#fbbf24" sub="건" href="/admin/applications?status=confirmed" />
+            <StatCard label="완료"       count={stats.completed} color="#34d399" sub="건" href="/admin/applications?status=completed" />
+            <StatCard label="전체 신청"  count={stats.total}     color="#a0a0a0" sub="건" href="/admin/applications" />
           </div>
         </div>
 
         {/* ── 최근 신청 ── */}
         <div className="mt-6">
-          <SectionHeader
-            title="최근 신청"
-            href="/admin/applications"
-            count={stats.pending}
-          />
+          <SectionHeader title="최근 신청" href="/admin/applications" count={stats.pending} />
           <div className="flex flex-col gap-2.5 px-4">
             {recentApps.length > 0 ? (
-              recentApps.map((app) => (
-                <RecentAppCard key={app.id} app={app} />
-              ))
+              recentApps.map((app) => <RecentAppCard key={app.id} app={app} />)
             ) : (
               <div
                 className="py-8 text-center rounded-2xl"
@@ -339,15 +313,18 @@ export default function AdminHomePage() {
 
         {/* ── 최근 후기 ── */}
         <div className="mt-6">
-          <SectionHeader
-            title="최근 후기"
-            href="/admin/reviews"
-            count={recentReviews.length}
-          />
+          <SectionHeader title="최근 후기" href="/admin/reviews" count={recentReviews.length} />
           <div className="flex flex-col gap-2.5 px-4">
-            {recentReviews.map((review) => (
-              <RecentReviewCard key={review.id} review={review} />
-            ))}
+            {recentReviews.length > 0 ? (
+              recentReviews.map((review) => <RecentReviewCard key={review.id} review={review} />)
+            ) : (
+              <div
+                className="py-8 text-center rounded-2xl"
+                style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}
+              >
+                <p className="text-[13px]" style={{ color: "#3a3a3a" }}>등록된 후기가 없습니다.</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -358,10 +335,10 @@ export default function AdminHomePage() {
           </p>
           <div className="grid grid-cols-2 gap-2.5">
             {[
-              { label: "신청 관리",    sub: "상태 변경 · 메모", href: "/admin/applications", icon: "📋" },
-              { label: "후기 관리",    sub: "공개 · 비공개",    href: "/admin/reviews",      icon: "⭐" },
+              { label: "신청 관리",     sub: "상태 변경 · 메모", href: "/admin/applications", icon: "📋" },
+              { label: "후기 관리",     sub: "공개 · 비공개",    href: "/admin/reviews",      icon: "⭐" },
               { label: "트레이너 관리", sub: "등록 · 수정",      href: "/admin/trainers",     icon: "👤" },
-              { label: "더보기",       sub: "설정 · 계정",      href: "/admin/more",         icon: "···" },
+              { label: "더보기",        sub: "설정 · 계정",      href: "/admin/more",         icon: "···" },
             ].map((item) => (
               <Link
                 key={item.href}

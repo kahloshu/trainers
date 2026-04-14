@@ -1,9 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
-import { REVIEWS, TRAINERS } from "@/app/data/trainers";
+import { getAllReviews, getTrainerById, type Review, type Trainer } from "@/app/data/trainers";
 
 /* ── 아이콘 ── */
 function BackIcon() {
@@ -107,7 +106,7 @@ function InfoRow({ label, value, last = false }: { label: string; value: React.R
 
 /* ── 이니셜 아바타 ── */
 function MiniAvatar({ name }: { name: string }) {
-  const colors = ["#1a4a8a","#1a6a3a","#4a1a8a","#8a1a1a","#6a6a1a","#1a6a6a"];
+  const colors = ["#1a4a8a", "#1a6a3a", "#4a1a8a", "#8a1a1a", "#6a6a1a", "#1a6a6a"];
   return (
     <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
       style={{ background: colors[name.charCodeAt(0) % colors.length] }}>
@@ -126,21 +125,12 @@ function Toast({ message, color = "#34d399" }: { message: string; color?: string
   );
 }
 
-/* ── 확인 모달 (바텀 시트) ── */
+/* ── 확인 모달 ── */
 function ConfirmSheet({
-  title,
-  desc,
-  confirmLabel,
-  confirmColor,
-  onConfirm,
-  onCancel,
+  title, desc, confirmLabel, confirmColor, onConfirm, onCancel,
 }: {
-  title: string;
-  desc: string;
-  confirmLabel: string;
-  confirmColor: string;
-  onConfirm: () => void;
-  onCancel: () => void;
+  title: string; desc: string; confirmLabel: string; confirmColor: string;
+  onConfirm: () => void; onCancel: () => void;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center"
@@ -167,17 +157,50 @@ function ConfirmSheet({
   );
 }
 
+/* ── 로딩 스켈레톤 ── */
+function Skeleton() {
+  return (
+    <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
+      <header className="sticky top-0 z-40 flex items-center justify-between px-4 py-3"
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <div className="w-9 h-9 rounded-full" style={{ background: "#131313" }} />
+        <div className="w-20 h-4 rounded-full" style={{ background: "#1a1a1a" }} />
+        <div className="w-9" />
+      </header>
+      <div className="flex flex-col gap-3 px-4 pt-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "#1a1a1a" }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── 페이지 ── */
 export default function ReviewDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id }    = use(params);
-  const router    = useRouter();
-  const found     = REVIEWS.find((r) => r.id === id);
-  if (!found) notFound();
+  const { id }  = use(params);
+  const router  = useRouter();
 
-  const trainer   = TRAINERS.find((t) => t.id === found.trainerId);
-  const [visible, setVisible]   = useState(true);
+  const [review, setReview]   = useState<Review | null>(null);
+  const [trainer, setTrainer] = useState<Trainer | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  const [visible, setVisible]     = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [toast, setToast]         = useState<{ msg: string; color: string } | null>(null);
+
+  useEffect(() => {
+    getAllReviews().then((all) => {
+      const found = all.find((r) => r.id === id);
+      if (!found) { setNotFound(true); setLoading(false); return; }
+      setReview(found);
+      getTrainerById(found.trainerId).then((t) => {
+        setTrainer(t);
+        setLoading(false);
+      });
+    });
+  }, [id]);
 
   function fireToast(msg: string, color = "#34d399") {
     setToast({ msg, color });
@@ -185,12 +208,8 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
   }
 
   function handleToggle() {
-    if (visible) {
-      setShowModal(true);
-    } else {
-      setVisible(true);
-      fireToast("후기가 공개 복원되었습니다.");
-    }
+    if (visible) { setShowModal(true); }
+    else { setVisible(true); fireToast("후기가 공개 복원되었습니다."); }
   }
 
   function confirmHide() {
@@ -199,7 +218,15 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
     fireToast("비공개 처리되었습니다.", "#a0a0a0");
   }
 
-  /* 별점 라벨 */
+  if (loading) return <Skeleton />;
+  if (notFound || !review) {
+    return (
+      <div className="min-h-dvh flex items-center justify-center" style={{ background: "#0e0e0e" }}>
+        <p className="text-[14px]" style={{ color: "#5a5a5a" }}>후기를 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
+
   const RATING_LABEL = ["", "아쉬웠습니다.", "조금 아쉬웠습니다.", "보통이었습니다.", "만족스러웠습니다.", "매우 만족스러웠습니다."];
   const RATING_COLOR = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#8eabff"];
 
@@ -240,19 +267,19 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
           </p>
         </div>
 
-        {/* ── 작성자 + 트레이너 ── */}
+        {/* ── 후기 정보 ── */}
         <Block>
           <BlockHeader>
             <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>
               후기 정보
             </p>
           </BlockHeader>
-          <InfoRow label="작성자"   value={found.authorMasked} />
-          <InfoRow label="작성일"   value={daysLabel(found.daysAgo)} />
+          <InfoRow label="작성자"   value={review.authorMasked} />
+          <InfoRow label="작성일"   value={daysLabel(review.daysAgo)} />
           <InfoRow label="신청번호" value={<span style={{ color: "#5a5a5a" }}>연결된 신청 건</span>} last />
         </Block>
 
-        {/* ── 신청 트레이너 ── */}
+        {/* ── 대상 트레이너 ── */}
         {trainer && (
           <Block>
             <BlockHeader>
@@ -290,18 +317,15 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
           </BlockHeader>
 
           <div className="px-5 py-5 flex flex-col gap-4">
-            {/* 별점 */}
             <div className="flex flex-col gap-2">
-              <StarRow rating={found.rating} size={22} />
-              <p className="text-[13px] font-medium" style={{ color: RATING_COLOR[found.rating] }}>
-                {RATING_LABEL[found.rating]}
+              <StarRow rating={review.rating} size={22} />
+              <p className="text-[13px] font-medium" style={{ color: RATING_COLOR[review.rating] }}>
+                {RATING_LABEL[review.rating]}
               </p>
             </div>
 
-            {/* 구분선 */}
             <div className="h-px" style={{ background: "rgba(255,255,255,0.04)" }} />
 
-            {/* 후기 내용 */}
             <div
               className="px-4 py-3.5 rounded-xl"
               style={{
@@ -311,11 +335,10 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               }}
             >
               <p className="text-[14px] leading-relaxed italic" style={{ color: "#c0c0c0" }}>
-                &ldquo;{found.comment}&rdquo;
+                &ldquo;{review.comment}&rdquo;
               </p>
             </div>
 
-            {/* 비공개 시 워터마크 */}
             {!visible && (
               <div className="flex items-center justify-center gap-2">
                 <LockIcon size={12} color="#3a3a3a" />
@@ -343,17 +366,16 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
           </BlockHeader>
 
           <div className="px-5 py-4">
-            {found.rating <= 3 ? (
-              /* 낮은 별점 후기는 비공개 메모 있다고 가정 */
+            {review.rating <= 3 ? (
               <div className="flex flex-col gap-3">
                 <div
                   className="px-4 py-3.5 rounded-xl"
                   style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.12)" }}
                 >
                   <p className="text-[13.5px] leading-relaxed" style={{ color: "#a0a0a0" }}>
-                    {found.rating === 1
+                    {review.rating === 1
                       ? "시설 샤워실 온수가 잘 안 나왔습니다. 개선 부탁드려요."
-                      : found.rating === 2
+                      : review.rating === 2
                       ? "수업 시간이 예고 없이 변경되어 불편했습니다."
                       : "기대했던 것보다 강도가 낮았습니다. 다음엔 미리 말씀 드릴게요."}
                   </p>
@@ -364,15 +386,10 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               </div>
             ) : (
               <div className="flex flex-col items-center py-4 gap-2">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: "#131313" }}
-                >
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#131313" }}>
                   <LockIcon size={16} color="rgba(255,255,255,0.06)" />
                 </div>
-                <p className="text-[12.5px]" style={{ color: "#3a3a3a" }}>
-                  비공개 메모가 없습니다.
-                </p>
+                <p className="text-[12.5px]" style={{ color: "#3a3a3a" }}>비공개 메모가 없습니다.</p>
               </div>
             )}
           </div>
@@ -387,7 +404,6 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
           </BlockHeader>
 
           <div className="p-4 flex flex-col gap-3">
-            {/* 현재 상태 설명 */}
             <div
               className="flex items-start gap-3 p-3.5 rounded-xl"
               style={{
@@ -410,7 +426,6 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               </div>
             </div>
 
-            {/* 토글 버튼 */}
             <button
               onClick={handleToggle}
               className="w-full py-3.5 rounded-2xl text-[14px] font-semibold flex items-center justify-center gap-2 transition-opacity active:opacity-80"
@@ -433,7 +448,6 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
 
       </div>
 
-      {/* ── 확인 모달 ── */}
       {showModal && (
         <ConfirmSheet
           title="이 후기를 비공개 처리하시겠습니까?"
@@ -445,7 +459,6 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         />
       )}
 
-      {/* ── 토스트 ── */}
       {toast && <Toast message={toast.msg} color={toast.color} />}
 
     </div>

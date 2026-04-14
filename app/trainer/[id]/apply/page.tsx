@@ -218,6 +218,7 @@ export default function ApplyPage({
   if (trainer === null) notFound();
 
   async function handleSubmit() {
+    if (!trainer || trainer === "loading") return;
     if (!name.trim()) { scrollTo(nameRef); return; }
     if (phone.length < 12) { scrollTo(phoneRef); return; }
     if (days.length === 0) { scrollTo(daysRef); return; }
