@@ -14,6 +14,8 @@ export type Trainer = {
   reviewCount: number;
   profileImage: string;
   galleryImages: string[];  // Supabase Storage public URLs
+  kakaoId?: string;         // 카카오톡 오픈채팅 URL 또는 ID
+  instagramId?: string;     // 인스타그램 URL 또는 @아이디
   featured?: boolean;
   isActive?: boolean;      // 활성/비활성
   branch?: string;         // 지점
@@ -45,6 +47,8 @@ function rowToTrainer(row: any): Trainer {
     reviewCount:    row.review_count,
     profileImage:   row.profile_image ?? "",
     galleryImages:  row.gallery_images ?? [],
+    kakaoId:        row.kakao_id ?? "",
+    instagramId:    row.instagram_id ?? "",
     featured:       row.featured ?? false,
     isActive:       row.is_active ?? true,
     branch:         row.branch ?? "",
@@ -103,6 +107,8 @@ export async function addTrainer(t: Omit<Trainer, "ratingAvg" | "reviewCount">):
     review_count:   0,
     profile_image:  t.profileImage,
     gallery_images: t.galleryImages ?? [],
+    kakao_id:       t.kakaoId ?? "",
+    instagram_id:   t.instagramId ?? "",
     featured:       false,
     is_active:      t.isActive ?? true,
     branch:         t.branch ?? "",
@@ -125,6 +131,8 @@ export async function updateTrainer(t: Trainer): Promise<boolean> {
     review_count:   t.reviewCount,
     profile_image:  t.profileImage,
     gallery_images: t.galleryImages ?? [],
+    kakao_id:       t.kakaoId ?? "",
+    instagram_id:   t.instagramId ?? "",
     featured:       t.featured ?? false,
     is_active:      t.isActive ?? true,
     branch:         t.branch ?? "",

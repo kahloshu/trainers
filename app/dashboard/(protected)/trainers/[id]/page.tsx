@@ -150,6 +150,8 @@ export default function DashboardTrainerEditPage({
   const [tags, setTags]                 = useState<string[]>([]);
   const [certInput, setCertInput]       = useState("");
   const [tagInput, setTagInput]         = useState("");
+  const [kakaoId, setKakaoId]           = useState("");
+  const [instagramId, setInstagramId]   = useState("");
   const [saving, setSaving]             = useState(false);
   const [saved, setSaved]               = useState(false);
   const [error, setError]               = useState("");
@@ -167,6 +169,8 @@ export default function DashboardTrainerEditPage({
       setIntroduction(found.introduction);
       setBranch(found.branch ?? "");
       setProfileImage(found.profileImage);
+      setKakaoId(found.kakaoId ?? "");
+      setInstagramId(found.instagramId ?? "");
       setCertifications([...found.certifications]);
       setTags([...found.tags]);
     });
@@ -218,6 +222,8 @@ export default function DashboardTrainerEditPage({
       introduction:  introduction.trim(),
       branch,
       profileImage,
+      kakaoId,
+      instagramId,
       certifications,
       tags,
       galleryImages,
@@ -313,6 +319,16 @@ export default function DashboardTrainerEditPage({
                       {b}
                     </button>
                   ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>카카오톡</Label>
+                  <Input value={kakaoId} onChange={setKakaoId} placeholder="오픈채팅 URL 또는 ID" />
+                </div>
+                <div>
+                  <Label>인스타그램</Label>
+                  <Input value={instagramId} onChange={setInstagramId} placeholder="@아이디 또는 URL" />
                 </div>
               </div>
               <div>

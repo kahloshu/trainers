@@ -203,7 +203,9 @@ export default function TrainerEditPage({
   const [intro,    setIntro]    = useState("");
   const [certs,    setCerts]    = useState<string[]>([]);
   const [tags,     setTags]     = useState<string[]>([]);
-  const [active,   setActive]   = useState(true);
+  const [active,      setActive]      = useState(true);
+  const [kakaoId,     setKakaoId]     = useState("");
+  const [instagramId, setInstagramId] = useState("");
   const [certInput, setCertInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [toast,    setToast]    = useState("");
@@ -221,6 +223,8 @@ export default function TrainerEditPage({
       setCerts(found.certifications);
       setTags(found.tags);
       setImageUrl(found.profileImage ?? "");
+      setKakaoId(found.kakaoId ?? "");
+      setInstagramId(found.instagramId ?? "");
       originalRef.current = { ratingAvg: found.ratingAvg, reviewCount: found.reviewCount, galleryImages: found.galleryImages ?? [] };
       setLoaded(true);
     });
@@ -286,6 +290,8 @@ export default function TrainerEditPage({
       certifications: certs,
       tags,
       profileImage:  imageUrl,
+      kakaoId,
+      instagramId,
       galleryImages: originalRef.current.galleryImages ?? [],
       ratingAvg:     originalRef.current.ratingAvg,
       reviewCount:   originalRef.current.reviewCount,
@@ -456,6 +462,30 @@ export default function TrainerEditPage({
             value={bio}
             onChange={(v) => setBio(v.slice(0, 50))}
             placeholder="리스트 카드에 표시되는 한줄 소개"
+          />
+        </div>
+
+        <Divider />
+
+        {/* ── 카카오톡 ── */}
+        <div className="px-4 pt-5 pb-4">
+          <FieldLabel>카카오톡</FieldLabel>
+          <TextInput
+            value={kakaoId}
+            onChange={setKakaoId}
+            placeholder="오픈채팅 URL 또는 ID"
+          />
+        </div>
+
+        <Divider />
+
+        {/* ── 인스타그램 ── */}
+        <div className="px-4 pt-5 pb-4">
+          <FieldLabel>인스타그램</FieldLabel>
+          <TextInput
+            value={instagramId}
+            onChange={setInstagramId}
+            placeholder="@아이디 또는 URL"
           />
         </div>
 

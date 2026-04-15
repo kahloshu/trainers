@@ -47,6 +47,33 @@ function ArrowIcon() {
   );
 }
 
+function KakaoIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <rect width="36" height="36" rx="10" fill="#FEE500"/>
+      <path d="M18 9C12.48 9 8 12.69 8 17.25c0 2.88 1.86 5.42 4.68 6.93l-1.19 4.37 5.13-3.37c.44.07 1.01.12 1.38.12 5.52 0 10-3.69 10-8.25S23.52 9 18 9z" fill="#3C1E1E"/>
+    </svg>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <rect width="36" height="36" rx="10" fill="url(#ig-grad)"/>
+      <circle cx="18" cy="18" r="6.5" stroke="white" strokeWidth="2.2"/>
+      <circle cx="25" cy="11" r="1.6" fill="white"/>
+      <defs>
+        <radialGradient id="ig-grad" cx="30%" cy="107%" r="130%">
+          <stop offset="0%" stopColor="#fdf497"/>
+          <stop offset="25%" stopColor="#fd5949"/>
+          <stop offset="55%" stopColor="#d6249f"/>
+          <stop offset="100%" stopColor="#285AEB"/>
+        </radialGradient>
+      </defs>
+    </svg>
+  );
+}
+
 /* ── 이니셜 아바타 ── */
 function InitialAvatar({ name }: { name: string }) {
   const gradients = [
@@ -439,6 +466,40 @@ export default function TrainerDetailPage({
             &ldquo;{trainer.shortBio}&rdquo;
           </p>
         </div>
+
+        {/* 카카오톡 / 인스타그램 */}
+        {(trainer.kakaoId || trainer.instagramId) && (
+          <div className="section-block flex flex-col gap-3">
+            {trainer.kakaoId && (
+              <a
+                href={trainer.kakaoId.startsWith("http") ? trainer.kakaoId : `kakaotalk://user?id=${trainer.kakaoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3"
+              >
+                <KakaoIcon />
+                <div>
+                  <p className="text-[10.5px] font-semibold tracking-[0.12em] uppercase mb-0.5" style={{ color: "#5a5a5a" }}>카카오톡</p>
+                  <p className="text-[13px]" style={{ color: "#d1d5db" }}>{trainer.kakaoId}</p>
+                </div>
+              </a>
+            )}
+            {trainer.instagramId && (
+              <a
+                href={trainer.instagramId.startsWith("http") ? trainer.instagramId : `https://instagram.com/${trainer.instagramId.replace(/^@/, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3"
+              >
+                <InstagramIcon />
+                <div>
+                  <p className="text-[10.5px] font-semibold tracking-[0.12em] uppercase mb-0.5" style={{ color: "#5a5a5a" }}>인스타그램</p>
+                  <p className="text-[13px]" style={{ color: "#d1d5db" }}>{trainer.instagramId}</p>
+                </div>
+              </a>
+            )}
+          </div>
+        )}
 
         {/* 소개 */}
         <div className="section-block">
