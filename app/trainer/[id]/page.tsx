@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useEffect, useRef } from "react";
+import { use, useState, useEffect, useRef, useCallback } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTrainerById, getReviewsByTrainerId } from "@/app/data/trainers";
@@ -78,79 +78,223 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
   );
 }
 
-/* ── 갤러리 슬라이더 ── */
+/* ── 갤러리 슬라이더 + 라이트박스 ── */
 function GallerySlider({ images }: { images: string[] }) {
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const [imgW, setImgW]               = useState(0);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const scrollRef  = useRef<HTMLDivElement>(null);
+  const dragStart  = useRef<{ x: number; scrollLeft: number } | null>(null);
+  const didDrag    = useRef(false);
+
+  // 컨테이너 실제 너비로 이미지 크기 계산
+  useEffect(() => {
+    function measure() {
+      if (!wrapperRef.current) return;
+      const w = wrapperRef.current.offsetWidth;
+      // 16px 왼쪽 패딩 + 2개 gap(8px) → 2.5장 표시
+      // 16px 왼쪽 패딩 제외한 너비에서 2.5장 계산
+      setImgW(Math.floor((w - 16 - 8 * 2) / 2.5));
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // ESC / 화살표 키
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape")     setLightboxIdx(null);
+      if (e.key === "ArrowLeft")  setLightboxIdx((p) => (p !== null ? Math.max(0, p - 1) : p));
+      if (e.key === "ArrowRight") setLightboxIdx((p) => (p !== null ? Math.min(images.length - 1, p + 1) : p));
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxIdx, images.length]);
+
+  // 마우스 드래그
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    dragStart.current = { x: e.clientX, scrollLeft: scrollRef.current?.scrollLeft ?? 0 };
+    didDrag.current = false;
+  }, []);
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!dragStart.current || !scrollRef.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    if (Math.abs(dx) > 4) didDrag.current = true;
+    scrollRef.current.scrollLeft = dragStart.current.scrollLeft - dx;
+  }, []);
+  const onMouseUp = useCallback(() => { dragStart.current = null; }, []);
 
   if (images.length === 0) return null;
 
-  function onScroll() {
-    if (!sliderRef.current) return;
-    const idx = Math.round(
-      sliderRef.current.scrollLeft / sliderRef.current.offsetWidth
-    );
-    setActiveIdx(idx);
-  }
-
-  function scrollTo(idx: number) {
-    sliderRef.current?.scrollTo({
-      left: idx * (sliderRef.current.offsetWidth),
-      behavior: "smooth",
-    });
-    setActiveIdx(idx);
-  }
-
   return (
-    <div className="mt-1 mb-1">
-      <div className="px-4 mb-3">
-        <h2 className="text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#2f80ed" }}>
+    <>
+      {/* ── 갤러리 트랙 ── */}
+      <div ref={wrapperRef} className="mt-4 mb-1">
+        <h2
+          className="text-[11px] font-semibold tracking-[0.15em] uppercase mb-3 px-4"
+          style={{ color: "#2f80ed" }}
+        >
           갤러리
         </h2>
+
+        {/* 왼쪽 여백을 주기 위한 wrapper */}
+        <div style={{ paddingLeft: "16px" }}>
+          <div
+            ref={scrollRef}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "nowrap",
+              overflowX: "scroll",
+              WebkitOverflowScrolling: "touch",
+              scrollSnapType: "x mandatory",
+              gap: "8px",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
+              cursor: "grab",
+              userSelect: "none",
+            } as React.CSSProperties}
+          >
+            {imgW > 0 && images.map((url, i) => (
+              <div
+                key={i}
+                onClick={() => { if (!didDrag.current) setLightboxIdx(i); }}
+                style={{
+                  flex: `0 0 ${imgW}px`,
+                  width: `${imgW}px`,
+                  height: `${imgW}px`,
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  scrollSnapAlign: "start",
+                  cursor: "pointer",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={url}
+                  alt={`갤러리 ${i + 1}`}
+                  draggable={false}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
+                />
+              </div>
+            ))}
+            <div style={{ flexShrink: 0, width: "8px" }} />
+          </div>
+        </div>
       </div>
 
-      {/* 슬라이드 */}
-      <div
-        ref={sliderRef}
-        onScroll={onScroll}
-        className="flex overflow-x-auto scrollbar-hide"
-        style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
-      >
-        {images.map((url, i) => (
+      {/* ── 라이트박스 ── */}
+      {lightboxIdx !== null && (
+        <div
+          onClick={() => setLightboxIdx(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.92)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          {/* 카운터 */}
+          <div style={{
+            position: "absolute", top: "18px", left: "50%", transform: "translateX(-50%)",
+            color: "rgba(255,255,255,0.55)", fontSize: "13px", fontWeight: 500, letterSpacing: "0.05em",
+          }}>
+            {lightboxIdx + 1} / {images.length}
+          </div>
+
+          {/* 닫기 */}
+          <button
+            onClick={() => setLightboxIdx(null)}
+            style={{
+              position: "absolute", top: "14px", right: "14px",
+              width: "38px", height: "38px", borderRadius: "50%",
+              background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)",
+              color: "#fff", cursor: "pointer", fontSize: "18px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >
+            ✕
+          </button>
+
+          {/* 이전 */}
+          {lightboxIdx > 0 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxIdx(lightboxIdx - 1); }}
+              style={{
+                position: "absolute", left: "12px",
+                width: "44px", height: "44px", borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)",
+                color: "#fff", cursor: "pointer", fontSize: "24px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              ‹
+            </button>
+          )}
+
+          {/* 다음 */}
+          {lightboxIdx < images.length - 1 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxIdx(lightboxIdx + 1); }}
+              style={{
+                position: "absolute", right: "12px",
+                width: "44px", height: "44px", borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)",
+                color: "#fff", cursor: "pointer", fontSize: "24px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              ›
+            </button>
+          )}
+
+          {/* 이미지 */}
           <div
-            key={i}
-            className="flex-shrink-0 w-full"
-            style={{ scrollSnapAlign: "start", aspectRatio: "4/3" }}
+            onClick={() => setLightboxIdx(null)}
+            style={{ borderRadius: "16px", overflow: "hidden", maxWidth: "90vw", maxHeight: "80vh" }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={url} alt={`갤러리 ${i + 1}`} className="w-full h-full object-cover" />
-          </div>
-        ))}
-      </div>
-
-      {/* 인디케이터 */}
-      {images.length > 1 && (
-        <div className="flex items-center justify-center gap-1.5 mt-3">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => scrollTo(i)}
-              style={{
-                width:        i === activeIdx ? "18px" : "6px",
-                height:       "6px",
-                borderRadius: "3px",
-                background:   i === activeIdx ? "#2f80ed" : "#383838",
-                transition:   "all 0.2s ease",
-                flexShrink:   0,
-              }}
+            <img
+              src={images[lightboxIdx]}
+              alt={`갤러리 ${lightboxIdx + 1}`}
+              style={{ display: "block", maxWidth: "90vw", maxHeight: "80vh", objectFit: "contain" }}
             />
-          ))}
-          <span className="ml-2 text-[11px]" style={{ color: "#6b7280" }}>
-            {activeIdx + 1} / {images.length}
-          </span>
+          </div>
+
+          {/* 하단 점 인디케이터 */}
+          {images.length > 1 && (
+            <div style={{ position: "absolute", bottom: "24px", display: "flex", gap: "6px" }}>
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); setLightboxIdx(i); }}
+                  style={{
+                    width: i === lightboxIdx ? "20px" : "6px",
+                    height: "6px",
+                    borderRadius: "3px",
+                    background: i === lightboxIdx ? "#fff" : "rgba(255,255,255,0.3)",
+                    border: "none",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
