@@ -154,6 +154,7 @@ export default function DashboardApplicationsPage() {
                   <Th width="120">신청자</Th>
                   <Th width="130">연락처</Th>
                   <Th width="130">트레이너</Th>
+                  <Th>운동 목적</Th>
                   <Th>희망 일정</Th>
                   <Th width="100">상태</Th>
                   <Th width="160">신청일시</Th>
@@ -187,6 +188,19 @@ export default function DashboardApplicationsPage() {
                       </Td>
                       <Td muted>{app.applicantPhone}</Td>
                       <Td>{app.trainerName}</Td>
+                      <Td>
+                        <div className="flex flex-wrap gap-1">
+                          {app.purposes.length > 0 ? app.purposes.map((p) => (
+                            <span
+                              key={p}
+                              className="px-2 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap"
+                              style={{ background: "rgba(142,171,255,0.10)", color: "#8eabff" }}
+                            >
+                              {p}
+                            </span>
+                          )) : <span style={{ color: "#2a2a2a" }}>—</span>}
+                        </div>
+                      </Td>
                       <Td muted>
                         <span>{days}</span>
                         {times && <span className="ml-1 text-[11px]" style={{ color: "#2a2a2a" }}>/ {times}</span>}
