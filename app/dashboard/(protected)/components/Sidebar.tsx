@@ -81,15 +81,15 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       className="flex flex-col h-full transition-all duration-200"
       style={{
         width: collapsed ? 64 : 232,
-        background: "#111111",
-        borderRight: "1px solid rgba(255,255,255,0.05)",
+        background: "var(--dash-sidebar)",
+        borderRight: "1px solid var(--dash-border)",
         flexShrink: 0,
       }}
     >
       {/* 로고 */}
       <div
         className="flex items-center gap-3 px-4 py-5"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", height: 64 }}
+        style={{ borderBottom: "1px solid var(--dash-border-sm)", height: 64 }}
       >
         <div
           className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
@@ -102,10 +102,10 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <p className="text-[14px] font-bold leading-tight whitespace-nowrap" style={{ color: "#ffffff" }}>
+            <p className="text-[14px] font-bold leading-tight whitespace-nowrap" style={{ color: "var(--dash-text)" }}>
               James Gym
             </p>
-            <p className="text-[10px] whitespace-nowrap" style={{ color: "#3a3a3a" }}>
+            <p className="text-[10px] whitespace-nowrap" style={{ color: "var(--dash-text-dimmed)" }}>
               Admin Dashboard
             </p>
           </div>
@@ -117,7 +117,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         {!collapsed && (
           <p
             className="text-[10px] font-semibold tracking-[0.18em] uppercase px-3 py-2"
-            style={{ color: "#2a2a2a" }}
+            style={{ color: "var(--dash-text-faint)" }}
           >
             메뉴
           </p>
@@ -135,10 +135,10 @@ export default function Sidebar({ collapsed }: SidebarProps) {
                 padding: collapsed ? "10px 13px" : "10px 12px",
                 justifyContent: collapsed ? "center" : "flex-start",
                 background: active ? "rgba(142,171,255,0.10)" : "transparent",
-                color: active ? "#8eabff" : "#5a5a5a",
+                color: active ? "#8eabff" : "var(--dash-text-muted)",
               }}
               onMouseEnter={(e) => {
-                if (!active) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+                if (!active) (e.currentTarget as HTMLElement).style.background = "var(--dash-nav-hover)";
               }}
               onMouseLeave={(e) => {
                 if (!active) (e.currentTarget as HTMLElement).style.background = "transparent";
@@ -166,9 +166,9 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       {!collapsed && (
         <div
           className="px-4 py-4"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+          style={{ borderTop: "1px solid var(--dash-border-sm)" }}
         >
-          <p className="text-[11px]" style={{ color: "#2a2a2a" }}>
+          <p className="text-[11px]" style={{ color: "var(--dash-text-faint)" }}>
             v2.0 · Supabase 연동됨
           </p>
         </div>

@@ -54,10 +54,10 @@ function StatCard({
   return (
     <div
       className="rounded-2xl p-5 flex flex-col gap-3"
-      style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}
+      style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-[12px] font-medium" style={{ color: "#5a5a5a" }}>{label}</p>
+        <p className="text-[12px] font-medium" style={{ color: "var(--dash-text-muted)" }}>{label}</p>
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center"
           style={{ background: color + "18", color }}
@@ -66,11 +66,11 @@ function StatCard({
         </div>
       </div>
       <div>
-        <p className="text-[28px] font-bold leading-none" style={{ color: "#ffffff" }}>
+        <p className="text-[28px] font-bold leading-none" style={{ color: "var(--dash-text)" }}>
           {value}
         </p>
         {sub && (
-          <p className="text-[12px] mt-1.5" style={{ color: "#3a3a3a" }}>{sub}</p>
+          <p className="text-[12px] mt-1.5" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>
         )}
       </div>
     </div>
@@ -93,20 +93,20 @@ function RecentRow({ app }: { app: Application }) {
   return (
     <div
       className="flex items-center justify-between py-3.5 px-5"
-      style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}
+      style={{ borderBottom: "1px solid var(--dash-border-xs)" }}
     >
       <div className="flex items-center gap-3">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0"
-          style={{ background: "#1f1f1f", color: "#8eabff" }}
+          style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}
         >
           {app.applicantName.charAt(0)}
         </div>
         <div>
-          <p className="text-[13.5px] font-medium" style={{ color: "#ffffff" }}>
+          <p className="text-[13.5px] font-medium" style={{ color: "var(--dash-text)" }}>
             {app.applicantName}
           </p>
-          <p className="text-[11.5px]" style={{ color: "#3a3a3a" }}>
+          <p className="text-[11.5px]" style={{ color: "var(--dash-text-dimmed)" }}>
             {app.trainerName} 트레이너
           </p>
         </div>
@@ -137,7 +137,6 @@ export default function DashboardPage() {
 
   const pending   = apps.filter((a) => a.status === "pending").length;
   const confirmed = apps.filter((a) => a.status === "confirmed").length;
-  const completed = apps.filter((a) => a.status === "completed").length;
   const recent    = apps.slice(0, 8);
 
   return (
@@ -145,15 +144,15 @@ export default function DashboardPage() {
 
       {/* 페이지 제목 */}
       <div className="mb-6">
-        <h2 className="text-[20px] font-bold" style={{ color: "#ffffff" }}>개요</h2>
-        <p className="text-[13px] mt-0.5" style={{ color: "#3a3a3a" }}>전체 현황을 한눈에 확인하세요.</p>
+        <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>개요</h2>
+        <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>전체 현황을 한눈에 확인하세요.</p>
       </div>
 
       {/* 통계 카드 그리드 */}
       {loading ? (
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-6">
           {[1,2,3,4].map((i) => (
-            <div key={i} className="rounded-2xl h-28 animate-pulse" style={{ background: "#141414" }} />
+            <div key={i} className="rounded-2xl h-28 animate-pulse" style={{ background: "var(--dash-card)" }} />
           ))}
         </div>
       ) : (
@@ -192,13 +191,13 @@ export default function DashboardPage() {
       {/* 최근 신청 */}
       <div
         className="rounded-2xl overflow-hidden"
-        style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}
+        style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
       >
         <div
           className="flex items-center justify-between px-5 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+          style={{ borderBottom: "1px solid var(--dash-border-sm)" }}
         >
-          <p className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>최근 신청</p>
+          <p className="text-[14px] font-semibold" style={{ color: "var(--dash-text)" }}>최근 신청</p>
           <a
             href="/dashboard/applications"
             className="text-[12px] font-medium"
@@ -211,7 +210,7 @@ export default function DashboardPage() {
         {loading ? (
           <div className="p-5 flex flex-col gap-3">
             {[1,2,3].map((i) => (
-              <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: "#1a1a1a" }} />
+              <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: "var(--dash-surface)" }} />
             ))}
           </div>
         ) : recent.length > 0 ? (
@@ -220,7 +219,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="px-5 py-10 text-center">
-            <p className="text-[13px]" style={{ color: "#3a3a3a" }}>아직 신청이 없습니다.</p>
+            <p className="text-[13px]" style={{ color: "var(--dash-text-dimmed)" }}>아직 신청이 없습니다.</p>
           </div>
         )}
       </div>

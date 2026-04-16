@@ -79,9 +79,9 @@ function fmtDate(iso: string) {
 /* ── 섹션 카드 ── */
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
-      <div className="px-5 py-3.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-        <p className="text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>{title}</p>
+    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+      <div className="px-5 py-3.5" style={{ borderBottom: "1px solid var(--dash-border-sm)" }}>
+        <p className="text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--dash-text-dimmed)" }}>{title}</p>
       </div>
       <div className="px-5 py-4">{children}</div>
     </div>
@@ -91,9 +91,9 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 /* ── 정보 행 ── */
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
-      <span className="text-[12.5px] flex-shrink-0" style={{ color: "#5a5a5a" }}>{label}</span>
-      <span className="text-[13px] font-medium text-right leading-snug" style={{ color: "#d0d0d0" }}>{value}</span>
+    <div className="flex items-start justify-between gap-4 py-2.5" style={{ borderBottom: "1px solid var(--dash-border-xs)" }}>
+      <span className="text-[12.5px] flex-shrink-0" style={{ color: "var(--dash-text-muted)" }}>{label}</span>
+      <span className="text-[13px] font-medium text-right leading-snug" style={{ color: "var(--dash-text-body)" }}>{value}</span>
     </div>
   );
 }
@@ -108,13 +108,13 @@ function ConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}>
-      <div className="w-full max-w-[400px] rounded-2xl p-6 mx-4" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <h3 className="text-[17px] font-bold mb-2" style={{ color: "#ffffff" }}>{title}</h3>
-        <p className="text-[13px] leading-relaxed mb-6" style={{ color: "#5a5a5a" }}>{desc}</p>
+      <div className="w-full max-w-[400px] rounded-2xl p-6 mx-4" style={{ background: "var(--dash-surface)", border: "1px solid var(--dash-modal-border)" }}>
+        <h3 className="text-[17px] font-bold mb-2" style={{ color: "var(--dash-text)" }}>{title}</h3>
+        <p className="text-[13px] leading-relaxed mb-6" style={{ color: "var(--dash-text-muted)" }}>{desc}</p>
         <div className="flex gap-2.5">
           <button onClick={onCancel} disabled={loading}
             className="flex-1 py-3 rounded-xl text-[13.5px] font-medium"
-            style={{ background: "#141414", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+            style={{ background: "var(--dash-card)", color: "var(--dash-text-sub)", border: "1px solid var(--dash-hover-btn)" }}>
             취소
           </button>
           <button onClick={onConfirm} disabled={loading}
@@ -143,10 +143,10 @@ function Toast({ message, type = "success" }: { message: string; type?: "success
 function Skeleton() {
   return (
     <div className="p-6 animate-pulse">
-      <div className="h-8 w-48 rounded-xl mb-6" style={{ background: "#1a1a1a" }} />
+      <div className="h-8 w-48 rounded-xl mb-6" style={{ background: "var(--dash-surface)" }} />
       <div className="grid grid-cols-3 gap-4">
         {[1,2,3,4,5,6].map((i) => (
-          <div key={i} className="h-40 rounded-2xl" style={{ background: "#141414" }} />
+          <div key={i} className="h-40 rounded-2xl" style={{ background: "var(--dash-card)" }} />
         ))}
       </div>
     </div>
@@ -171,9 +171,9 @@ export default function DashboardAppDetailPage({
   const [toast, setToast]         = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   /* 트레이너 배정용 */
-  const [trainerEdit, setTrainerEdit]       = useState(false);
+  const [trainerEdit, setTrainerEdit]           = useState(false);
   const [selectedTrainerId, setSelectedTrainerId] = useState("");
-  const [trainerSaving, setTrainerSaving]   = useState(false);
+  const [trainerSaving, setTrainerSaving]         = useState(false);
 
   useEffect(() => {
     getApplicationById(id).then((found) => {
@@ -269,15 +269,15 @@ export default function DashboardAppDetailPage({
         <button
           onClick={() => router.push("/dashboard/applications")}
           className="flex items-center justify-center w-9 h-9 rounded-xl transition-colors"
-          style={{ background: "#1a1a1a", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.05)" }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#ffffff")}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#a0a0a0")}
+          style={{ background: "var(--dash-surface)", color: "var(--dash-text-sub)", border: "1px solid var(--dash-border)" }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--dash-text)")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--dash-text-sub)")}
         >
           <BackIcon />
         </button>
         <div>
-          <h2 className="text-[18px] font-bold" style={{ color: "#ffffff" }}>신청 상세</h2>
-          <p className="text-[12px]" style={{ color: "#3a3a3a" }}>#{id.slice(-8).toUpperCase()}</p>
+          <h2 className="text-[18px] font-bold" style={{ color: "var(--dash-text)" }}>신청 상세</h2>
+          <p className="text-[12px]" style={{ color: "var(--dash-text-dimmed)" }}>#{id.slice(-8).toUpperCase()}</p>
         </div>
         {/* 상태 뱃지 */}
         <span
@@ -305,7 +305,7 @@ export default function DashboardAppDetailPage({
             } />
             <InfoRow label="신청일시" value={fmtDate(app.createdAt)} />
             <div className="pt-1.5">
-              <p className="text-[12px]" style={{ color: "#3a3a3a" }}>
+              <p className="text-[12px]" style={{ color: "var(--dash-text-dimmed)" }}>
                 {timeAgoLabel(app.createdMinutesAgo)} 신청
               </p>
             </div>
@@ -334,7 +334,7 @@ export default function DashboardAppDetailPage({
           {/* 회원 요청사항 */}
           {app.userMessage && (
             <Card title="회원 요청사항">
-              <p className="text-[13.5px] leading-relaxed italic" style={{ color: "#a0a0a0" }}>
+              <p className="text-[13.5px] leading-relaxed italic" style={{ color: "var(--dash-text-sub)" }}>
                 &ldquo;{app.userMessage}&rdquo;
               </p>
             </Card>
@@ -348,19 +348,19 @@ export default function DashboardAppDetailPage({
               placeholder="트레이너 연락 여부, 일정 조율 내용 등을 기록해 두세요."
               rows={4}
               className="w-full px-4 py-3 rounded-xl text-[13px] outline-none resize-none leading-relaxed transition-all"
-              style={{ background: "#0e0e0e", border: "1.5px solid rgba(255,255,255,0.06)", color: "#ffffff" }}
+              style={{ background: "var(--dash-input-bg)", border: "1.5px solid var(--dash-input-border)", color: "var(--dash-text)" }}
               onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
-              onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
+              onBlur={(e) => (e.target.style.borderColor = "var(--dash-input-border)")}
             />
             <div className="flex items-center justify-between mt-2">
-              <span className="text-[11px]" style={{ color: "#2a2a2a" }}>{note.length} / 500</span>
+              <span className="text-[11px]" style={{ color: "var(--dash-text-faint)" }}>{note.length} / 500</span>
               <button
                 onClick={saveNote}
                 disabled={note === app.adminNote}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all disabled:opacity-30"
                 style={{
-                  background: note !== app.adminNote ? "rgba(142,171,255,0.12)" : "#141414",
-                  color:      note !== app.adminNote ? "#8eabff" : "#3a3a3a",
+                  background: note !== app.adminNote ? "rgba(142,171,255,0.12)" : "var(--dash-card)",
+                  color:      note !== app.adminNote ? "#8eabff" : "var(--dash-text-dimmed)",
                   border:     `1px solid ${note !== app.adminNote ? "rgba(142,171,255,0.3)" : "transparent"}`,
                 }}
               >
@@ -382,7 +382,7 @@ export default function DashboardAppDetailPage({
                   value={selectedTrainerId}
                   onChange={(e) => setSelectedTrainerId(e.target.value)}
                   className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-                  style={{ background: "#0e0e0e", border: "1.5px solid #8eabff", color: "#ffffff" }}
+                  style={{ background: "var(--dash-input-bg)", border: "1.5px solid #8eabff", color: "var(--dash-text)" }}
                 >
                   {trainers.map((t) => (
                     <option key={t.id} value={t.id}>{t.name} — {t.specialty}</option>
@@ -392,7 +392,7 @@ export default function DashboardAppDetailPage({
                   <button
                     onClick={() => { setTrainerEdit(false); setSelectedTrainerId(app.trainerId); }}
                     className="flex-1 py-2 rounded-xl text-[12.5px] font-medium"
-                    style={{ background: "#1a1a1a", color: "#5a5a5a", border: "1px solid rgba(255,255,255,0.05)" }}
+                    style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)", border: "1px solid var(--dash-border)" }}
                   >
                     취소
                   </button>
@@ -411,28 +411,28 @@ export default function DashboardAppDetailPage({
                 <div className="flex items-center gap-2.5">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0"
-                    style={{ background: "#1f1f1f", color: "#8eabff" }}
+                    style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}
                   >
                     {app.trainerName.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-[13.5px] font-semibold" style={{ color: "#ffffff" }}>
+                    <p className="text-[13.5px] font-semibold" style={{ color: "var(--dash-text)" }}>
                       {app.trainerName}
                     </p>
-                    <p className="text-[11.5px]" style={{ color: "#3a3a3a" }}>트레이너</p>
+                    <p className="text-[11.5px]" style={{ color: "var(--dash-text-dimmed)" }}>트레이너</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setTrainerEdit(true)}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11.5px] font-medium transition-colors"
-                  style={{ background: "#1a1a1a", color: "#5a5a5a", border: "1px solid rgba(255,255,255,0.05)" }}
+                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)", border: "1px solid var(--dash-border)" }}
                   onMouseEnter={(e) => {
                     (e.currentTarget as HTMLElement).style.color = "#8eabff";
                     (e.currentTarget as HTMLElement).style.background = "rgba(142,171,255,0.08)";
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.color = "#5a5a5a";
-                    (e.currentTarget as HTMLElement).style.background = "#1a1a1a";
+                    (e.currentTarget as HTMLElement).style.color = "var(--dash-text-muted)";
+                    (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)";
                   }}
                 >
                   <PersonIcon />
@@ -458,7 +458,7 @@ export default function DashboardAppDetailPage({
                 </button>
               ) : (
                 <div className="w-full py-3.5 rounded-xl text-[13px] font-medium flex items-center justify-center"
-                  style={{ background: "#1a1a1a", color: "#3a3a3a" }}>
+                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-dimmed)" }}>
                   {STATUS_LABEL[app.status]} 상태입니다.
                 </div>
               )}
@@ -478,7 +478,7 @@ export default function DashboardAppDetailPage({
               )}
 
               {/* 상태 흐름 안내 */}
-              <div className="mt-1 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+              <div className="mt-1 pt-3" style={{ borderTop: "1px solid var(--dash-border-sm)" }}>
                 <div className="flex items-center justify-between">
                   {(["pending","confirmed","completed"] as AppStatus[]).map((s, i, arr) => {
                     const isCurrentOrPast = ["pending","confirmed","completed"].indexOf(app.status) >= i;
@@ -489,19 +489,19 @@ export default function DashboardAppDetailPage({
                           <div
                             className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
                             style={{
-                              background: isCurrent ? STATUS_STYLE[s].bg : isCurrentOrPast ? "rgba(255,255,255,0.08)" : "#1a1a1a",
-                              color: isCurrent ? STATUS_STYLE[s].text : isCurrentOrPast ? "#5a5a5a" : "#2a2a2a",
-                              border: isCurrent ? `1px solid ${STATUS_STYLE[s].border}` : "1px solid rgba(255,255,255,0.04)",
+                              background: isCurrent ? STATUS_STYLE[s].bg : isCurrentOrPast ? "var(--dash-toggle-off)" : "var(--dash-surface)",
+                              color: isCurrent ? STATUS_STYLE[s].text : isCurrentOrPast ? "var(--dash-text-muted)" : "var(--dash-text-faint)",
+                              border: isCurrent ? `1px solid ${STATUS_STYLE[s].border}` : "1px solid var(--dash-border-sm)",
                             }}
                           >
                             {i+1}
                           </div>
-                          <p className="text-[9.5px] whitespace-nowrap" style={{ color: isCurrent ? STATUS_STYLE[s].text : "#2a2a2a" }}>
+                          <p className="text-[9.5px] whitespace-nowrap" style={{ color: isCurrent ? STATUS_STYLE[s].text : "var(--dash-text-faint)" }}>
                             {STATUS_LABEL[s]}
                           </p>
                         </div>
                         {i < arr.length - 1 && (
-                          <div className="w-6 h-px mb-4" style={{ background: isCurrentOrPast && app.status !== s ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.04)" }} />
+                          <div className="w-6 h-px mb-4" style={{ background: isCurrentOrPast && app.status !== s ? "var(--dash-toggle-off)" : "var(--dash-border-sm)" }} />
                         )}
                       </div>
                     );

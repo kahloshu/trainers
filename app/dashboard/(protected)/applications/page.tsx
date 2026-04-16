@@ -42,7 +42,7 @@ function Th({ children, width }: { children: React.ReactNode; width?: string }) 
   return (
     <th
       className="text-left px-4 py-3 text-[11.5px] font-semibold tracking-[0.1em] uppercase whitespace-nowrap"
-      style={{ color: "#3a3a3a", width }}
+      style={{ color: "var(--dash-text-dimmed)", width }}
     >
       {children}
     </th>
@@ -52,7 +52,7 @@ function Th({ children, width }: { children: React.ReactNode; width?: string }) 
 /* ── 테이블 바디 셀 ── */
 function Td({ children, muted }: { children: React.ReactNode; muted?: boolean }) {
   return (
-    <td className="px-4 py-3.5 text-[13px]" style={{ color: muted ? "#5a5a5a" : "#d0d0d0" }}>
+    <td className="px-4 py-3.5 text-[13px]" style={{ color: muted ? "var(--dash-text-muted)" : "var(--dash-text-body)" }}>
       {children}
     </td>
   );
@@ -94,8 +94,8 @@ export default function DashboardApplicationsPage() {
       {/* 페이지 타이틀 + 요약 뱃지 */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h2 className="text-[20px] font-bold" style={{ color: "#ffffff" }}>신청 관리</h2>
-          <p className="text-[13px] mt-0.5" style={{ color: "#3a3a3a" }}>
+          <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>신청 관리</h2>
+          <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>
             전체 {apps.length}건
           </p>
         </div>
@@ -131,17 +131,17 @@ export default function DashboardApplicationsPage() {
       {/* 테이블 */}
       <div
         className="rounded-2xl overflow-hidden"
-        style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}
+        style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
       >
         {loading ? (
           <div className="p-8 flex flex-col gap-3">
             {[1,2,3,4,5].map((i) => (
-              <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: "#1a1a1a" }} />
+              <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: "var(--dash-surface)" }} />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-[14px]" style={{ color: "#3a3a3a" }}>
+            <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
               {apps.length === 0 ? "신청 내역이 없습니다." : "검색 결과가 없습니다."}
             </p>
           </div>
@@ -149,7 +149,7 @@ export default function DashboardApplicationsPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                <tr style={{ borderBottom: "1px solid var(--dash-border)" }}>
                   <Th width="120">신청번호</Th>
                   <Th width="120">신청자</Th>
                   <Th width="130">연락처</Th>
@@ -170,8 +170,8 @@ export default function DashboardApplicationsPage() {
                       key={app.id}
                       onClick={() => router.push(`/dashboard/applications/${app.id}`)}
                       className="cursor-pointer transition-colors"
-                      style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.02)")}
+                      style={{ borderBottom: "1px solid var(--dash-border-xs)" }}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
                       onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
                     >
                       <Td muted>#{app.id.slice(-6).toUpperCase()}</Td>
@@ -179,7 +179,7 @@ export default function DashboardApplicationsPage() {
                         <div className="flex items-center gap-2">
                           <div
                             className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                            style={{ background: "#1f1f1f", color: "#8eabff" }}
+                            style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}
                           >
                             {app.applicantName.charAt(0)}
                           </div>
@@ -198,12 +198,12 @@ export default function DashboardApplicationsPage() {
                             >
                               {p}
                             </span>
-                          )) : <span style={{ color: "#2a2a2a" }}>—</span>}
+                          )) : <span style={{ color: "var(--dash-text-faint)" }}>—</span>}
                         </div>
                       </Td>
                       <Td muted>
                         <span>{days}</span>
-                        {times && <span className="ml-1 text-[11px]" style={{ color: "#2a2a2a" }}>/ {times}</span>}
+                        {times && <span className="ml-1 text-[11px]" style={{ color: "var(--dash-text-faint)" }}>/ {times}</span>}
                       </Td>
                       <Td>
                         <span
@@ -225,7 +225,7 @@ export default function DashboardApplicationsPage() {
 
       {/* 결과 수 */}
       {!loading && filtered.length > 0 && (
-        <p className="text-[12px] mt-3" style={{ color: "#2a2a2a" }}>
+        <p className="text-[12px] mt-3" style={{ color: "var(--dash-text-faint)" }}>
           {filtered.length}건 표시 중 (전체 {apps.length}건)
         </p>
       )}

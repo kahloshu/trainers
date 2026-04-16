@@ -149,7 +149,7 @@ const GalleryManager = forwardRef<GalleryManagerRef, Props>(
                   aspectRatio: "1/1",
                   border: dragFrom === i
                     ? "2px solid #8eabff"
-                    : "1px solid rgba(255,255,255,0.06)",
+                    : "1px solid var(--dash-hover-btn)",
                   opacity: dragFrom === i ? 0.45 : 1,
                   cursor: disabled ? "default" : "grab",
                 }}
@@ -200,17 +200,17 @@ const GalleryManager = forwardRef<GalleryManagerRef, Props>(
               className="rounded-xl flex flex-col items-center justify-center gap-1.5 transition-all"
               style={{
                 aspectRatio: "1/1",
-                background: "#0e0e0e",
-                border: "1.5px dashed rgba(255,255,255,0.08)",
-                color: "#3a3a3a",
+                background: "var(--dash-input-bg)",
+                border: "1.5px dashed var(--dash-modal-border)",
+                color: "var(--dash-text-dimmed)",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.borderColor = "rgba(142,171,255,0.4)";
                 (e.currentTarget as HTMLElement).style.color = "#8eabff";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
-                (e.currentTarget as HTMLElement).style.color = "#3a3a3a";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--dash-modal-border)";
+                (e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)";
               }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -223,13 +223,13 @@ const GalleryManager = forwardRef<GalleryManagerRef, Props>(
 
         {/* 빈 상태 */}
         {items.length === 0 && disabled && (
-          <p className="text-[12.5px] text-center py-6" style={{ color: "#2a2a2a" }}>
+          <p className="text-[12.5px] text-center py-6" style={{ color: "var(--dash-text-faint)" }}>
             등록된 갤러리 사진이 없습니다.
           </p>
         )}
 
         {!disabled && (
-          <p className="text-[11px] mt-2.5" style={{ color: "#2a2a2a" }}>
+          <p className="text-[11px] mt-2.5" style={{ color: "var(--dash-text-faint)" }}>
             최대 {MAX_ITEMS}장 · 드래그로 순서 변경 · 최대 1200px JPEG 자동 압축
           </p>
         )}

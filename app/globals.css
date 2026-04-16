@@ -138,3 +138,86 @@ body {
 
 /* ── Divider (ghost fallback only) ── */
 .divider { height: 1px; background: var(--border-subtle); }
+
+/* ══════════════════════════════════════════
+   Dashboard Theme Variables
+   .dash-root = dark (default)
+   .dash-root.light = light mode
+══════════════════════════════════════════ */
+.dash-root {
+  /* Backgrounds */
+  --dash-bg:          #0e0e0e;
+  --dash-card:        #141414;
+  --dash-sidebar:     #111111;
+  --dash-surface:     #1a1a1a;
+  --dash-surface-2:   #1f1f1f;
+  --dash-header-bg:   rgba(14,14,14,0.95);
+  --dash-input-bg:    #0e0e0e;
+
+  /* Borders */
+  --dash-border:      rgba(255,255,255,0.05);
+  --dash-border-sm:   rgba(255,255,255,0.04);
+  --dash-border-xs:   rgba(255,255,255,0.03);
+  --dash-modal-border: rgba(255,255,255,0.08);
+
+  /* Hover / interactive */
+  --dash-hover-row:   rgba(255,255,255,0.02);
+  --dash-hover-btn:   rgba(255,255,255,0.06);
+  --dash-nav-hover:   rgba(255,255,255,0.04);
+  --dash-toggle-off:  rgba(255,255,255,0.08);
+
+  /* Text */
+  --dash-text:        #ffffff;
+  --dash-text-body:   #d0d0d0;
+  --dash-text-sub:    #a0a0a0;
+  --dash-text-muted:  #5a5a5a;
+  --dash-text-dimmed: #3a3a3a;
+  --dash-text-faint:  #2a2a2a;
+
+  /* Misc */
+  --dash-avatar-bg:   #1f1f1f;
+  --dash-stars-empty: rgba(255,255,255,0.06);
+  --dash-stars-stroke: rgba(255,255,255,0.08);
+  --dash-progress-bg: rgba(255,255,255,0.04);
+  --dash-input-border: rgba(255,255,255,0.06);
+  --dash-date-scheme: dark;
+}
+
+.dash-root.light {
+  /* Backgrounds */
+  --dash-bg:          #ffffff;
+  --dash-card:        #ffffff;
+  --dash-sidebar:     #ffffff;
+  --dash-surface:     #f4f5f7;
+  --dash-surface-2:   #eaecf0;
+  --dash-header-bg:   rgba(255,255,255,0.95);
+  --dash-input-bg:    #f8f9fb;
+
+  /* Borders */
+  --dash-border:      rgba(0,0,0,0.08);
+  --dash-border-sm:   rgba(0,0,0,0.06);
+  --dash-border-xs:   rgba(0,0,0,0.04);
+  --dash-modal-border: rgba(0,0,0,0.10);
+
+  /* Hover / interactive */
+  --dash-hover-row:   rgba(0,0,0,0.025);
+  --dash-hover-btn:   rgba(0,0,0,0.05);
+  --dash-nav-hover:   rgba(0,0,0,0.04);
+  --dash-toggle-off:  rgba(0,0,0,0.12);
+
+  /* Text */
+  --dash-text:        #111827;
+  --dash-text-body:   #374151;
+  --dash-text-sub:    #6b7280;
+  --dash-text-muted:  #9ca3af;
+  --dash-text-dimmed: #9ca3af;
+  --dash-text-faint:  #c4c9d4;
+
+  /* Misc */
+  --dash-avatar-bg:   #e5e7eb;
+  --dash-stars-empty: rgba(0,0,0,0.08);
+  --dash-stars-stroke: rgba(0,0,0,0.12);
+  --dash-progress-bg: rgba(0,0,0,0.06);
+  --dash-input-border: rgba(0,0,0,0.10);
+  --dash-date-scheme: light;
+}

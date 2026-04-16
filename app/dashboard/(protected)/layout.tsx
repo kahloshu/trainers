@@ -5,10 +5,11 @@ import { useRouter, usePathname } from "next/navigation";
 import { getSession, onAuthChange } from "@/lib/auth";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
+import { ThemeProvider, useTheme } from "@/app/dashboard/ThemeContext";
 
 /* 각 경로별 헤더 타이틀 */
 function getTitle(pathname: string): string {
-  if (pathname === "/dashboard")                    return "개요";
+  if (pathname === "/dashboard")                      return "개요";
   if (pathname.startsWith("/dashboard/applications")) return "신청 관리";
   if (pathname.startsWith("/dashboard/trainers"))     return "트레이너 관리";
   if (pathname.startsWith("/dashboard/reviews"))      return "후기 관리";
@@ -16,17 +17,14 @@ function getTitle(pathname: string): string {
   return "대시보드";
 }
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
   const pathname = usePathname();
+  const { theme, toggle } = useTheme();
 
-  const [authState, setAuthState]   = useState<"loading" | "authed" | "none">("loading");
-  const [userEmail, setUserEmail]   = useState("");
-  const [collapsed, setCollapsed]   = useState(false);
+  const [authState, setAuthState] = useState<"loading" | "authed" | "none">("loading");
+  const [userEmail, setUserEmail] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
 
   /* ── 초기 세션 확인 ── */
   useEffect(() => {
@@ -66,8 +64,8 @@ export default function DashboardLayout({
   if (authState !== "authed") {
     return (
       <div
-        className="fixed inset-0 flex items-center justify-center"
-        style={{ background: "#0a0a0a" }}
+        className={`fixed inset-0 flex items-center justify-center dash-root${theme === "light" ? " light" : ""}`}
+        style={{ background: "var(--dash-bg)" }}
       >
         <div
           className="w-9 h-9 rounded-full border-2 animate-spin"
@@ -78,13 +76,9 @@ export default function DashboardLayout({
   }
 
   return (
-    /*
-     * 대시보드 루트: body의 max-width:480px 제약을 벗어나기 위해
-     * fixed inset-0 으로 뷰포트 전체를 점유합니다.
-     */
     <div
-      className="fixed inset-0 flex overflow-hidden"
-      style={{ background: "#0e0e0e", fontFamily: "var(--font-lexend), sans-serif" }}
+      className={`fixed inset-0 flex overflow-hidden dash-root${theme === "light" ? " light" : ""}`}
+      style={{ background: "var(--dash-bg)", fontFamily: "var(--font-lexend), sans-serif" }}
     >
       {/* 사이드바 */}
       <Sidebar collapsed={collapsed} />
@@ -96,16 +90,30 @@ export default function DashboardLayout({
           title={getTitle(pathname)}
           userEmail={userEmail}
           onToggleSidebar={toggleSidebar}
+          theme={theme}
+          onToggleTheme={toggle}
         />
 
         {/* 콘텐츠 스크롤 영역 */}
         <main
           className="flex-1 overflow-y-auto"
-          style={{ background: "#0e0e0e" }}
+          style={{ background: "var(--dash-bg)" }}
         >
           {children}
         </main>
       </div>
     </div>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ThemeProvider>
+      <DashboardLayoutInner>{children}</DashboardLayoutInner>
+    </ThemeProvider>
   );
 }

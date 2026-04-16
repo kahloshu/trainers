@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTheme } from "@/app/dashboard/ThemeContext";
 
 /* ── 타입 ── */
 export interface FilterState {
@@ -63,6 +64,7 @@ export default function DashboardFilter({
   showDateRange = false,
 }: DashboardFilterProps) {
   const [searchFocus, setSearchFocus] = useState(false);
+  const { theme } = useTheme();
 
   const set = useCallback(
     (patch: Partial<FilterState>) => onChange({ ...value, ...patch }),
@@ -83,11 +85,11 @@ export default function DashboardFilter({
         <div
           className="relative flex items-center gap-2 px-3.5 py-2.5 rounded-xl flex-1 min-w-[200px] transition-all"
           style={{
-            background: "#141414",
-            border: `1.5px solid ${searchFocus ? "#8eabff" : "rgba(255,255,255,0.06)"}`,
+            background: "var(--dash-card)",
+            border: `1.5px solid ${searchFocus ? "#8eabff" : "var(--dash-hover-btn)"}`,
           }}
         >
-          <span style={{ color: searchFocus ? "#8eabff" : "#3a3a3a", flexShrink: 0 }}>
+          <span style={{ color: searchFocus ? "#8eabff" : "var(--dash-text-dimmed)", flexShrink: 0 }}>
             <SearchIcon />
           </span>
           <input
@@ -98,15 +100,15 @@ export default function DashboardFilter({
             onBlur={() => setSearchFocus(false)}
             placeholder={searchPlaceholder}
             className="flex-1 bg-transparent outline-none text-[13.5px]"
-            style={{ color: "#ffffff", minWidth: 0 }}
+            style={{ color: "var(--dash-text)", minWidth: 0 }}
           />
           {value.search && (
             <button
               onClick={() => set({ search: "" })}
               className="flex-shrink-0"
-              style={{ color: "#3a3a3a" }}
+              style={{ color: "var(--dash-text-dimmed)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#f87171")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#3a3a3a")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)")}
             >
               <ClearIcon />
             </button>
@@ -118,28 +120,36 @@ export default function DashboardFilter({
           <div className="flex items-center gap-2">
             <div
               className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
-              style={{ background: "#141414", border: "1.5px solid rgba(255,255,255,0.06)" }}
+              style={{ background: "var(--dash-card)", border: "1.5px solid var(--dash-hover-btn)" }}
             >
-              <span style={{ color: "#3a3a3a" }}><CalendarIcon /></span>
+              <span style={{ color: "var(--dash-text-dimmed)" }}><CalendarIcon /></span>
               <input
                 type="date"
                 value={value.dateFrom}
                 onChange={(e) => set({ dateFrom: e.target.value })}
                 className="bg-transparent outline-none text-[13px]"
-                style={{ color: value.dateFrom ? "#ffffff" : "#3a3a3a", colorScheme: "dark", width: 120 }}
+                style={{
+                  color: value.dateFrom ? "var(--dash-text)" : "var(--dash-text-dimmed)",
+                  colorScheme: theme === "light" ? "light" : "dark",
+                  width: 120,
+                }}
               />
             </div>
-            <span className="text-[12px]" style={{ color: "#3a3a3a" }}>~</span>
+            <span className="text-[12px]" style={{ color: "var(--dash-text-dimmed)" }}>~</span>
             <div
               className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
-              style={{ background: "#141414", border: "1.5px solid rgba(255,255,255,0.06)" }}
+              style={{ background: "var(--dash-card)", border: "1.5px solid var(--dash-hover-btn)" }}
             >
               <input
                 type="date"
                 value={value.dateTo}
                 onChange={(e) => set({ dateTo: e.target.value })}
                 className="bg-transparent outline-none text-[13px]"
-                style={{ color: value.dateTo ? "#ffffff" : "#3a3a3a", colorScheme: "dark", width: 120 }}
+                style={{
+                  color: value.dateTo ? "var(--dash-text)" : "var(--dash-text-dimmed)",
+                  colorScheme: theme === "light" ? "light" : "dark",
+                  width: 120,
+                }}
               />
             </div>
           </div>
@@ -174,9 +184,9 @@ export default function DashboardFilter({
                 onClick={() => set({ status: chip.value })}
                 className="px-3.5 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
                 style={{
-                  background: active ? "rgba(142,171,255,0.12)" : "#141414",
-                  color: active ? "#8eabff" : "#5a5a5a",
-                  border: `1px solid ${active ? "rgba(142,171,255,0.25)" : "rgba(255,255,255,0.05)"}`,
+                  background: active ? "rgba(142,171,255,0.12)" : "var(--dash-card)",
+                  color: active ? "#8eabff" : "var(--dash-text-muted)",
+                  border: `1px solid ${active ? "rgba(142,171,255,0.25)" : "var(--dash-border)"}`,
                 }}
               >
                 {chip.label}

@@ -65,14 +65,14 @@ function Toggle({ on, onChange, color = "#34d399" }: { on: boolean; onChange: ()
     >
       <div
         className="absolute inset-0 rounded-full transition-all duration-200"
-        style={{ background: on ? color : "rgba(255,255,255,0.08)" }}
+        style={{ background: on ? color : "var(--dash-toggle-off)" }}
       />
       <div
         className="absolute top-1 rounded-full transition-all duration-200"
         style={{
           width: 12, height: 12,
           left: on ? 21 : 3,
-          background: on ? "#fff" : "#3a3a3a",
+          background: on ? "#fff" : "var(--dash-text-dimmed)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
         }}
       />
@@ -110,16 +110,16 @@ function DeleteModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}>
       <div className="w-full max-w-[380px] rounded-2xl p-6 mx-4"
-        style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <h3 className="text-[16px] font-bold mb-1.5" style={{ color: "#ffffff" }}>트레이너 삭제</h3>
-        <p className="text-[13px] leading-relaxed mb-6" style={{ color: "#5a5a5a" }}>
-          <span style={{ color: "#ffffff" }}>{name}</span> 트레이너를 삭제하시겠습니까?<br />
+        style={{ background: "var(--dash-surface)", border: "1px solid var(--dash-modal-border)" }}>
+        <h3 className="text-[16px] font-bold mb-1.5" style={{ color: "var(--dash-text)" }}>트레이너 삭제</h3>
+        <p className="text-[13px] leading-relaxed mb-6" style={{ color: "var(--dash-text-muted)" }}>
+          <span style={{ color: "var(--dash-text)" }}>{name}</span> 트레이너를 삭제하시겠습니까?<br />
           삭제 후에는 복구할 수 없습니다.
         </p>
         <div className="flex gap-2.5">
           <button onClick={onCancel} disabled={loading}
             className="flex-1 py-3 rounded-xl text-[13.5px] font-medium"
-            style={{ background: "#141414", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+            style={{ background: "var(--dash-card)", color: "var(--dash-text-sub)", border: "1px solid var(--dash-hover-btn)" }}>
             취소
           </button>
           <button onClick={onConfirm} disabled={loading}
@@ -226,8 +226,8 @@ export default function DashboardTrainersPage() {
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-[20px] font-bold" style={{ color: "#ffffff" }}>트레이너 관리</h2>
-          <p className="text-[13px] mt-0.5" style={{ color: "#3a3a3a" }}>
+          <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>트레이너 관리</h2>
+          <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>
             전체 {trainers.length}명 · 활성 {activeCount}명 · 상위 노출 {featuredCount}명
           </p>
         </div>
@@ -255,21 +255,21 @@ export default function DashboardTrainersPage() {
 
       {/* 범례 */}
       <div className="flex items-center gap-4 mb-3 px-1">
-        <span className="text-[11.5px]" style={{ color: "#3a3a3a" }}>
+        <span className="text-[11.5px]" style={{ color: "var(--dash-text-dimmed)" }}>
           ⠿ 드래그하여 순서 조정 · 순서 변경 후 <span style={{ color: "#8eabff" }}>순서 저장</span> 버튼 클릭
         </span>
       </div>
 
       {/* 테이블 */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
         {/* 컬럼 헤더 */}
         <div className="grid items-center px-4 py-2.5"
           style={{
             gridTemplateColumns: "32px 40px 1fr 100px 90px 80px 80px 120px",
-            borderBottom: "1px solid rgba(255,255,255,0.05)",
+            borderBottom: "1px solid var(--dash-border)",
           }}>
           {["", "", "트레이너", "전문 분야", "지점", "활성", "상위 노출", ""].map((h, i) => (
-            <span key={i} className="text-[11px] font-semibold tracking-[0.1em] uppercase" style={{ color: "#3a3a3a" }}>
+            <span key={i} className="text-[11px] font-semibold tracking-[0.1em] uppercase" style={{ color: "var(--dash-text-dimmed)" }}>
               {h}
             </span>
           ))}
@@ -278,12 +278,12 @@ export default function DashboardTrainersPage() {
         {loading ? (
           <div className="p-6 flex flex-col gap-2.5 animate-pulse">
             {[1,2,3,4,5].map((i) => (
-              <div key={i} className="h-14 rounded-xl" style={{ background: "#1a1a1a" }} />
+              <div key={i} className="h-14 rounded-xl" style={{ background: "var(--dash-surface)" }} />
             ))}
           </div>
         ) : trainers.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-[14px]" style={{ color: "#3a3a3a" }}>등록된 트레이너가 없습니다.</p>
+            <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>등록된 트레이너가 없습니다.</p>
           </div>
         ) : (
           trainers.map((t, i) => (
@@ -297,35 +297,35 @@ export default function DashboardTrainersPage() {
               className="grid items-center px-4 py-3 transition-colors select-none"
               style={{
                 gridTemplateColumns: "32px 40px 1fr 100px 90px 80px 80px 120px",
-                borderBottom: "1px solid rgba(255,255,255,0.03)",
+                borderBottom: "1px solid var(--dash-border-xs)",
                 opacity: t.isActive === false ? 0.45 : 1,
                 cursor: "default",
               }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.02)")}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
             >
               {/* 드래그 핸들 */}
-              <span className="cursor-grab active:cursor-grabbing" style={{ color: "#2a2a2a" }}>
+              <span className="cursor-grab active:cursor-grabbing" style={{ color: "var(--dash-text-faint)" }}>
                 <DragIcon />
               </span>
 
               {/* 순서 번호 */}
-              <span className="text-[12px] font-mono" style={{ color: "#2a2a2a" }}>{i + 1}</span>
+              <span className="text-[12px] font-mono" style={{ color: "var(--dash-text-faint)" }}>{i + 1}</span>
 
               {/* 이름 + 이미지 */}
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar name={t.name} image={t.profileImage || undefined} size={34} />
                 <div className="min-w-0">
-                  <p className="text-[13.5px] font-semibold truncate" style={{ color: "#ffffff" }}>{t.name}</p>
-                  <p className="text-[11.5px] truncate" style={{ color: "#3a3a3a" }}>{t.careerYears}년차</p>
+                  <p className="text-[13.5px] font-semibold truncate" style={{ color: "var(--dash-text)" }}>{t.name}</p>
+                  <p className="text-[11.5px] truncate" style={{ color: "var(--dash-text-dimmed)" }}>{t.careerYears}년차</p>
                 </div>
               </div>
 
               {/* 전문 분야 */}
-              <span className="text-[12.5px] truncate" style={{ color: "#a0a0a0" }}>{t.specialty}</span>
+              <span className="text-[12.5px] truncate" style={{ color: "var(--dash-text-sub)" }}>{t.specialty}</span>
 
               {/* 지점 */}
-              <span className="text-[12px] truncate" style={{ color: t.branch ? "#5a5a5a" : "#2a2a2a" }}>
+              <span className="text-[12px] truncate" style={{ color: t.branch ? "var(--dash-text-muted)" : "var(--dash-text-faint)" }}>
                 {t.branch || "—"}
               </span>
 
@@ -349,9 +349,9 @@ export default function DashboardTrainersPage() {
                 <button
                   onClick={() => router.push(`/dashboard/trainers/${t.id}`)}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-all"
-                  style={{ background: "#1a1a1a", color: "#8eabff", border: "1px solid rgba(142,171,255,0.15)" }}
+                  style={{ background: "var(--dash-surface)", color: "#8eabff", border: "1px solid rgba(142,171,255,0.15)" }}
                   onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(142,171,255,0.10)")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "#1a1a1a")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-surface)")}
                 >
                   <EditIcon />
                   수정
@@ -359,14 +359,14 @@ export default function DashboardTrainersPage() {
                 <button
                   onClick={() => setDeleteTarget(t)}
                   className="flex items-center justify-center w-7 h-7 rounded-lg transition-all"
-                  style={{ background: "#1a1a1a", color: "#3a3a3a", border: "1px solid rgba(255,255,255,0.05)" }}
+                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-dimmed)", border: "1px solid var(--dash-border)" }}
                   onMouseEnter={(e) => {
                     (e.currentTarget as HTMLElement).style.background = "rgba(248,113,113,0.10)";
                     (e.currentTarget as HTMLElement).style.color = "#f87171";
                   }}
                   onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "#1a1a1a";
-                    (e.currentTarget as HTMLElement).style.color = "#3a3a3a";
+                    (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)";
+                    (e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)";
                   }}
                 >
                   <TrashIcon />

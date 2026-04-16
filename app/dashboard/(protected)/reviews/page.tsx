@@ -12,8 +12,10 @@ function Stars({ rating, size = 13 }: { rating: number; size?: number }) {
         <svg key={i} width={size} height={size} viewBox="0 0 24 24">
           <path
             d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-            fill={i <= rating ? "#c9a96e" : "rgba(255,255,255,0.06)"}
-            stroke={i <= rating ? "#c9a96e" : "rgba(255,255,255,0.08)"}
+            style={{
+              fill: i <= rating ? "#c9a96e" : "var(--dash-stars-empty)",
+              stroke: i <= rating ? "#c9a96e" : "var(--dash-stars-stroke)",
+            }}
             strokeWidth="1"
           />
         </svg>
@@ -40,21 +42,21 @@ function DeleteModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}>
       <div className="w-full max-w-[400px] rounded-2xl p-6 mx-4"
-        style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <h3 className="text-[16px] font-bold mb-1.5" style={{ color: "#ffffff" }}>후기 삭제</h3>
-        <p className="text-[13px] mb-3" style={{ color: "#5a5a5a" }}>
-          <span style={{ color: "#a0a0a0" }}>{trainerName}</span> 트레이너의 후기를 삭제하시겠습니까?
+        style={{ background: "var(--dash-surface)", border: "1px solid var(--dash-modal-border)" }}>
+        <h3 className="text-[16px] font-bold mb-1.5" style={{ color: "var(--dash-text)" }}>후기 삭제</h3>
+        <p className="text-[13px] mb-3" style={{ color: "var(--dash-text-muted)" }}>
+          <span style={{ color: "var(--dash-text-sub)" }}>{trainerName}</span> 트레이너의 후기를 삭제하시겠습니까?
         </p>
         <div
           className="px-4 py-3 rounded-xl mb-5 text-[13px] leading-relaxed italic"
-          style={{ background: "rgba(248,113,113,0.06)", border: "1px solid rgba(248,113,113,0.12)", color: "#a0a0a0" }}
+          style={{ background: "rgba(248,113,113,0.06)", border: "1px solid rgba(248,113,113,0.12)", color: "var(--dash-text-sub)" }}
         >
           &ldquo;{review.comment.slice(0, 80)}{review.comment.length > 80 ? "…" : ""}&rdquo;
         </div>
         <div className="flex gap-2.5">
           <button onClick={onCancel} disabled={loading}
             className="flex-1 py-3 rounded-xl text-[13.5px] font-medium"
-            style={{ background: "#141414", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+            style={{ background: "var(--dash-card)", color: "var(--dash-text-sub)", border: "1px solid var(--dash-hover-btn)" }}>
             취소
           </button>
           <button onClick={onConfirm} disabled={loading}
@@ -164,16 +166,16 @@ export default function DashboardReviewsPage() {
 
       {/* 헤더 */}
       <div className="mb-6">
-        <h2 className="text-[20px] font-bold" style={{ color: "#ffffff" }}>후기 관리</h2>
-        <p className="text-[13px] mt-0.5" style={{ color: "#3a3a3a" }}>전체 {reviews.length}건</p>
+        <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>후기 관리</h2>
+        <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>전체 {reviews.length}건</p>
       </div>
 
       {/* 상단 요약 카드 */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-5">
         {/* 평균 평점 */}
         <div className="rounded-2xl p-5 col-span-2 lg:col-span-1"
-          style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
-          <p className="text-[12px] mb-2" style={{ color: "#5a5a5a" }}>전체 평균 평점</p>
+          style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+          <p className="text-[12px] mb-2" style={{ color: "var(--dash-text-muted)" }}>전체 평균 평점</p>
           <div className="flex items-end gap-2">
             <p className="text-[32px] font-bold leading-none" style={{ color: "#c9a96e" }}>
               {avgRating.toFixed(1)}
@@ -186,24 +188,24 @@ export default function DashboardReviewsPage() {
 
         {/* 평점 분포 */}
         <div className="rounded-2xl p-5 col-span-2 lg:col-span-3"
-          style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
-          <p className="text-[12px] mb-3" style={{ color: "#5a5a5a" }}>평점 분포</p>
+          style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+          <p className="text-[12px] mb-3" style={{ color: "var(--dash-text-muted)" }}>평점 분포</p>
           <div className="flex flex-col gap-1.5">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = ratingDist[star] ?? 0;
               const pct   = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="text-[11.5px] w-4 text-right flex-shrink-0" style={{ color: "#5a5a5a" }}>{star}</span>
+                  <span className="text-[11.5px] w-4 text-right flex-shrink-0" style={{ color: "var(--dash-text-muted)" }}>{star}</span>
                   <svg width="11" height="11" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
                       fill="#c9a96e" />
                   </svg>
-                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
+                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--dash-progress-bg)" }}>
                     <div className="h-full rounded-full transition-all duration-500"
                       style={{ width: `${pct}%`, background: "#c9a96e", opacity: 0.75 }} />
                   </div>
-                  <span className="text-[11.5px] w-6 text-right flex-shrink-0" style={{ color: "#3a3a3a" }}>{count}</span>
+                  <span className="text-[11.5px] w-6 text-right flex-shrink-0" style={{ color: "var(--dash-text-dimmed)" }}>{count}</span>
                 </div>
               );
             })}
@@ -227,9 +229,9 @@ export default function DashboardReviewsPage() {
             onChange={(e) => setTrainerFilter(e.target.value)}
             className="px-3 py-2 rounded-xl text-[12.5px] outline-none"
             style={{
-              background: trainerFilter ? "rgba(142,171,255,0.10)" : "#141414",
-              border: `1px solid ${trainerFilter ? "rgba(142,171,255,0.25)" : "rgba(255,255,255,0.05)"}`,
-              color: trainerFilter ? "#8eabff" : "#5a5a5a",
+              background: trainerFilter ? "rgba(142,171,255,0.10)" : "var(--dash-card)",
+              border: `1px solid ${trainerFilter ? "rgba(142,171,255,0.25)" : "var(--dash-border)"}`,
+              color: trainerFilter ? "#8eabff" : "var(--dash-text-muted)",
             }}
           >
             <option value="">전체 트레이너</option>
@@ -245,9 +247,9 @@ export default function DashboardReviewsPage() {
               onClick={() => setRatingFilter(ratingFilter === chip.value ? "" : chip.value)}
               className="px-3 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
               style={{
-                background: ratingFilter === chip.value ? "rgba(201,169,110,0.12)" : "#141414",
-                color:      ratingFilter === chip.value ? "#c9a96e" : "#5a5a5a",
-                border:     `1px solid ${ratingFilter === chip.value ? "rgba(201,169,110,0.25)" : "rgba(255,255,255,0.05)"}`,
+                background: ratingFilter === chip.value ? "rgba(201,169,110,0.12)" : "var(--dash-card)",
+                color:      ratingFilter === chip.value ? "#c9a96e" : "var(--dash-text-muted)",
+                border:     `1px solid ${ratingFilter === chip.value ? "rgba(201,169,110,0.25)" : "var(--dash-border)"}`,
               }}
             >
               {chip.label}
@@ -268,29 +270,29 @@ export default function DashboardReviewsPage() {
 
       {/* 후기 목록 */}
       <div className="rounded-2xl overflow-hidden"
-        style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
+        style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
 
         {/* 컬럼 헤더 */}
         <div className="grid px-5 py-3"
           style={{
             gridTemplateColumns: "140px 80px 1fr 100px",
-            borderBottom: "1px solid rgba(255,255,255,0.05)",
+            borderBottom: "1px solid var(--dash-border)",
           }}>
           {["트레이너", "평점", "후기 내용", ""].map((h, i) => (
             <span key={i} className="text-[11px] font-semibold tracking-[0.1em] uppercase"
-              style={{ color: "#3a3a3a" }}>{h}</span>
+              style={{ color: "var(--dash-text-dimmed)" }}>{h}</span>
           ))}
         </div>
 
         {loading ? (
           <div className="p-6 flex flex-col gap-3 animate-pulse">
             {[1,2,3,4,5].map((i) => (
-              <div key={i} className="h-16 rounded-xl" style={{ background: "#1a1a1a" }} />
+              <div key={i} className="h-16 rounded-xl" style={{ background: "var(--dash-surface)" }} />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-[14px]" style={{ color: "#3a3a3a" }}>
+            <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
               {reviews.length === 0 ? "등록된 후기가 없습니다." : "검색 결과가 없습니다."}
             </p>
           </div>
@@ -309,20 +311,20 @@ export default function DashboardReviewsPage() {
                 className="grid items-start px-5 py-4 transition-colors"
                 style={{
                   gridTemplateColumns: "140px 80px 1fr 100px",
-                  borderBottom: "1px solid rgba(255,255,255,0.03)",
+                  borderBottom: "1px solid var(--dash-border-xs)",
                 }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.02)")}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
               >
                 {/* 트레이너 */}
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                    style={{ background: "#1f1f1f", color: "#8eabff" }}>
+                    style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}>
                     {trainerName.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-[13px] font-medium leading-tight" style={{ color: "#ffffff" }}>{trainerName}</p>
-                    <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{review.authorMasked}</p>
+                    <p className="text-[13px] font-medium leading-tight" style={{ color: "var(--dash-text)" }}>{trainerName}</p>
+                    <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{review.authorMasked}</p>
                   </div>
                 </div>
 
@@ -336,10 +338,10 @@ export default function DashboardReviewsPage() {
 
                 {/* 후기 내용 */}
                 <div className="pr-4">
-                  <p className="text-[13px] leading-relaxed" style={{ color: "#b0b0b0" }}>
+                  <p className="text-[13px] leading-relaxed" style={{ color: "var(--dash-text-sub)" }}>
                     &ldquo;{review.comment}&rdquo;
                   </p>
-                  <p className="text-[11px] mt-1" style={{ color: "#3a3a3a" }}>{daysLabel}</p>
+                  <p className="text-[11px] mt-1" style={{ color: "var(--dash-text-dimmed)" }}>{daysLabel}</p>
                 </div>
 
                 {/* 삭제 버튼 */}
@@ -347,14 +349,14 @@ export default function DashboardReviewsPage() {
                   <button
                     onClick={() => setDeleteTarget(review)}
                     className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
-                    style={{ background: "#1a1a1a", color: "#3a3a3a", border: "1px solid rgba(255,255,255,0.04)" }}
+                    style={{ background: "var(--dash-surface)", color: "var(--dash-text-dimmed)", border: "1px solid var(--dash-border-sm)" }}
                     onMouseEnter={(e) => {
                       (e.currentTarget as HTMLElement).style.background = "rgba(248,113,113,0.10)";
                       (e.currentTarget as HTMLElement).style.color = "#f87171";
                     }}
                     onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.background = "#1a1a1a";
-                      (e.currentTarget as HTMLElement).style.color = "#3a3a3a";
+                      (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)";
                     }}
                   >
                     삭제
@@ -368,7 +370,7 @@ export default function DashboardReviewsPage() {
 
       {/* 결과 수 */}
       {!loading && filtered.length > 0 && (
-        <p className="text-[12px] mt-3" style={{ color: "#2a2a2a" }}>
+        <p className="text-[12px] mt-3" style={{ color: "var(--dash-text-faint)" }}>
           {filtered.length}건 표시 중 (전체 {reviews.length}건)
         </p>
       )}

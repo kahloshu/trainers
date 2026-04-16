@@ -7,23 +7,14 @@ import {
 } from "recharts";
 import { getAllApplications, type Application, type AppStatus } from "@/app/data/applications";
 import { getAllTrainers, type Trainer } from "@/app/data/trainers";
+import { useTheme } from "@/app/dashboard/ThemeContext";
 
-/* ── 공통 차트 색 ── */
+/* ── 공통 차트 색 (테마 무관) ── */
 const C = {
-  blue:    "#8eabff",
-  green:   "#34d399",
-  yellow:  "#fbbf24",
-  red:     "#f87171",
-  muted:   "#2a2a2a",
-  surface: "#141414",
-  border:  "rgba(255,255,255,0.05)",
-};
-
-/* ── Tooltip 공통 스타일 ── */
-const TOOLTIP_STYLE = {
-  contentStyle: { background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, fontSize: 12, color: "#d0d0d0" },
-  itemStyle:    { color: "#d0d0d0" },
-  cursor:       { fill: "rgba(255,255,255,0.03)" },
+  blue:   "#8eabff",
+  green:  "#34d399",
+  yellow: "#fbbf24",
+  red:    "#f87171",
 };
 
 /* ─────────────────────── 유틸 ─────────────────────── */
@@ -62,9 +53,9 @@ function KpiCard({
 }) {
   return (
     <div className="rounded-2xl p-5 flex flex-col gap-3"
-      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
+      style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
       <div className="flex items-center justify-between">
-        <p className="text-[12px] font-medium" style={{ color: "#5a5a5a" }}>{label}</p>
+        <p className="text-[12px] font-medium" style={{ color: "var(--dash-text-muted)" }}>{label}</p>
         {trend && (
           <span
             className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
@@ -79,7 +70,7 @@ function KpiCard({
       </div>
       <div>
         <p className="text-[32px] font-bold leading-none" style={{ color }}>{value}</p>
-        {sub && <p className="text-[12px] mt-1.5" style={{ color: "#3a3a3a" }}>{sub}</p>}
+        {sub && <p className="text-[12px] mt-1.5" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>}
       </div>
     </div>
   );
@@ -89,10 +80,10 @@ function KpiCard({
 function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl overflow-hidden"
-      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-      <div className="px-5 py-4" style={{ borderBottom: `1px solid ${C.border}` }}>
-        <p className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>{title}</p>
-        {sub && <p className="text-[12px] mt-0.5" style={{ color: "#3a3a3a" }}>{sub}</p>}
+      style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+      <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--dash-border)" }}>
+        <p className="text-[14px] font-semibold" style={{ color: "var(--dash-text)" }}>{title}</p>
+        {sub && <p className="text-[12px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>}
       </div>
       <div className="p-5">{children}</div>
     </div>
@@ -116,7 +107,7 @@ function PeriodTab({
           className="px-3 py-1 rounded-lg text-[12px] font-medium transition-all"
           style={{
             background: value === o.value ? "rgba(142,171,255,0.12)" : "transparent",
-            color:      value === o.value ? C.blue : "#3a3a3a",
+            color:      value === o.value ? C.blue : "var(--dash-text-dimmed)",
             border:     `1px solid ${value === o.value ? "rgba(142,171,255,0.25)" : "transparent"}`,
           }}
         >
@@ -146,6 +137,34 @@ export default function StatsPage() {
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [loading, setLoading]   = useState(true);
   const [period, setPeriod]     = useState(30);
+  const { theme } = useTheme();
+  const isDark = theme !== "light";
+
+  /* 테마 기반 차트 색상 */
+  const chartColors = {
+    grid:    isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.06)",
+    tick:    isDark ? "#3a3a3a" : "#9ca3af",
+    tick2:   isDark ? "#a0a0a0" : "#6b7280",
+    muted:   isDark ? "#2a2a2a" : "#9ca3af",
+    tooltip: {
+      bg:     isDark ? "#1a1a1a" : "#ffffff",
+      border: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.10)",
+      text:   isDark ? "#d0d0d0" : "#374151",
+    },
+    cursor:  isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.04)",
+  };
+
+  const TOOLTIP_STYLE = {
+    contentStyle: {
+      background: chartColors.tooltip.bg,
+      border: `1px solid ${chartColors.tooltip.border}`,
+      borderRadius: 12,
+      fontSize: 12,
+      color: chartColors.tooltip.text,
+    },
+    itemStyle: { color: chartColors.tooltip.text },
+    cursor:    { fill: chartColors.cursor },
+  };
 
   useEffect(() => {
     Promise.all([getAllApplications(), getAllTrainers()]).then(([a, t]) => {
@@ -185,10 +204,10 @@ export default function StatsPage() {
     return trainers.map((t) => {
       const ta = apps.filter((a) => a.trainerId === t.id);
       return {
-        name:      t.name,
-        신청:      ta.length,
-        확정:      ta.filter((a) => a.status === "confirmed" || a.status === "completed").length,
-        완료:      ta.filter((a) => a.status === "completed").length,
+        name:  t.name,
+        신청:  ta.length,
+        확정:  ta.filter((a) => a.status === "confirmed" || a.status === "completed").length,
+        완료:  ta.filter((a) => a.status === "completed").length,
       };
     }).sort((a, b) => b.신청 - a.신청);
   }, [apps, trainers]);
@@ -218,21 +237,22 @@ export default function StatsPage() {
     const map: Record<string, number> = { pending: 0, confirmed: 0, completed: 0, cancelled: 0 };
     apps.forEach((a) => { map[a.status]++; });
     const colors: Record<string, string> = {
-      pending: C.red, confirmed: C.yellow, completed: C.green, cancelled: C.muted,
+      pending: C.red, confirmed: C.yellow, completed: C.green, cancelled: chartColors.muted,
     };
     return (Object.keys(map) as AppStatus[]).map((k) => ({
       name: STATUS_KO[k], value: map[k], color: colors[k],
     }));
-  }, [apps]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apps, isDark]);
 
   /* ── 로딩 스켈레톤 ── */
   if (loading) {
     return (
       <div className="p-6 flex flex-col gap-4 animate-pulse">
         <div className="grid grid-cols-4 gap-3">
-          {[1,2,3,4].map((i) => <div key={i} className="h-28 rounded-2xl" style={{ background: C.surface }} />)}
+          {[1,2,3,4].map((i) => <div key={i} className="h-28 rounded-2xl" style={{ background: "var(--dash-card)" }} />)}
         </div>
-        {[1,2,3].map((i) => <div key={i} className="h-64 rounded-2xl" style={{ background: C.surface }} />)}
+        {[1,2,3].map((i) => <div key={i} className="h-64 rounded-2xl" style={{ background: "var(--dash-card)" }} />)}
       </div>
     );
   }
@@ -242,7 +262,7 @@ export default function StatsPage() {
 
       {/* ── KPI 카드 ── */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <KpiCard label="전체 신청" value={kpi.total}     color="#ffffff"  sub="누적 신청 건수" />
+        <KpiCard label="전체 신청" value={kpi.total}     color="var(--dash-text)"  sub="누적 신청 건수" />
         <KpiCard label="대기 중"   value={kpi.pending}   color={C.red}    sub="응답 필요" />
         <KpiCard label="확정됨"    value={kpi.confirmed} color={C.yellow} sub="일정 조율 중" />
         <KpiCard label="완료"      value={kpi.completed} color={C.green}  sub="OT 완료" />
@@ -250,19 +270,16 @@ export default function StatsPage() {
       </div>
 
       {/* ── 신청 추이 ── */}
-      <Section
-        title="신청 추이"
-        sub="일별 신청 건수 및 완료 건수"
-      >
+      <Section title="신청 추이" sub="일별 신청 건수 및 완료 건수">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-0.5 rounded-full" style={{ background: C.blue }} />
-              <span className="text-[11px]" style={{ color: "#5a5a5a" }}>신청</span>
+              <span className="text-[11px]" style={{ color: "var(--dash-text-muted)" }}>신청</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-0.5 rounded-full" style={{ background: C.green }} />
-              <span className="text-[11px]" style={{ color: "#5a5a5a" }}>완료</span>
+              <span className="text-[11px]" style={{ color: "var(--dash-text-muted)" }}>완료</span>
             </div>
           </div>
           <PeriodTab value={period} options={PERIOD_OPTIONS} onChange={setPeriod} />
@@ -279,10 +296,10 @@ export default function StatsPage() {
                 <stop offset="100%" stopColor={C.green} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false}
+            <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: chartColors.tick }} tickLine={false} axisLine={false}
               interval={period <= 7 ? 0 : period <= 30 ? 4 : 13} />
-            <YAxis tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+            <YAxis tick={{ fontSize: 11, fill: chartColors.tick }} tickLine={false} axisLine={false} allowDecimals={false} />
             <Tooltip {...TOOLTIP_STYLE} />
             <Area type="monotone" dataKey="total" name="신청" stroke={C.blue} strokeWidth={2}
               fill="url(#gBlue)" dot={false} activeDot={{ r: 4, fill: C.blue }} />
@@ -295,7 +312,7 @@ export default function StatsPage() {
       {/* ── 트레이너별 현황 ── */}
       <Section title="트레이너별 현황" sub="신청 · 확정 · 완료 건수 비교">
         {trainerData.length === 0 ? (
-          <p className="text-[13px] py-8 text-center" style={{ color: "#3a3a3a" }}>데이터 없음</p>
+          <p className="text-[13px] py-8 text-center" style={{ color: "var(--dash-text-dimmed)" }}>데이터 없음</p>
         ) : (
           <ResponsiveContainer width="100%" height={Math.max(180, trainerData.length * 48)}>
             <BarChart
@@ -305,12 +322,12 @@ export default function StatsPage() {
               barCategoryGap="28%"
               barGap={3}
             >
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: "#a0a0a0" }} tickLine={false} axisLine={false} width={60} />
+              <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: chartColors.tick }} tickLine={false} axisLine={false} allowDecimals={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: chartColors.tick2 }} tickLine={false} axisLine={false} width={60} />
               <Tooltip {...TOOLTIP_STYLE} />
               <Legend
-                wrapperStyle={{ fontSize: 11, color: "#5a5a5a", paddingTop: 12 }}
+                wrapperStyle={{ fontSize: 11, color: "var(--dash-text-muted)", paddingTop: 12 }}
                 iconType="circle" iconSize={8}
               />
               <Bar dataKey="신청" fill={C.blue}   radius={[0, 4, 4, 0]} maxBarSize={14} />
@@ -328,9 +345,9 @@ export default function StatsPage() {
         <Section title="요일별 신청" sub="선택된 희망 요일 분포">
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={dayData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#5a5a5a" }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+              <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: chartColors.tick2 }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: chartColors.tick }} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [v, "신청 수"]} />
               <Bar dataKey="value" name="신청 수" radius={[6, 6, 0, 0]} maxBarSize={40}>
                 {dayData.map((_, i) => (
@@ -344,7 +361,7 @@ export default function StatsPage() {
             {dayData.map((d, i) => (
               <div key={d.name} className="flex-1 text-center">
                 <p className="text-[18px] font-bold" style={{ color: [C.blue, C.yellow, C.green][i % 3] }}>{d.value}</p>
-                <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{d.name}</p>
+                <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{d.name}</p>
               </div>
             ))}
           </div>
@@ -354,9 +371,9 @@ export default function StatsPage() {
         <Section title="시간대별 신청" sub="선택된 희망 시간대 분포">
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={timeData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
-              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#5a5a5a" }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#3a3a3a" }} tickLine={false} axisLine={false} allowDecimals={false} />
+              <CartesianGrid stroke={chartColors.grid} strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: chartColors.tick2 }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: chartColors.tick }} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip {...TOOLTIP_STYLE} formatter={(v) => [v, "신청 수"]} />
               <Bar dataKey="value" name="신청 수" radius={[6, 6, 0, 0]} maxBarSize={40}>
                 {timeData.map((_, i) => (
@@ -369,7 +386,7 @@ export default function StatsPage() {
             {timeData.map((d, i) => (
               <div key={d.name} className="flex-1 text-center">
                 <p className="text-[18px] font-bold" style={{ color: [C.yellow, C.blue, C.red][i % 3] }}>{d.value}</p>
-                <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{d.name}</p>
+                <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{d.name}</p>
               </div>
             ))}
           </div>
@@ -383,13 +400,13 @@ export default function StatsPage() {
               return (
                 <div key={s.name}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[12.5px]" style={{ color: "#a0a0a0" }}>{s.name}</span>
+                    <span className="text-[12.5px]" style={{ color: "var(--dash-text-sub)" }}>{s.name}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-[13px] font-semibold" style={{ color: s.color }}>{s.value}</span>
-                      <span className="text-[11px]" style={{ color: "#3a3a3a" }}>{pct}%</span>
+                      <span className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{pct}%</span>
                     </div>
                   </div>
-                  <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "var(--dash-progress-bg)" }}>
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{ width: `${pct}%`, background: s.color, opacity: 0.8 }}
@@ -406,12 +423,12 @@ export default function StatsPage() {
             style={{ background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.12)" }}
           >
             <div>
-              <p className="text-[11px]" style={{ color: "#3a3a3a" }}>신청 → 완료 전환율</p>
+              <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>신청 → 완료 전환율</p>
               <p className="text-[22px] font-bold mt-0.5" style={{ color: C.green }}>{kpi.convRate}%</p>
             </div>
             <div className="text-right">
-              <p className="text-[11px]" style={{ color: "#3a3a3a" }}>완료</p>
-              <p className="text-[16px] font-semibold" style={{ color: "#ffffff" }}>{kpi.completed} / {kpi.total}</p>
+              <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>완료</p>
+              <p className="text-[16px] font-semibold" style={{ color: "var(--dash-text)" }}>{kpi.completed} / {kpi.total}</p>
             </div>
           </div>
         </Section>
