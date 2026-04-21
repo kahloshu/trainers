@@ -183,7 +183,7 @@ function GallerySlider({ images }: { images: string[] }) {
                 key={i}
                 onClick={() => setLightboxIdx(i)}
                 style={{
-                  aspectRatio: "1",
+                  ...(images.length === 1 ? { maxHeight: "280px" } : { aspectRatio: "1" }),
                   borderRadius: "12px",
                   overflow: "hidden",
                   cursor: "pointer",
