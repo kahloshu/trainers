@@ -18,19 +18,24 @@ export interface TrainerSession {
 export async function validateSession(token: string | undefined): Promise<TrainerSession | null> {
   if (!token) return null;
 
-  const { data, error } = await supabase
+  const { data: session, error } = await supabase
     .from("trainer_sessions")
-    .select("trainer_id, expires_at, trainers(id, name, phone)")
+    .select("trainer_id, expires_at")
     .eq("token", token)
     .single();
 
-  if (error || !data) return null;
-  if (new Date(data.expires_at) < new Date()) return null;
+  if (error || !session) return null;
+  if (new Date(session.expires_at) < new Date()) return null;
 
-  const t = data.trainers as unknown as { id: string; name: string; phone: string } | null;
-  if (!t) return null;
+  const { data: trainer } = await supabase
+    .from("trainers")
+    .select("id, name, phone")
+    .eq("id", session.trainer_id)
+    .single();
 
-  return { trainerId: t.id, trainerName: t.name, phone: t.phone ?? "" };
+  if (!trainer) return null;
+
+  return { trainerId: trainer.id, trainerName: trainer.name, phone: trainer.phone ?? "" };
 }
 
 /** OTP 생성 (6자리 숫자) */

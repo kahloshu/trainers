@@ -188,7 +188,7 @@ export default function TrainerLoginPage() {
             )}
 
             {/* OTP 입력 박스 */}
-            <div className="flex gap-2 mb-4" onPaste={handleOtpPaste}>
+            <div className="grid grid-cols-6 gap-2 mb-4" onPaste={handleOtpPaste}>
               {otp.map((v, i) => (
                 <input
                   key={i}
@@ -201,7 +201,7 @@ export default function TrainerLoginPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Backspace" && !v && i > 0) otpRefs.current[i - 1]?.focus();
                   }}
-                  className="flex-1 h-12 text-center text-[20px] font-bold rounded-xl outline-none"
+                  className="w-full h-12 text-center text-[20px] font-bold rounded-xl outline-none"
                   style={{
                     background: v ? "rgba(47,107,255,0.12)" : "#252525",
                     border: `1.5px solid ${v ? "#2F6BFF" : "rgba(255,255,255,0.08)"}`,

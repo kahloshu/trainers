@@ -138,100 +138,152 @@ export default function DashboardApplicationsPage() {
         />
       </div>
 
-      {/* 테이블 */}
-      <div
-        className="dash-card-el rounded-2xl overflow-hidden"
-        style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
-      >
-        {loading ? (
-          <div className="p-8 flex flex-col gap-3">
-            {[1,2,3,4,5].map((i) => (
-              <div key={i} className="h-12 rounded-xl animate-pulse" style={{ background: "var(--dash-surface)" }} />
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="py-16 text-center">
-            <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
-              {apps.length === 0 ? "신청 내역이 없습니다." : "검색 결과가 없습니다."}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr style={{ borderBottom: "1px solid var(--dash-border)" }}>
-                  <Th width="120">신청번호</Th>
-                  <Th width="120">신청자</Th>
-                  <Th width="130">연락처</Th>
-                  <Th width="130">트레이너</Th>
-                  <Th>운동 목적</Th>
-                  <Th>희망 일정</Th>
-                  <Th width="100">상태</Th>
-                  <Th width="160">신청일시</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((app) => {
-                  const s = STATUS_STYLE[app.status];
-                  const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
-                  const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
-                  return (
-                    <tr
-                      key={app.id}
-                      onClick={() => router.push(`/dashboard/applications/${app.id}`)}
-                      className="cursor-pointer transition-colors"
-                      style={{ borderBottom: "1px solid var(--dash-border-xs)" }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
-                    >
-                      <Td muted>#{app.id.slice(-6).toUpperCase()}</Td>
-                      <Td>
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                            style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}
-                          >
-                            {app.applicantName.charAt(0)}
-                          </div>
+      {/* 목록 */}
+      {loading ? (
+        <div className="flex flex-col gap-3 animate-pulse">
+          {[1,2,3,4,5].map((i) => (
+            <div key={i} className="h-16 rounded-2xl" style={{ background: "var(--dash-card)" }} />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="py-16 text-center rounded-2xl"
+          style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+          <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
+            {apps.length === 0 ? "신청 내역이 없습니다." : "검색 결과가 없습니다."}
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* ── 모바일 카드 (md 미만) ── */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {filtered.map((app) => {
+              const s = STATUS_STYLE[app.status];
+              const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
+              const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
+              return (
+                <div key={app.id}
+                  onClick={() => router.push(`/dashboard/applications/${app.id}`)}
+                  className="rounded-2xl px-4 py-3.5 cursor-pointer active:opacity-70"
+                  style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+                  {/* 상단: 신청자 + 상태 */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                        style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}>
+                        {app.applicantName.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-[13.5px] font-semibold leading-tight" style={{ color: "var(--dash-text)" }}>
                           {app.applicantName}
-                        </div>
-                      </Td>
-                      <Td muted>{app.applicantPhone}</Td>
-                      <Td>{app.trainerName}</Td>
-                      <Td>
-                        <div className="flex flex-wrap gap-1">
-                          {app.purposes.length > 0 ? app.purposes.map((p) => (
-                            <span
-                              key={p}
-                              className="px-2 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap"
-                              style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}
-                            >
-                              {p}
-                            </span>
-                          )) : <span style={{ color: "var(--dash-text-faint)" }}>—</span>}
-                        </div>
-                      </Td>
-                      <Td muted>
-                        <span>{days}</span>
-                        {times && <span className="ml-1 text-[11px]" style={{ color: "var(--dash-text-faint)" }}>/ {times}</span>}
-                      </Td>
-                      <Td>
-                        <span
-                          className="px-2.5 py-1 rounded-full text-[11.5px] font-semibold whitespace-nowrap"
-                          style={{ background: s.bg, color: s.text }}
-                        >
-                          {STATUS_LABEL[app.status]}
+                        </p>
+                        <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>
+                          {app.trainerName} · #{app.id.slice(-6).toUpperCase()}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold flex-shrink-0"
+                      style={{ background: s.bg, color: s.text }}>
+                      {STATUS_LABEL[app.status]}
+                    </span>
+                  </div>
+                  {/* 운동 목적 태그 */}
+                  {app.purposes.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {app.purposes.map((p) => (
+                        <span key={p} className="px-2 py-0.5 rounded-full text-[11px] font-medium"
+                          style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}>
+                          {p}
                         </span>
-                      </Td>
-                      <Td muted>{fmtDate(app.createdAt)}</Td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      ))}
+                    </div>
+                  )}
+                  {/* 하단: 일정 + 날짜 */}
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11.5px]" style={{ color: "var(--dash-text-muted)" }}>
+                      {days}{times ? ` / ${times}` : ""}
+                    </p>
+                    <p className="text-[11px]" style={{ color: "var(--dash-text-faint)" }}>
+                      {fmtDate(app.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        )}
-      </div>
+
+          {/* ── 데스크탑 테이블 (md 이상) ── */}
+          <div className="hidden md:block dash-card-el rounded-2xl overflow-hidden"
+            style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--dash-border)" }}>
+                    <Th width="120">신청번호</Th>
+                    <Th width="120">신청자</Th>
+                    <Th width="130">연락처</Th>
+                    <Th width="130">트레이너</Th>
+                    <Th>운동 목적</Th>
+                    <Th>희망 일정</Th>
+                    <Th width="100">상태</Th>
+                    <Th width="160">신청일시</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((app) => {
+                    const s = STATUS_STYLE[app.status];
+                    const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
+                    const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
+                    return (
+                      <tr key={app.id}
+                        onClick={() => router.push(`/dashboard/applications/${app.id}`)}
+                        className="cursor-pointer transition-colors"
+                        style={{ borderBottom: "1px solid var(--dash-border-xs)" }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
+                      >
+                        <Td muted>#{app.id.slice(-6).toUpperCase()}</Td>
+                        <Td>
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                              style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}>
+                              {app.applicantName.charAt(0)}
+                            </div>
+                            {app.applicantName}
+                          </div>
+                        </Td>
+                        <Td muted>{app.applicantPhone}</Td>
+                        <Td>{app.trainerName}</Td>
+                        <Td>
+                          <div className="flex flex-wrap gap-1">
+                            {app.purposes.length > 0 ? app.purposes.map((p) => (
+                              <span key={p}
+                                className="px-2 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap"
+                                style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}>
+                                {p}
+                              </span>
+                            )) : <span style={{ color: "var(--dash-text-faint)" }}>—</span>}
+                          </div>
+                        </Td>
+                        <Td muted>
+                          <span>{days}</span>
+                          {times && <span className="ml-1 text-[11px]" style={{ color: "var(--dash-text-faint)" }}>/ {times}</span>}
+                        </Td>
+                        <Td>
+                          <span className="px-2.5 py-1 rounded-full text-[11.5px] font-semibold whitespace-nowrap"
+                            style={{ background: s.bg, color: s.text }}>
+                            {STATUS_LABEL[app.status]}
+                          </span>
+                        </Td>
+                        <Td muted>{fmtDate(app.createdAt)}</Td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* 결과 수 */}
       {!loading && filtered.length > 0 && (

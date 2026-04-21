@@ -175,32 +175,34 @@ export default function DashboardReviewsPage() {
       </div>
 
       {/* 통계 카드 */}
-      <div className="grid grid-cols-2 md:flex gap-4 mb-8">
-        {/* 평균 평점 */}
-        <div className="dash-card-el flex-1 px-5 py-4 rounded-xl"
-          style={{ background: "var(--dash-card)", minWidth: 0 }}>
-          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
-            style={{ color: "var(--dash-text-dimmed)" }}>평균 평점</p>
-          <div className="flex items-end gap-2">
-            <p className="text-[28px] font-bold leading-none" style={{ color: "#c9a96e" }}>
-              {avgRating.toFixed(1)}
-            </p>
-            <div className="mb-0.5">
-              <Stars rating={Math.round(avgRating)} size={13} />
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-4 md:contents">
+          {/* 평균 평점 */}
+          <div className="dash-card-el md:flex-1 px-5 py-4 rounded-xl"
+            style={{ background: "var(--dash-card)", minWidth: 0 }}>
+            <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+              style={{ color: "var(--dash-text-dimmed)" }}>평균 평점</p>
+            <div className="flex items-end gap-2">
+              <p className="text-[28px] font-bold leading-none" style={{ color: "#c9a96e" }}>
+                {avgRating.toFixed(1)}
+              </p>
+              <div className="mb-0.5">
+                <Stars rating={Math.round(avgRating)} size={13} />
+              </div>
             </div>
+          </div>
+
+          {/* 전체 후기 수 */}
+          <div className="dash-card-el md:flex-1 px-5 py-4 rounded-xl"
+            style={{ background: "var(--dash-card)", minWidth: 0 }}>
+            <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+              style={{ color: "var(--dash-text-dimmed)" }}>전체 후기</p>
+            <p className="text-[28px] font-bold leading-none" style={{ color: "var(--dash-text)" }}>{reviews.length}</p>
           </div>
         </div>
 
-        {/* 전체 후기 수 */}
-        <div className="dash-card-el flex-1 px-5 py-4 rounded-xl"
-          style={{ background: "var(--dash-card)", minWidth: 0 }}>
-          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
-            style={{ color: "var(--dash-text-dimmed)" }}>전체 후기</p>
-          <p className="text-[28px] font-bold leading-none" style={{ color: "var(--dash-text)" }}>{reviews.length}</p>
-        </div>
-
         {/* 평점 분포 */}
-        <div className="dash-card-el flex-[3] px-5 py-4 rounded-xl"
+        <div className="dash-card-el md:flex-[3] px-5 py-4 rounded-xl"
           style={{ background: "var(--dash-card)", minWidth: 0 }}>
           <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-3"
             style={{ color: "var(--dash-text-dimmed)" }}>평점 분포</p>
@@ -283,104 +285,123 @@ export default function DashboardReviewsPage() {
       </div>
 
       {/* 후기 목록 */}
-      <div className="dash-card-el rounded-2xl overflow-hidden"
-        style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
-
-        {/* 컬럼 헤더 */}
-        <div className="grid px-5 py-3"
-          style={{
-            gridTemplateColumns: "140px 80px 1fr 100px",
-            borderBottom: "1px solid var(--dash-border)",
-          }}>
-          {["트레이너", "평점", "후기 내용", ""].map((h, i) => (
-            <span key={i} className="text-[11px] font-semibold tracking-[0.1em] uppercase"
-              style={{ color: "var(--dash-text-dimmed)" }}>{h}</span>
+      {loading ? (
+        <div className="flex flex-col gap-3 animate-pulse">
+          {[1,2,3,4,5].map((i) => (
+            <div key={i} className="h-20 rounded-2xl" style={{ background: "var(--dash-card)" }} />
           ))}
         </div>
-
-        {loading ? (
-          <div className="p-6 flex flex-col gap-3 animate-pulse">
-            {[1,2,3,4,5].map((i) => (
-              <div key={i} className="h-16 rounded-xl" style={{ background: "var(--dash-surface)" }} />
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="py-16 text-center">
-            <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
-              {reviews.length === 0 ? "등록된 후기가 없습니다." : "검색 결과가 없습니다."}
-            </p>
-          </div>
-        ) : (
-          filtered.map((review) => {
-            const trainerName = trainerMap[review.trainerId] ?? "알 수 없음";
-            const daysLabel =
-              review.daysAgo === 0 ? "오늘"
-              : review.daysAgo < 7 ? `${review.daysAgo}일 전`
-              : review.daysAgo < 30 ? `${Math.floor(review.daysAgo / 7)}주 전`
-              : `${Math.floor(review.daysAgo / 30)}개월 전`;
-
-            return (
-              <div
-                key={review.id}
-                className="grid items-start px-5 py-4 transition-colors"
-                style={{
-                  gridTemplateColumns: "140px 80px 1fr 100px",
-                  borderBottom: "1px solid var(--dash-border-xs)",
-                }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
-              >
-                {/* 트레이너 */}
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                    style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}>
-                    {trainerName.charAt(0)}
+      ) : filtered.length === 0 ? (
+        <div className="py-16 text-center rounded-2xl" style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+          <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
+            {reviews.length === 0 ? "등록된 후기가 없습니다." : "검색 결과가 없습니다."}
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* ── 모바일 카드 (md 미만) ── */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {filtered.map((review) => {
+              const trainerName = trainerMap[review.trainerId] ?? "알 수 없음";
+              const daysLabel =
+                review.daysAgo === 0 ? "오늘"
+                : review.daysAgo < 7 ? `${review.daysAgo}일 전`
+                : review.daysAgo < 30 ? `${Math.floor(review.daysAgo / 7)}주 전`
+                : `${Math.floor(review.daysAgo / 30)}개월 전`;
+              return (
+                <div key={review.id} className="rounded-2xl px-4 py-3.5"
+                  style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+                  {/* 상단: 트레이너 + 평점 + 삭제 */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                      style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}>
+                      {trainerName.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-semibold" style={{ color: "var(--dash-text)" }}>{trainerName}</p>
+                      <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{review.authorMasked} · {daysLabel}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <Stars rating={review.rating} size={11} />
+                      <span className="text-[12px] font-semibold" style={{ color: "#c9a96e" }}>{review.rating}.0</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[13px] font-medium leading-tight" style={{ color: "var(--dash-text)" }}>{trainerName}</p>
-                    <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{review.authorMasked}</p>
-                  </div>
-                </div>
-
-                {/* 평점 */}
-                <div className="flex flex-col gap-0.5 pt-0.5">
-                  <Stars rating={review.rating} size={11} />
-                  <span className="text-[12px] font-semibold" style={{ color: "#c9a96e" }}>
-                    {review.rating}.0
-                  </span>
-                </div>
-
-                {/* 후기 내용 */}
-                <div className="pr-4">
-                  <p className="text-[13px] leading-relaxed" style={{ color: "var(--dash-text-sub)" }}>
+                  {/* 내용 */}
+                  <p className="text-[13px] leading-relaxed mb-3" style={{ color: "var(--dash-text-sub)" }}>
                     &ldquo;{review.comment}&rdquo;
                   </p>
-                  <p className="text-[11px] mt-1" style={{ color: "var(--dash-text-dimmed)" }}>{daysLabel}</p>
-                </div>
-
-                {/* 삭제 버튼 */}
-                <div className="flex justify-end">
                   <button
                     onClick={() => setDeleteTarget(review)}
-                    className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
-                    style={{ background: "var(--dash-surface)", color: "var(--dash-text-dimmed)", border: "1px solid var(--dash-border-sm)" }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.background = "rgba(248,113,113,0.10)";
-                      (e.currentTarget as HTMLElement).style.color = "#f87171";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)";
-                      (e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)";
-                    }}
-                  >
+                    className="px-3 py-1.5 rounded-lg text-[12px] font-medium"
+                    style={{ background: "rgba(248,113,113,0.08)", color: "#f87171", border: "1px solid rgba(248,113,113,0.15)" }}>
                     삭제
                   </button>
                 </div>
-              </div>
-            );
-          })
-        )}
-      </div>
+              );
+            })}
+          </div>
+
+          {/* ── 데스크탑 테이블 (md 이상) ── */}
+          <div className="hidden md:block dash-card-el rounded-2xl overflow-hidden"
+            style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+            <div className="grid px-5 py-3"
+              style={{ gridTemplateColumns: "140px 80px 1fr 100px", borderBottom: "1px solid var(--dash-border)" }}>
+              {["트레이너", "평점", "후기 내용", ""].map((h, i) => (
+                <span key={i} className="text-[11px] font-semibold tracking-[0.1em] uppercase"
+                  style={{ color: "var(--dash-text-dimmed)" }}>{h}</span>
+              ))}
+            </div>
+            {filtered.map((review) => {
+              const trainerName = trainerMap[review.trainerId] ?? "알 수 없음";
+              const daysLabel =
+                review.daysAgo === 0 ? "오늘"
+                : review.daysAgo < 7 ? `${review.daysAgo}일 전`
+                : review.daysAgo < 30 ? `${Math.floor(review.daysAgo / 7)}주 전`
+                : `${Math.floor(review.daysAgo / 30)}개월 전`;
+              return (
+                <div key={review.id}
+                  className="grid items-start px-5 py-4 transition-colors"
+                  style={{ gridTemplateColumns: "140px 80px 1fr 100px", borderBottom: "1px solid var(--dash-border-xs)" }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                      style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}>
+                      {trainerName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-medium leading-tight" style={{ color: "var(--dash-text)" }}>{trainerName}</p>
+                      <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{review.authorMasked}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-0.5 pt-0.5">
+                    <Stars rating={review.rating} size={11} />
+                    <span className="text-[12px] font-semibold" style={{ color: "#c9a96e" }}>{review.rating}.0</span>
+                  </div>
+                  <div className="pr-4">
+                    <p className="text-[13px] leading-relaxed" style={{ color: "var(--dash-text-sub)" }}>
+                      &ldquo;{review.comment}&rdquo;
+                    </p>
+                    <p className="text-[11px] mt-1" style={{ color: "var(--dash-text-dimmed)" }}>{daysLabel}</p>
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setDeleteTarget(review)}
+                      className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
+                      style={{ background: "var(--dash-surface)", color: "var(--dash-text-dimmed)", border: "1px solid var(--dash-border-sm)" }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(248,113,113,0.10)"; (e.currentTarget as HTMLElement).style.color = "#f87171"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)"; (e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)"; }}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {/* 결과 수 */}
       {!loading && filtered.length > 0 && (

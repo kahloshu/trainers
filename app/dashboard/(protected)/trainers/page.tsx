@@ -300,155 +300,200 @@ export default function DashboardTrainersPage() {
           className="dash-input w-full max-w-[360px] px-4 py-2.5 text-[13px]" />
       </div>
 
-      {/* ── 테이블 ── */}
-      <div className="dash-card-el rounded-2xl overflow-hidden"
-        style={{ background: "var(--dash-card)" }}>
-
-        {/* 컬럼 헤더 */}
-        <div className="grid px-5 py-3"
-          style={{
-            gridTemplateColumns: "28px 1fr 1.4fr 110px 120px 90px",
-            borderBottom: "1px solid var(--dash-border)",
-          }}>
-          {["", "트레이너 정보", "전문 분야", "상태", "상위 노출", "관리"].map((h, i) => (
-            <span key={i} className="text-[10px] font-bold tracking-[0.15em] uppercase"
-              style={{ color: "var(--dash-text-dimmed)" }}>
-              {h}
-            </span>
+      {/* ── 로딩 ── */}
+      {loading ? (
+        <div className="flex flex-col gap-2.5 animate-pulse">
+          {[1,2,3,4,5].map((i) => (
+            <div key={i} className="h-16 rounded-2xl" style={{ background: "var(--dash-card)" }} />
           ))}
         </div>
-
-        {/* 로딩 */}
-        {loading ? (
-          <div className="p-6 flex flex-col gap-2.5 animate-pulse">
-            {[1,2,3,4,5].map((i) => (
-              <div key={i} className="h-12 rounded-xl" style={{ background: "var(--dash-surface)" }} />
-            ))}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="py-16 text-center">
-            <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
-              {trainers.length === 0 ? "등록된 트레이너가 없습니다." : "검색 결과가 없습니다."}
-            </p>
-          </div>
-        ) : (
-          paginated.map((t, i) => (
-            <div key={t.id}
-              draggable
-              onDragStart={() => onDragStart((currentPage - 1) * PAGE_SIZE + i)}
-              onDragEnter={() => onDragEnter((currentPage - 1) * PAGE_SIZE + i)}
-              onDragEnd={onDragEnd}
-              onDragOver={(e) => e.preventDefault()}
-              className="grid items-center px-5 py-3 select-none transition-colors"
-              style={{
-                gridTemplateColumns: "28px 1fr 1.4fr 110px 120px 90px",
-                borderBottom: "1px solid var(--dash-border-xs)",
-                opacity: t.isActive === false ? 0.45 : 1,
-                cursor: "default",
-              }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
-            >
-              {/* 드래그 */}
-              <span className="cursor-grab active:cursor-grabbing" style={{ color: "var(--dash-text-faint)" }}>
-                <DragIcon />
-              </span>
-
-              {/* 트레이너 정보 */}
-              <div className="flex items-center gap-3 min-w-0">
-                <Avatar name={t.name} image={t.profileImage || undefined} />
-                <div className="min-w-0">
-                  <p className="text-[13.5px] font-bold truncate" style={{ color: "var(--dash-text)" }}>
-                    {t.name}
-                  </p>
-                  <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>
-                    경력 {t.careerYears}년차{t.branch ? ` · ${t.branch}` : ""}
-                  </p>
+      ) : filtered.length === 0 ? (
+        <div className="py-16 text-center rounded-2xl" style={{ background: "var(--dash-card)" }}>
+          <p className="text-[14px]" style={{ color: "var(--dash-text-dimmed)" }}>
+            {trainers.length === 0 ? "등록된 트레이너가 없습니다." : "검색 결과가 없습니다."}
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* ── 모바일 카드 (md 미만) ── */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {paginated.map((t, i) => (
+              <div key={t.id}
+                draggable
+                onDragStart={() => onDragStart((currentPage - 1) * PAGE_SIZE + i)}
+                onDragEnter={() => onDragEnter((currentPage - 1) * PAGE_SIZE + i)}
+                onDragEnd={onDragEnd}
+                onDragOver={(e) => e.preventDefault()}
+                className="rounded-2xl px-4 py-3.5"
+                style={{
+                  background: "var(--dash-card)",
+                  border: "1px solid var(--dash-border)",
+                  opacity: t.isActive === false ? 0.5 : 1,
+                }}>
+                {/* 상단: 아바타 + 이름 + 액션 버튼 */}
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="cursor-grab" style={{ color: "var(--dash-text-faint)" }}><DragIcon /></span>
+                  <Avatar name={t.name} image={t.profileImage || undefined} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold truncate" style={{ color: "var(--dash-text)" }}>{t.name}</p>
+                    <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>
+                      경력 {t.careerYears}년차{t.branch ? ` · ${t.branch}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <button onClick={() => router.push(`/dashboard/trainers/${t.id}`)}
+                      className="flex items-center justify-center w-8 h-8 rounded-lg"
+                      style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+                      <EditIcon />
+                    </button>
+                    <button onClick={() => setDeleteTarget(t)}
+                      className="flex items-center justify-center w-8 h-8 rounded-lg"
+                      style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+                      <TrashIcon />
+                    </button>
+                  </div>
+                </div>
+                {/* 전문 분야 태그 */}
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {(t.specialty ?? "").split(/[·,\/]/).map((s) => s.trim()).filter(Boolean).map((s, idx) => (
+                    <span key={idx} className="px-2 py-0.5 text-[11px] font-semibold"
+                      style={{
+                        borderRadius: 4,
+                        background: "var(--dash-surface-2)",
+                        color: "var(--dash-text-sub)",
+                        border: "1px solid var(--dash-border)",
+                      }}>
+                      {s}
+                    </span>
+                  ))}
+                </div>
+                {/* 토글 */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Toggle on={t.isActive !== false} onChange={() => handleToggleActive(t)} />
+                    <span className="text-[11.5px]" style={{ color: "var(--dash-text-sub)" }}>노출</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Toggle on={t.featured ?? false} onChange={() => handleToggleFeatured(t)} />
+                    <span className="text-[11.5px]" style={{ color: "var(--dash-text-sub)" }}>상위 노출</span>
+                  </div>
                 </div>
               </div>
-
-              {/* 전문 분야 */}
-              <div className="flex flex-wrap gap-1">
-                {(t.specialty ?? "").split(/[·,\/]/).map((s) => s.trim()).filter(Boolean).length > 0
-                  ? (t.specialty ?? "").split(/[·,\/]/).map((s) => s.trim()).filter(Boolean).map((s, idx) => (
-                      <span key={idx} className="px-2 py-0.5 text-[11px] font-semibold"
-                        style={{
-                          borderRadius: 4,
-                          background: "var(--dash-surface-2)",
-                          color: "var(--dash-text-sub)",
-                          border: "1px solid var(--dash-border)",
-                          whiteSpace: "nowrap",
-                        }}>
-                        {s}
-                      </span>
-                    ))
-                  : <span style={{ color: "var(--dash-text-faint)" }}>—</span>
-                }
-              </div>
-
-              {/* STATUS 토글 */}
-              <div className="flex items-center gap-2">
-                <Toggle on={t.isActive !== false} onChange={() => handleToggleActive(t)} />
-              </div>
-
-              {/* TOP EXPOSURE 토글 */}
-              <div className="flex items-center gap-2">
-                <Toggle on={t.featured ?? false} onChange={() => handleToggleFeatured(t)} />
-              </div>
-
-              {/* 액션 */}
-              <div className="flex items-center gap-2">
-                <button onClick={() => router.push(`/dashboard/trainers/${t.id}`)}
-                  className="flex items-center justify-center w-7 h-7 rounded-lg transition-all"
-                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(47,107,255,0.12)"; (e.currentTarget as HTMLElement).style.color = "#2F6BFF"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)"; (e.currentTarget as HTMLElement).style.color = "var(--dash-text-muted)"; }}>
-                  <EditIcon />
-                </button>
-                <button onClick={() => setDeleteTarget(t)}
-                  className="flex items-center justify-center w-7 h-7 rounded-lg transition-all"
-                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(248,113,113,0.10)"; (e.currentTarget as HTMLElement).style.color = "#f87171"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)"; (e.currentTarget as HTMLElement).style.color = "var(--dash-text-muted)"; }}>
-                  <TrashIcon />
-                </button>
-              </div>
-            </div>
-          ))
-        )}
-
-        {/* ── 페이지네이션 ── */}
-        {!loading && filtered.length > PAGE_SIZE && (
-          <div className="flex items-center justify-between px-5 py-3.5"
-            style={{ borderTop: "1px solid var(--dash-border)" }}>
-            <p className="text-[11.5px]" style={{ color: "var(--dash-text-dimmed)" }}>
-              {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} / 전체 {filtered.length}명
-            </p>
-            <div className="flex items-center gap-1">
-              <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}
-                className="flex items-center justify-center w-7 h-7 rounded-lg disabled:opacity-30 transition-all"
-                style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
-                <ChevronIcon dir="left" />
-              </button>
-              {pageNumbers().map((n) => (
-                <button key={n} onClick={() => setPage(n)}
-                  className="flex items-center justify-center w-7 h-7 rounded-lg text-[12px] font-bold transition-all"
-                  style={{
-                    background: n === currentPage ? "#2F6BFF" : "var(--dash-surface)",
-                    color:      n === currentPage ? "#fff" : "var(--dash-text-muted)",
-                  }}>
-                  {n}
-                </button>
-              ))}
-              <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-                className="flex items-center justify-center w-7 h-7 rounded-lg disabled:opacity-30 transition-all"
-                style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
-                <ChevronIcon dir="right" />
-              </button>
-            </div>
+            ))}
           </div>
-        )}
-      </div>
+
+          {/* ── 데스크탑 테이블 (md 이상) ── */}
+          <div className="hidden md:block dash-card-el rounded-2xl overflow-hidden"
+            style={{ background: "var(--dash-card)" }}>
+            <div className="grid px-5 py-3"
+              style={{
+                gridTemplateColumns: "28px 1fr 1.4fr 110px 120px 90px",
+                borderBottom: "1px solid var(--dash-border)",
+              }}>
+              {["", "트레이너 정보", "전문 분야", "상태", "상위 노출", "관리"].map((h, i) => (
+                <span key={i} className="text-[10px] font-bold tracking-[0.15em] uppercase"
+                  style={{ color: "var(--dash-text-dimmed)" }}>{h}</span>
+              ))}
+            </div>
+            {paginated.map((t, i) => (
+              <div key={t.id}
+                draggable
+                onDragStart={() => onDragStart((currentPage - 1) * PAGE_SIZE + i)}
+                onDragEnter={() => onDragEnter((currentPage - 1) * PAGE_SIZE + i)}
+                onDragEnd={onDragEnd}
+                onDragOver={(e) => e.preventDefault()}
+                className="grid items-center px-5 py-3 select-none transition-colors"
+                style={{
+                  gridTemplateColumns: "28px 1fr 1.4fr 110px 120px 90px",
+                  borderBottom: "1px solid var(--dash-border-xs)",
+                  opacity: t.isActive === false ? 0.45 : 1,
+                  cursor: "default",
+                }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--dash-hover-row)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
+              >
+                <span className="cursor-grab active:cursor-grabbing" style={{ color: "var(--dash-text-faint)" }}>
+                  <DragIcon />
+                </span>
+                <div className="flex items-center gap-3 min-w-0">
+                  <Avatar name={t.name} image={t.profileImage || undefined} />
+                  <div className="min-w-0">
+                    <p className="text-[13.5px] font-bold truncate" style={{ color: "var(--dash-text)" }}>{t.name}</p>
+                    <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>
+                      경력 {t.careerYears}년차{t.branch ? ` · ${t.branch}` : ""}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {(t.specialty ?? "").split(/[·,\/]/).map((s) => s.trim()).filter(Boolean).map((s, idx) => (
+                    <span key={idx} className="px-2 py-0.5 text-[11px] font-semibold"
+                      style={{
+                        borderRadius: 4,
+                        background: "var(--dash-surface-2)",
+                        color: "var(--dash-text-sub)",
+                        border: "1px solid var(--dash-border)",
+                        whiteSpace: "nowrap",
+                      }}>{s}</span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Toggle on={t.isActive !== false} onChange={() => handleToggleActive(t)} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Toggle on={t.featured ?? false} onChange={() => handleToggleFeatured(t)} />
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => router.push(`/dashboard/trainers/${t.id}`)}
+                    className="flex items-center justify-center w-7 h-7 rounded-lg transition-all"
+                    style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(47,107,255,0.12)"; (e.currentTarget as HTMLElement).style.color = "#2F6BFF"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)"; (e.currentTarget as HTMLElement).style.color = "var(--dash-text-muted)"; }}>
+                    <EditIcon />
+                  </button>
+                  <button onClick={() => setDeleteTarget(t)}
+                    className="flex items-center justify-center w-7 h-7 rounded-lg transition-all"
+                    style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(248,113,113,0.10)"; (e.currentTarget as HTMLElement).style.color = "#f87171"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--dash-surface)"; (e.currentTarget as HTMLElement).style.color = "var(--dash-text-muted)"; }}>
+                    <TrashIcon />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ── 페이지네이션 ── */}
+          {filtered.length > PAGE_SIZE && (
+            <div className="flex items-center justify-between px-2 py-3.5 mt-2">
+              <p className="text-[11.5px]" style={{ color: "var(--dash-text-dimmed)" }}>
+                {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} / 전체 {filtered.length}명
+              </p>
+              <div className="flex items-center gap-1">
+                <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}
+                  className="flex items-center justify-center w-7 h-7 rounded-lg disabled:opacity-30 transition-all"
+                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+                  <ChevronIcon dir="left" />
+                </button>
+                {pageNumbers().map((n) => (
+                  <button key={n} onClick={() => setPage(n)}
+                    className="flex items-center justify-center w-7 h-7 rounded-lg text-[12px] font-bold transition-all"
+                    style={{
+                      background: n === currentPage ? "#2F6BFF" : "var(--dash-surface)",
+                      color:      n === currentPage ? "#fff" : "var(--dash-text-muted)",
+                    }}>
+                    {n}
+                  </button>
+                ))}
+                <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+                  className="flex items-center justify-center w-7 h-7 rounded-lg disabled:opacity-30 transition-all"
+                  style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+                  <ChevronIcon dir="right" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       {deleteTarget && (
         <DeleteModal name={deleteTarget.name} loading={deleteLoading}
