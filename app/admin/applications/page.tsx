@@ -1,20 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  getAllApplications,
-  updateApplicationStatus,
-  STATUS_LABEL,
-  DAY_LABEL,
-  TIME_LABEL,
-  timeAgoLabel,
-  type AppStatus,
-  type Application,
+  STATUS_LABEL, DAY_LABEL, TIME_LABEL, timeAgoLabel, maskPhone,
+  type Application, type AppStatus,
 } from "@/app/data/applications";
-import AdminBottomNav from "@/app/admin/components/AdminBottomNav";
 
-/* ── 상태 색상 ── */
 const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }> = {
   pending:           { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
   received:          { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
@@ -26,407 +18,167 @@ const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }>
   cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
 };
 
-/* ── 필터 탭 정의 ── */
-const TABS: { id: AppStatus | "all"; label: string }[] = [
-  { id: "all",               label: "전체"     },
-  { id: "received",          label: "접수됨"   },
-  { id: "checking",          label: "확인중"   },
-  { id: "contact_scheduled", label: "연락 예정" },
-  { id: "scheduling",        label: "일정 조율중" },
-  { id: "confirmed",         label: "확정됨"   },
-  { id: "completed",         label: "완료"     },
-  { id: "cancelled",         label: "취소됨"   },
-];
+const TABS = [
+  { id: "all",       label: "전체"   },
+  { id: "active",    label: "진행 중" },
+  { id: "confirmed", label: "확정됨" },
+  { id: "completed", label: "완료"   },
+  { id: "cancelled", label: "취소"   },
+] as const;
+type TabId = (typeof TABS)[number]["id"];
 
-/* ── 아이콘 ── */
-function ChevronRight() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18" stroke="#3a3a3a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function PhoneIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.97-.97a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 21.72 16.92z"
-        stroke="#a0a0a0" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function NoteIcon() {
-  return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-      <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-        stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function CalendarIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="4" width="18" height="18" rx="2" stroke="#5a5a5a" strokeWidth="1.5" />
-      <path d="M16 2v4M8 2v4M3 10h18" stroke="#5a5a5a" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-function ClockIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="#5a5a5a" strokeWidth="1.5" />
-      <path d="M12 7v5l3 3" stroke="#5a5a5a" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-function PersonIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="4" stroke="#5a5a5a" strokeWidth="1.5" />
-      <path d="M4 20C4 17.24 7.58 15 12 15C16.42 15 20 17.24 20 20"
-        stroke="#5a5a5a" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
+const ACTIVE_STATUSES = ["pending","received","checking","contact_scheduled","scheduling"];
 
-/* ── 상태 뱃지 ── */
 function StatusBadge({ status }: { status: AppStatus }) {
   const c = STATUS_COLOR[status];
   return (
-    <span
-      className="inline-flex items-center gap-1 text-[10.5px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
-      style={{ background: c.bg, color: c.text }}
-    >
-      <span className="w-1.5 h-1.5 rounded-full" style={{ background: c.dot }} />
+    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+      style={{ background: c.bg, color: c.text }}>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: c.dot }} />
       {STATUS_LABEL[status]}
     </span>
   );
 }
 
-/* ── 신청 카드 ── */
-function AppCard({
-  app,
-  onConfirm,
-}: {
-  app: Application;
-  onConfirm: (id: string) => void;
-}) {
+function AppCard({ app }: { app: Application }) {
   const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
-
   return (
-    <div
-      className="rounded-2xl border overflow-hidden"
-      style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}
-    >
-      {/* 카드 본문 */}
-      <div className="p-4 flex flex-col gap-3">
-
-        {/* 1행: 이름 + 상태 + 시간 */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[15px] font-semibold truncate" style={{ color: "#ffffff" }}>
-              {app.applicantName}
-            </span>
-            <StatusBadge status={app.status} />
-          </div>
-          <span className="text-[11px] flex-shrink-0" style={{ color: "#3a3a3a" }}>
+    <Link href={`/admin/applications/${app.id}`}
+      className="flex flex-col gap-3 p-4 rounded-2xl border transition-opacity active:opacity-70"
+      style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-[14.5px] font-semibold" style={{ color: "#ffffff" }}>
+            {app.applicantName}
+          </p>
+          <p className="text-[12px] mt-0.5" style={{ color: "#3a3a3a" }}>
+            {maskPhone(app.applicantPhone)}
+          </p>
+        </div>
+        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+          <StatusBadge status={app.status} />
+          <span className="text-[11px]" style={{ color: "#3a3a3a" }}>
             {timeAgoLabel(app.createdMinutesAgo)}
           </span>
         </div>
-
-        {/* 2행: 연락처 */}
-        <div className="flex items-center gap-1.5">
-          <PhoneIcon />
-          <span className="text-[12.5px] font-medium" style={{ color: "#a0a0a0" }}>
-            {app.applicantPhone}
-          </span>
-        </div>
-
-        {/* 구분선 */}
-        <div className="h-px" style={{ background: "rgba(255,255,255,0.04)" }} />
-
-        {/* 3행: 트레이너 */}
-        <div className="flex items-center gap-1.5">
-          <PersonIcon />
-          <span className="text-[12.5px]" style={{ color: "#a0a0a0" }}>
-            {app.trainerName} 트레이너
-          </span>
-        </div>
-
-        {/* 4행: 희망 요일 */}
-        <div className="flex items-start gap-1.5">
-          <span className="mt-0.5"><CalendarIcon /></span>
-          <span className="text-[12.5px] leading-snug" style={{ color: "#a0a0a0" }}>
-            {days}
-          </span>
-        </div>
-
-        {/* 5행: 희망 시간대 */}
-        <div className="flex items-center gap-1.5">
-          <ClockIcon />
-          <span className="text-[12.5px]" style={{ color: "#a0a0a0" }}>
-            {times}
-          </span>
-        </div>
-
-        {/* 회원 요청사항 */}
-        {app.userMessage && (
-          <div
-            className="px-3 py-2.5 rounded-xl"
-            style={{ background: "#0e0e0e", border: "1px solid rgba(255,255,255,0.04)" }}
-          >
-            <p className="text-[11.5px] leading-relaxed" style={{ color: "#5a5a5a" }}>
-              &ldquo;{app.userMessage}&rdquo;
-            </p>
-          </div>
-        )}
-
-        {/* 관리자 메모 */}
-        {app.adminNote && (
-          <div
-            className="flex items-start gap-1.5 px-3 py-2.5 rounded-xl"
-            style={{ background: "rgba(47,107,255,0.06)", border: "1px solid rgba(47,107,255,0.10)" }}
-          >
-            <span className="mt-0.5 flex-shrink-0"><NoteIcon /></span>
-            <p className="text-[11.5px] leading-snug" style={{ color: "#5a5a5a" }}>
-              {app.adminNote}
-            </p>
-          </div>
-        )}
       </div>
-
-      {/* 카드 하단 액션 */}
-      <div
-        className="flex border-t"
-        style={{ borderColor: "rgba(255,255,255,0.04)" }}
-      >
-        {/* 상태별 주요 액션 버튼 */}
-        {(app.status === "pending" || app.status === "received") && (
-          <button onClick={() => onConfirm(app.id)}
-            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#60a5fa" }}>
-            확인하기 →
-          </button>
-        )}
-        {app.status === "checking" && (
-          <button onClick={() => onConfirm(app.id)}
-            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#a78bfa" }}>
-            연락 예정 →
-          </button>
-        )}
-        {app.status === "contact_scheduled" && (
-          <button onClick={() => onConfirm(app.id)}
-            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#fb923c" }}>
-            일정 조율 →
-          </button>
-        )}
-        {app.status === "scheduling" && (
-          <button onClick={() => onConfirm(app.id)}
-            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#34d399" }}>
-            확정하기 →
-          </button>
-        )}
-        {app.status === "confirmed" && (
-          <button onClick={() => onConfirm(app.id)}
-            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#fbbf24" }}>
-            완료 처리 →
-          </button>
-        )}
-        {(app.status === "completed" || app.status === "cancelled") && (
-          <div className="flex-1 py-3 flex items-center justify-center">
-            <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.06)" }}>처리 완료</span>
-          </div>
-        )}
-
-        {/* 구분 */}
-        <div className="w-px" style={{ background: "rgba(255,255,255,0.04)" }} />
-
-        {/* 상세 보기 */}
-        <Link
-          href={`/admin/applications/${app.id}`}
-          className="flex items-center justify-center gap-1 px-5 py-3 text-[13px] font-medium transition-opacity active:opacity-70"
-          style={{ color: "#a0a0a0" }}
-        >
-          상세보기
-          <ChevronRight />
-        </Link>
-      </div>
-    </div>
+      {(days || times) && (
+        <div className="flex flex-wrap gap-1.5">
+          {app.preferredDays.map((d) => (
+            <span key={d} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+              style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+              {DAY_LABEL[d] ?? d}
+            </span>
+          ))}
+          {app.preferredTimes.map((t) => (
+            <span key={t} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+              style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+              {TIME_LABEL[t] ?? t}
+            </span>
+          ))}
+        </div>
+      )}
+      {app.userMessage && (
+        <p className="text-[12px] leading-snug line-clamp-2 italic" style={{ color: "#5a5a5a" }}>
+          &ldquo;{app.userMessage}&rdquo;
+        </p>
+      )}
+      {app.purposes.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {app.purposes.map((p) => (
+            <span key={p} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+              style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
+              {p}
+            </span>
+          ))}
+        </div>
+      )}
+    </Link>
   );
 }
 
-/* ── 빈 상태 ── */
-function EmptyState({ status }: { status: AppStatus | "all" }) {
-  const messages: Record<string, string> = {
-    all:               "신청 내역이 없습니다.",
-    pending:           "접수된 신청이 없습니다.",
-    received:          "접수된 신청이 없습니다.",
-    checking:          "확인 중인 신청이 없습니다.",
-    contact_scheduled: "연락 예정인 신청이 없습니다.",
-    scheduling:        "일정 조율 중인 신청이 없습니다.",
-    confirmed:         "확정된 신청이 없습니다.",
-    completed:         "완료된 신청이 없습니다.",
-    cancelled:         "취소된 신청이 없습니다.",
-  };
-  return (
-    <div
-      className="flex flex-col items-center justify-center py-16 rounded-2xl"
-      style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}
-    >
-      <div
-        className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-        style={{ background: "rgba(47,107,255,0.07)" }}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <rect x="5" y="4" width="14" height="17" rx="2" stroke="#3a3a3a" strokeWidth="1.6" />
-          <path d="M9 10h6M9 14h4" stroke="#3a3a3a" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </div>
-      <p className="text-[13px]" style={{ color: "#3a3a3a" }}>
-        {messages[status]}
-      </p>
-    </div>
-  );
-}
-
-/* ── 페이지 ── */
-export default function AdminApplicationsPage() {
-  const [activeTab, setActiveTab] = useState<AppStatus | "all">("pending");
-  const [apps, setApps] = useState<Application[]>([]);
+export default function TrainerApplicationsPage() {
+  const [apps, setApps]         = useState<Application[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [activeTab, setActiveTab] = useState<TabId>("all");
 
   useEffect(() => {
-    getAllApplications().then(setApps);
+    fetch("/api/trainer/applications")
+      .then((r) => r.json())
+      .then((d) => { setApps(d.applications ?? []); setLoading(false); });
   }, []);
 
-  /* 탭별 카운트 */
-  const counts = useMemo(() => ({
-    all:               apps.length,
-    pending:           apps.filter((a) => a.status === "pending").length,
-    received:          apps.filter((a) => a.status === "received" || a.status === "pending").length,
-    checking:          apps.filter((a) => a.status === "checking").length,
-    contact_scheduled: apps.filter((a) => a.status === "contact_scheduled").length,
-    scheduling:        apps.filter((a) => a.status === "scheduling").length,
-    confirmed:         apps.filter((a) => a.status === "confirmed").length,
-    completed:         apps.filter((a) => a.status === "completed").length,
-    cancelled:         apps.filter((a) => a.status === "cancelled").length,
-  }), [apps]);
+  const filtered = apps.filter((a) => {
+    if (activeTab === "all")       return true;
+    if (activeTab === "active")    return ACTIVE_STATUSES.includes(a.status);
+    if (activeTab === "confirmed") return a.status === "confirmed";
+    if (activeTab === "completed") return a.status === "completed";
+    if (activeTab === "cancelled") return a.status === "cancelled";
+    return true;
+  });
 
-  /* 필터된 목록 */
-  const filtered = useMemo(
-    () => activeTab === "all" ? apps : apps.filter((a: Application) => a.status === activeTab),
-    [apps, activeTab]
-  );
-
-  /* 상태 단계별 진행 */
-  async function handleConfirm(id: string) {
-    const app = apps.find((a: Application) => a.id === id);
-    if (!app) return;
-    const progressMap: Partial<Record<AppStatus, AppStatus>> = {
-      pending:  "checking",
-      received: "checking",
-      checking: "contact_scheduled",
-      contact_scheduled: "scheduling",
-      scheduling: "confirmed",
-      confirmed: "completed",
-    };
-    const newStatus = progressMap[app.status];
-    if (!newStatus) return;
-    await updateApplicationStatus(id, newStatus);
-    setApps((prev: Application[]) =>
-      prev.map((a: Application) => a.id === id ? { ...a, status: newStatus } : a)
-    );
-  }
+  const counts: Record<TabId, number> = {
+    all:       apps.length,
+    active:    apps.filter((a) => ACTIVE_STATUSES.includes(a.status)).length,
+    confirmed: apps.filter((a) => a.status === "confirmed").length,
+    completed: apps.filter((a) => a.status === "completed").length,
+    cancelled: apps.filter((a) => a.status === "cancelled").length,
+  };
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
-
-      {/* ── 헤더 ── */}
-      <header
-        className="sticky top-0 z-40"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}
-      >
-        <div className="flex items-center justify-between px-4 pt-5 pb-3">
-          <div>
-            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>
-              관리
-            </p>
-            <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
-              신청 관리
-            </h1>
-          </div>
-          {/* 전체 카운트 */}
-          <div
-            className="px-3 py-1.5 rounded-full"
-            style={{ background: "rgba(47,107,255,0.10)", border: "1px solid rgba(47,107,255,0.2)" }}
-          >
-            <span className="text-[12px] font-semibold" style={{ color: "#2F6BFF" }}>
-              전체 {counts.all}건
-            </span>
-          </div>
+    <div className="min-h-dvh pb-24" style={{ background: "#0e0e0e" }}>
+      <header className="sticky top-0 z-40"
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        <div className="px-4 pt-5 pb-3">
+          <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>MY</p>
+          <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>내 신청 목록</h1>
         </div>
-
-        {/* 상태 필터 탭 */}
         <div className="flex gap-1.5 overflow-x-auto scrollbar-hide px-4 pb-3">
           {TABS.map((tab) => {
             const isActive = activeTab === tab.id;
-            const count = counts[tab.id];
             return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-150"
                 style={{
-                  background:   isActive ? "#1a55d4" : "#1a1a1a",
-                  color:        isActive ? "#fff"    : "#5a5a5a",
-                  border:       `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
-                }}
-              >
+                  background: isActive ? "#1a55d4" : "#1a1a1a",
+                  color:      isActive ? "#fff"    : "#5a5a5a",
+                  border:     `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
+                }}>
                 {tab.label}
-                {count > 0 && (
-                  <span
-                    className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
-                    style={{
-                      background: isActive ? "rgba(255,255,255,0.2)" : tab.id === "pending" ? "rgba(248,113,113,0.15)" : "#131313",
-                      color:      isActive ? "#fff" : tab.id === "pending" ? "#f87171" : "#5a5a5a",
-                    }}
-                  >
-                    {count}
-                  </span>
-                )}
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+                  style={{
+                    background: isActive ? "rgba(255,255,255,0.2)" : "#131313",
+                    color:      isActive ? "#fff" : "#5a5a5a",
+                  }}>
+                  {counts[tab.id]}
+                </span>
               </button>
             );
           })}
         </div>
       </header>
 
-      {/* ── 목록 ── */}
-      <main className="page-scroll px-4 pt-3">
-
-        {/* 결과 수 */}
-        <p className="text-[12px] mb-3" style={{ color: "#3a3a3a" }}>
-          {filtered.length}건
-        </p>
-
-        {filtered.length > 0 ? (
+      <main className="px-4 pt-3">
+        {loading ? (
           <div className="flex flex-col gap-3">
-            {filtered.map((app) => (
-              <AppCard key={app.id} app={app} onConfirm={handleConfirm} />
+            {[1,2,3].map((i) => (
+              <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "#1a1a1a" }} />
             ))}
-
-            <p className="text-center text-[12px] py-4" style={{ color: "rgba(255,255,255,0.06)" }}>
+          </div>
+        ) : filtered.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {filtered.map((app) => <AppCard key={app.id} app={app} />)}
+            <p className="text-center text-[12px] py-4" style={{ color: "#131313" }}>
               — 모두 확인했습니다 —
             </p>
           </div>
         ) : (
-          <EmptyState status={activeTab} />
+          <div className="py-20 text-center">
+            <p className="text-[14px]" style={{ color: "#2a2a2a" }}>신청이 없습니다.</p>
+          </div>
         )}
       </main>
-
-      <AdminBottomNav />
     </div>
   );
 }
