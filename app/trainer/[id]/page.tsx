@@ -547,10 +547,32 @@ export default function TrainerDetailPage({
           )}
         </div>
 
-        {/* 경력 및 자격 */}
-        <div className="section-block">
-          <SectionLabel>경력 및 자격</SectionLabel>
-          {trainer.certifications.length > 0 ? (
+        {/* 경력 */}
+        {(trainer.career?.length ?? 0) > 0 && (
+          <div className="section-block">
+            <SectionLabel>경력</SectionLabel>
+            <ul className="flex flex-col gap-2.5">
+              {trainer.career.map((item, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <span
+                    className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(47,128,237,0.12)" }}
+                  >
+                    <CheckIcon />
+                  </span>
+                  <span className="text-[13.5px] leading-snug" style={{ color: "#c9cacc" }}>
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 자격증 */}
+        {trainer.certifications.length > 0 && (
+          <div className="section-block">
+            <SectionLabel>자격증</SectionLabel>
             <ul className="flex flex-col gap-2.5">
               {trainer.certifications.map((cert, i) => (
                 <li key={i} className="flex items-start gap-2.5">
@@ -566,10 +588,8 @@ export default function TrainerDetailPage({
                 </li>
               ))}
             </ul>
-          ) : (
-            <p className="text-[13px]" style={{ color: "#6b7280" }}>등록된 경력·자격 정보가 없습니다.</p>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* 전문 분야 */}
         <div className="section-block">

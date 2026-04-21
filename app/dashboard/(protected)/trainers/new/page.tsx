@@ -97,8 +97,10 @@ export default function DashboardTrainerNewPage() {
   const [introduction, setIntroduction] = useState("");
   const [branch, setBranch]             = useState("");
   const [profileImage, setProfileImage] = useState("");
+  const [career, setCareer]             = useState<string[]>([]);
   const [certifications, setCertifications] = useState<string[]>([]);
   const [tags, setTags]                 = useState<string[]>([]);
+  const [careerInput, setCareerInput]   = useState("");
   const [certInput, setCertInput]       = useState("");
   const [tagInput, setTagInput]         = useState("");
   const [saving, setSaving]             = useState(false);
@@ -112,6 +114,11 @@ export default function DashboardTrainerNewPage() {
     setProfileImage(await compressImage(file));
   }
 
+  function addCareer() {
+    const v = careerInput.trim();
+    if (!v || career.includes(v)) return;
+    setCareer((p) => [...p, v]); setCareerInput("");
+  }
   function addCert() {
     const v = certInput.trim();
     if (!v || certifications.includes(v)) return;
@@ -136,7 +143,7 @@ export default function DashboardTrainerNewPage() {
       name: name.trim(), specialty: specialty.trim(),
       careerYears: Number(careerYears) || 1,
       shortBio: shortBio.trim(), introduction: introduction.trim(),
-      branch, profileImage, certifications, tags,
+      branch, profileImage, career, certifications, tags,
       galleryImages,
       isActive: true, featured: false, displayOrder: 0,
     });
@@ -197,7 +204,32 @@ export default function DashboardTrainerNewPage() {
             </div>
           </Card>
 
-          <Card title="경력 및 자격">
+          <Card title="경력">
+            <div className="flex gap-2 mb-3">
+              <input value={careerInput} onChange={(e) => setCareerInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addCareer()} placeholder="예: 前 국가대표 트레이닝 코치"
+                className="dash-input flex-1 px-4 py-2.5 text-[13px]" />
+              <button onClick={addCareer} className="px-3.5 py-2.5 rounded-xl"
+                style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}><PlusIcon /></button>
+            </div>
+            {career.length === 0
+              ? <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>경력 항목이 없습니다.</p>
+              : <div className="flex flex-col gap-2">
+                  {career.map((c, i) => (
+                    <div key={i} className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"
+                      style={{ background: "var(--dash-surface)" }}>
+                      <span className="text-[13px]" style={{ color: "var(--dash-text-body)" }}>{c}</span>
+                      <button onClick={() => setCareer((p) => p.filter((_, j) => j !== i))} style={{ color: "var(--dash-text-dimmed)" }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#f87171")}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)")}>
+                        <XIcon />
+                      </button>
+                    </div>
+                  ))}
+                </div>}
+          </Card>
+
+          <Card title="자격증">
             <div className="flex gap-2 mb-3">
               <input value={certInput} onChange={(e) => setCertInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && addCert()} placeholder="예: NSCA-CPT 자격증 보유"
@@ -206,7 +238,7 @@ export default function DashboardTrainerNewPage() {
                 style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}><PlusIcon /></button>
             </div>
             {certifications.length === 0
-              ? <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>경력·자격 항목이 없습니다.</p>
+              ? <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>자격증 항목이 없습니다.</p>
               : <div className="flex flex-col gap-2">
                   {certifications.map((c, i) => (
                     <div key={i} className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"

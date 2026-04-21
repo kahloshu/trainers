@@ -140,8 +140,10 @@ export default function DashboardTrainerEditPage({
   const [introduction, setIntroduction] = useState("");
   const [branch, setBranch]             = useState("");
   const [profileImage, setProfileImage] = useState("");
+  const [career, setCareer]             = useState<string[]>([]);
   const [certifications, setCertifications] = useState<string[]>([]);
   const [tags, setTags]                 = useState<string[]>([]);
+  const [careerInput, setCareerInput]   = useState("");
   const [certInput, setCertInput]       = useState("");
   const [tagInput, setTagInput]         = useState("");
   const [kakaoId, setKakaoId]           = useState("");
@@ -165,6 +167,7 @@ export default function DashboardTrainerEditPage({
       setProfileImage(found.profileImage);
       setKakaoId(found.kakaoId ?? "");
       setInstagramId(found.instagramId ?? "");
+      setCareer([...(found.career ?? [])]);
       setCertifications([...found.certifications]);
       setTags([...found.tags]);
     });
@@ -182,6 +185,14 @@ export default function DashboardTrainerEditPage({
   }
 
   /* ── 경력 추가 ── */
+  function addCareer() {
+    const v = careerInput.trim();
+    if (!v || career.includes(v)) return;
+    setCareer((prev) => [...prev, v]);
+    setCareerInput("");
+  }
+
+  /* ── 자격증 추가 ── */
   function addCert() {
     const v = certInput.trim();
     if (!v || certifications.includes(v)) return;
@@ -218,6 +229,7 @@ export default function DashboardTrainerEditPage({
       profileImage,
       kakaoId,
       instagramId,
+      career,
       certifications,
       tags,
       galleryImages,
@@ -337,8 +349,47 @@ export default function DashboardTrainerEditPage({
             </div>
           </Card>
 
-          {/* 경력 및 자격 */}
-          <Card title="경력 및 자격">
+          {/* 경력 */}
+          <Card title="경력">
+            <div className="flex gap-2 mb-3">
+              <input
+                value={careerInput}
+                onChange={(e) => setCareerInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addCareer()}
+                placeholder="예: 前 국가대표 트레이닝 코치"
+                className="dash-input flex-1 px-4 py-2.5 text-[13px]"
+              />
+              <button
+                onClick={addCareer}
+                className="px-3.5 py-2.5 rounded-xl text-[13px] font-semibold"
+                style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}
+              >
+                <PlusIcon />
+              </button>
+            </div>
+            {career.length === 0 ? (
+              <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>경력 항목이 없습니다.</p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {career.map((c, i) => (
+                  <div key={i} className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"
+                    style={{ background: "var(--dash-surface)" }}>
+                    <span className="text-[13px]" style={{ color: "var(--dash-text-body)" }}>{c}</span>
+                    <button onClick={() => setCareer((prev) => prev.filter((_, j) => j !== i))}
+                      style={{ color: "var(--dash-text-dimmed)" }}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#f87171")}
+                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--dash-text-dimmed)")}
+                    >
+                      <XIcon />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          {/* 자격증 */}
+          <Card title="자격증">
             <div className="flex gap-2 mb-3">
               <input
                 value={certInput}
@@ -356,7 +407,7 @@ export default function DashboardTrainerEditPage({
               </button>
             </div>
             {certifications.length === 0 ? (
-              <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>경력·자격 항목이 없습니다.</p>
+              <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>자격증 항목이 없습니다.</p>
             ) : (
               <div className="flex flex-col gap-2">
                 {certifications.map((c, i) => (

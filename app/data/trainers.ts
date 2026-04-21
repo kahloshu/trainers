@@ -8,6 +8,7 @@ export type Trainer = {
   careerYears: number;
   shortBio: string;
   introduction: string;
+  career: string[];
   certifications: string[];
   tags: string[];
   ratingAvg: number;
@@ -41,6 +42,7 @@ function rowToTrainer(row: any): Trainer {
     careerYears:    row.career_years,
     shortBio:       row.short_bio,
     introduction:   row.introduction ?? "",
+    career:         row.career ?? [],
     certifications: row.certifications ?? [],
     tags:           row.tags ?? [],
     ratingAvg:      Number(row.rating_avg),
@@ -101,6 +103,7 @@ export async function addTrainer(t: Omit<Trainer, "ratingAvg" | "reviewCount">):
     career_years:   t.careerYears,
     short_bio:      t.shortBio,
     introduction:   t.introduction,
+    career:         t.career ?? [],
     certifications: t.certifications,
     tags:           t.tags,
     rating_avg:     0,
@@ -125,6 +128,7 @@ export async function updateTrainer(t: Trainer): Promise<boolean> {
     career_years:   t.careerYears,
     short_bio:      t.shortBio,
     introduction:   t.introduction,
+    career:         t.career ?? [],
     certifications: t.certifications,
     tags:           t.tags,
     rating_avg:     t.ratingAvg,
