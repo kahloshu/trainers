@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     success: true,
     trainerName: trainer.name,
-    // 개발용: 실제 운영에서는 제거
-    devCode: process.env.NODE_ENV === "development" ? code : undefined,
+    // SMS 미연동 상태 테스트용: SMS 연동 후 이 줄 제거
+    devCode: code,
   });
 }

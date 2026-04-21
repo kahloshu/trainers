@@ -11,6 +11,7 @@ export default function TrainerLoginPage() {
   const [phone, setPhone]         = useState("");
   const [otp, setOtp]             = useState(["", "", "", "", "", ""]);
   const [trainerName, setTrainerName] = useState("");
+  const [devCode, setDevCode]         = useState("");
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState("");
   const [resendSec, setResendSec] = useState(0);
@@ -63,6 +64,7 @@ export default function TrainerLoginPage() {
       const data = await res.json();
       if (!res.ok) { setError(data.error); return; }
       setTrainerName(data.trainerName);
+      if (data.devCode) setDevCode(data.devCode);
       setStep("otp");
       setResendSec(180);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
@@ -175,6 +177,15 @@ export default function TrainerLoginPage() {
                 </span>
               )}
             </p>
+
+            {/* SMS 미연동 테스트용 코드 표시 */}
+            {devCode && (
+              <div className="mb-4 px-3 py-2.5 rounded-xl text-center"
+                style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)" }}>
+                <p className="text-[11px] mb-1" style={{ color: "#fbbf24" }}>테스트용 인증코드 (SMS 연동 전)</p>
+                <p className="text-[22px] font-bold tracking-[0.3em]" style={{ color: "#fbbf24" }}>{devCode}</p>
+              </div>
+            )}
 
             {/* OTP 입력 박스 */}
             <div className="flex gap-2 mb-4" onPaste={handleOtpPaste}>
