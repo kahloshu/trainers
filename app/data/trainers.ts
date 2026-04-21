@@ -218,13 +218,15 @@ export async function addReview(review: {
     ? review.authorName[0] + "*".repeat(review.authorName.length - 2) + review.authorName[review.authorName.length - 1]
     : review.authorName[0] + "*";
 
+  const id = `r-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   const { error } = await supabase.from("reviews").insert({
+    id,
     trainer_id:    review.trainerId,
     author_masked: masked,
     rating:        review.rating,
     comment:       review.comment,
   });
-  if (error) { console.error("[addReview]", error); return false; }
+  if (error) { console.error("[addReview]", error.code, error.message, error.details, error.hint); return false; }
 
   // 트레이너 평점 재계산
   const { data: reviews } = await supabase
