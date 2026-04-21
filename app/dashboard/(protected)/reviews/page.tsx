@@ -327,9 +327,16 @@ export default function DashboardReviewsPage() {
                     </div>
                   </div>
                   {/* 내용 */}
-                  <p className="text-[13px] leading-relaxed mb-3" style={{ color: "var(--dash-text-sub)" }}>
+                  <p className="text-[13px] leading-relaxed mb-2" style={{ color: "var(--dash-text-sub)" }}>
                     &ldquo;{review.comment}&rdquo;
                   </p>
+                  {review.adminNote && (
+                    <div className="mb-3 px-3 py-2 rounded-xl"
+                      style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)" }}>
+                      <p className="text-[10px] font-semibold mb-0.5" style={{ color: "#a78bfa" }}>관리자 메모</p>
+                      <p className="text-[12px] leading-relaxed" style={{ color: "var(--dash-text-sub)" }}>{review.adminNote}</p>
+                    </div>
+                  )}
                   <button
                     onClick={() => setDeleteTarget(review)}
                     className="px-3 py-1.5 rounded-lg text-[12px] font-medium"
@@ -383,6 +390,13 @@ export default function DashboardReviewsPage() {
                     <p className="text-[13px] leading-relaxed" style={{ color: "var(--dash-text-sub)" }}>
                       &ldquo;{review.comment}&rdquo;
                     </p>
+                    {review.adminNote && (
+                      <div className="mt-1.5 px-2.5 py-1.5 rounded-lg"
+                        style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)" }}>
+                        <p className="text-[10px] font-semibold mb-0.5" style={{ color: "#a78bfa" }}>관리자 메모</p>
+                        <p className="text-[12px] leading-relaxed" style={{ color: "var(--dash-text-sub)" }}>{review.adminNote}</p>
+                      </div>
+                    )}
                     <p className="text-[11px] mt-1" style={{ color: "var(--dash-text-dimmed)" }}>{daysLabel}</p>
                   </div>
                   <div className="flex justify-end">

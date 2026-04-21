@@ -12,6 +12,7 @@ import {
   type Application,
   type AppStatus,
 } from "@/app/data/applications";
+import { getReviewsByPhone } from "@/app/data/trainers";
 import BottomNav from "@/app/components/BottomNav";
 
 /* ── 탭 ── */
@@ -65,9 +66,10 @@ function StarIcon() {
 }
 
 /* ── 신청 카드 ── */
-function AppCard({ app }: { app: Application }) {
+function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTrainerIds: Set<string> }) {
   const style = STATUS_STYLE[app.status];
   const canWriteReview = app.status === "completed";
+  const hasReview = reviewedTrainerIds.has(app.trainerId);
 
   return (
     <div
@@ -137,10 +139,13 @@ function AppCard({ app }: { app: Application }) {
           <Link
             href={`/my/review/${app.trainerId}`}
             className="flex items-center gap-1 text-[12px] font-semibold px-3 py-1.5 rounded-xl transition-opacity active:opacity-70"
-            style={{ background: "rgba(201,169,110,0.12)", color: "#c9a96e" }}
+            style={{
+              background: hasReview ? "rgba(52,211,153,0.10)" : "rgba(201,169,110,0.12)",
+              color:      hasReview ? "#34d399"               : "#c9a96e",
+            }}
           >
             <StarIcon />
-            후기 작성
+            {hasReview ? "후기 수정" : "후기 작성"}
           </Link>
         ) : (
           <Link
@@ -194,13 +199,17 @@ function EmptyState({ tab }: { tab: TabId }) {
 /* ── 페이지 ── */
 export default function MyApplicationsPage() {
   const router = useRouter();
-  const [apps, setApps]           = useState<Application[]>([]);
-  const [activeTab, setActiveTab] = useState<TabId>("all");
+  const [apps, setApps]                         = useState<Application[]>([]);
+  const [reviewedTrainerIds, setReviewedIds]     = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab]               = useState<TabId>("all");
 
   useEffect(() => {
     const phone = localStorage.getItem("jg_my_phone");
     if (!phone) { router.replace("/my"); return; }
-    getApplicationsByPhone(phone).then(setApps);
+    Promise.all([getApplicationsByPhone(phone), getReviewsByPhone(phone)]).then(([appsData, reviews]) => {
+      setApps(appsData);
+      setReviewedIds(new Set(reviews.map((r) => r.trainerId)));
+    });
   }, [router]);
 
   const filtered = apps.filter((a: Application) => {
@@ -274,7 +283,7 @@ export default function MyApplicationsPage() {
         {filtered.length > 0 ? (
           <div className="flex flex-col gap-3">
             {filtered.map((app: Application) => (
-              <AppCard key={app.id} app={app} />
+              <AppCard key={app.id} app={app} reviewedTrainerIds={reviewedTrainerIds} />
             ))}
             <p className="text-center text-[12px] py-4" style={{ color: "#131313" }}>
               — 모두 확인했습니다 —

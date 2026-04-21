@@ -54,6 +54,7 @@ export default function MyPage() {
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [devCode, setDevCode] = useState("");
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   /* 저장된 전화번호 복원 */
@@ -97,13 +98,14 @@ export default function MyPage() {
     if (!res.ok) { setError(data.error ?? "오류가 발생했습니다."); return; }
     setStep("otp");
     setOtpDigits(["","","","","",""]);
+    setDevCode(data.devCode ?? "");
     setResendCooldown(60);
     setTimeout(() => otpRefs.current[0]?.focus(), 100);
   }
 
   /* 2단계: OTP 확인 */
-  async function handleVerifyOtp() {
-    const code = otpDigits.join("");
+  async function handleVerifyOtp(codeOverride?: string) {
+    const code = codeOverride ?? otpDigits.join("");
     if (code.length < 6) return;
     setLoading(true); setError("");
     const res = await fetch("/api/user/verify-otp", {
@@ -131,7 +133,7 @@ export default function MyPage() {
     setOtpDigits(next);
     if (digit && idx < 5) otpRefs.current[idx + 1]?.focus();
     if (next.every((d) => d !== "")) {
-      setTimeout(() => handleVerifyOtp(), 100);
+      handleVerifyOtp(next.join(""));
     }
   }
   function handleOtpKeyDown(idx: number, e: React.KeyboardEvent) {
@@ -234,8 +236,23 @@ export default function MyPage() {
               ))}
             </div>
 
+            {devCode && (
+              <div className="mb-3 px-4 py-2.5 rounded-xl text-center"
+                style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)" }}>
+                <p className="text-[10.5px] mb-1" style={{ color: "#6b7280" }}>임시 인증코드 (SMS 미연동)</p>
+                <p className="text-[22px] font-bold tracking-[0.3em]" style={{ color: "#fbbf24" }}>{devCode}</p>
+              </div>
+            )}
             {error && <p className="text-[12.5px] text-center mb-3" style={{ color: "#f87171" }}>{error}</p>}
-            {loading && <p className="text-[12.5px] mb-3" style={{ color: "#5a5a5a" }}>확인 중…</p>}
+
+            <button
+              onClick={() => handleVerifyOtp()}
+              disabled={loading || otpDigits.join("").length < 6}
+              className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-40 mb-4"
+              style={{ background: "linear-gradient(135deg,#2F6BFF,#1a55d4)", color: "#fff" }}
+            >
+              {loading ? "확인 중…" : "인증하기"}
+            </button>
 
             <div className="flex items-center gap-3 mt-2">
               <button onClick={() => { setStep("phone"); setError(""); }}
@@ -288,6 +305,7 @@ export default function MyPage() {
               <div className="rounded-2xl overflow-hidden" style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
                 {[
                   { href: "/my/applications", label: "내 신청 내역", sub: "OT 신청 현황 확인" },
+                  { href: "/my/reviews",      label: "내 후기",      sub: "작성한 후기 모아보기" },
                   { href: "/", label: "트레이너 찾기", sub: "OT 신청하기" },
                 ].map((item, i, arr) => (
                   <Link key={item.href} href={item.href}

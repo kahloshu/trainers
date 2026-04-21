@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getTrainerById, addReview, type Trainer } from "@/app/data/trainers";
+import { getTrainerById, addReview, updateReview, getReviewsByPhone, type Trainer } from "@/app/data/trainers";
 import { getApplicationsByPhone } from "@/app/data/applications";
 import { notFound } from "next/navigation";
 
@@ -178,10 +178,22 @@ export default function ReviewPage({
   const [comment, setComment]   = useState("");
   const [adminNote, setAdminNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [existingReviewId, setExistingReviewId] = useState<string | null>(null);
 
   useEffect(() => {
-    getTrainerById(trainerId).then((found) => {
+    const phone = localStorage.getItem("jg_my_phone") ?? "";
+    Promise.all([
+      getTrainerById(trainerId),
+      phone ? getReviewsByPhone(phone) : Promise.resolve([]),
+    ]).then(([found, reviews]) => {
       setTrainer(found ?? null);
+      const existing = reviews.find((r) => r.trainerId === trainerId);
+      if (existing) {
+        setExistingReviewId(existing.id);
+        setRating(existing.rating);
+        setComment(existing.comment);
+        setAdminNote(existing.adminNote ?? "");
+      }
     });
   }, [trainerId]);
 
@@ -196,12 +208,16 @@ export default function ReviewPage({
     if (!isValid || !trainer || trainer === "loading") return;
     setSubmitting(true);
 
-    // localStorage 전화번호로 신청자 이름 조회
-    const phone = localStorage.getItem("jg_my_phone") ?? "";
-    const apps = phone ? await getApplicationsByPhone(phone) : [];
-    const authorName = apps[0]?.applicantName ?? "익명";
+    let ok = false;
+    if (existingReviewId) {
+      ok = await updateReview(existingReviewId, { rating, comment, adminNote: adminNote || undefined });
+    } else {
+      const phone = localStorage.getItem("jg_my_phone") ?? "";
+      const apps = phone ? await getApplicationsByPhone(phone) : [];
+      const authorName = apps[0]?.applicantName ?? "익명";
+      ok = await addReview({ trainerId, authorName, rating, comment, adminNote: adminNote || undefined, reviewerPhone: phone });
+    }
 
-    const ok = await addReview({ trainerId, authorName, rating, comment });
     setSubmitting(false);
     if (!ok) return;
 
@@ -397,7 +413,7 @@ export default function ReviewPage({
             </span>
           ) : (
             <>
-              <span>후기 등록하기</span>
+              <span>{existingReviewId ? "후기 수정하기" : "후기 등록하기"}</span>
               {isValid && <ArrowIcon />}
             </>
           )}

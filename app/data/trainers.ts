@@ -29,7 +29,9 @@ export type Review = {
   authorMasked: string;
   rating: number;
   comment: string;
+  adminNote?: string;
   daysAgo: number;
+  reviewerPhone?: string;
 };
 
 /* ── DB 행 → TypeScript 타입 변환 ── */
@@ -63,12 +65,14 @@ function rowToReview(row: any): Review {
   const createdAt = new Date(row.created_at).getTime();
   const daysAgo   = Math.floor((Date.now() - createdAt) / 86400000);
   return {
-    id:           row.id,
-    trainerId:    row.trainer_id,
-    authorMasked: row.author_masked,
-    rating:       row.rating,
-    comment:      row.comment,
+    id:             row.id,
+    trainerId:      row.trainer_id,
+    authorMasked:   row.author_masked,
+    rating:         row.rating,
+    comment:        row.comment,
+    adminNote:      row.admin_note ?? undefined,
     daysAgo,
+    reviewerPhone:  row.reviewer_phone ?? undefined,
   };
 }
 
@@ -208,23 +212,39 @@ export async function getReviewsByTrainerId(trainerId: string): Promise<Review[]
   return (data ?? []).map(rowToReview);
 }
 
+export async function getReviewsByPhone(phone: string): Promise<Review[]> {
+  const normalized = phone.replace(/\D/g, "");
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("reviewer_phone", normalized)
+    .order("created_at", { ascending: false });
+  if (error) { console.error("[getReviewsByPhone]", error); return []; }
+  return (data ?? []).map(rowToReview);
+}
+
 export async function addReview(review: {
   trainerId: string;
   authorName: string;
   rating: number;
   comment: string;
+  adminNote?: string;
+  reviewerPhone?: string;
 }): Promise<boolean> {
   const masked = review.authorName.length >= 2
     ? review.authorName[0] + "*".repeat(review.authorName.length - 2) + review.authorName[review.authorName.length - 1]
     : review.authorName[0] + "*";
 
   const id = `r-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const normalized = review.reviewerPhone ? review.reviewerPhone.replace(/\D/g, "") : null;
   const { error } = await supabase.from("reviews").insert({
     id,
-    trainer_id:    review.trainerId,
-    author_masked: masked,
-    rating:        review.rating,
-    comment:       review.comment,
+    trainer_id:      review.trainerId,
+    author_masked:   masked,
+    rating:          review.rating,
+    comment:         review.comment,
+    admin_note:      review.adminNote ?? null,
+    reviewer_phone:  normalized,
   });
   if (error) { console.error("[addReview]", error.code, error.message, error.details, error.hint); return false; }
 
@@ -239,6 +259,28 @@ export async function addReview(review: {
       rating_avg:   Math.round(avg * 10) / 10,
       review_count: reviews.length,
     }).eq("id", review.trainerId);
+  }
+  return true;
+}
+
+export async function updateReview(id: string, patch: { rating: number; comment: string; adminNote?: string }): Promise<boolean> {
+  const { error } = await supabase.from("reviews").update({
+    rating:     patch.rating,
+    comment:    patch.comment,
+    admin_note: patch.adminNote ?? null,
+  }).eq("id", id);
+  if (error) { console.error("[updateReview]", error); return false; }
+  // 트레이너 평점 재계산
+  const { data: rev } = await supabase.from("reviews").select("rating, trainer_id").eq("id", id).single();
+  if (rev) {
+    const { data: all } = await supabase.from("reviews").select("rating").eq("trainer_id", rev.trainer_id);
+    if (all && all.length > 0) {
+      const avg = all.reduce((s: number, r: { rating: number }) => s + r.rating, 0) / all.length;
+      await supabase.from("trainers").update({
+        rating_avg:   Math.round(avg * 10) / 10,
+        review_count: all.length,
+      }).eq("id", rev.trainer_id);
+    }
   }
   return true;
 }

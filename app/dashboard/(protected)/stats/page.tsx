@@ -202,14 +202,21 @@ export default function StatsPage() {
 
   /* ── 상태 분포 ── */
   const statusData = useMemo(() => {
-    const map: Record<string, number> = { pending: 0, confirmed: 0, completed: 0, cancelled: 0 };
-    apps.forEach((a) => { map[a.status]++; });
-    const colors: Record<string, string> = {
-      pending: C.red, confirmed: C.yellow, completed: C.green, cancelled: chartColors.muted,
+    const map: Record<string, number> = {
+      pending: 0, received: 0, checking: 0, contact_scheduled: 0,
+      scheduling: 0, confirmed: 0, completed: 0, cancelled: 0,
     };
-    return (Object.keys(map) as AppStatus[]).map((k) => ({
-      name: STATUS_KO[k], value: map[k], color: colors[k],
-    }));
+    apps.forEach((a) => { if (a.status in map) map[a.status]++; });
+    const colors: Record<string, string> = {
+      pending: C.red, received: "#a78bfa", checking: "#60a5fa",
+      contact_scheduled: "#f472b6", scheduling: "#fb923c",
+      confirmed: C.yellow, completed: C.green, cancelled: chartColors.muted,
+    };
+    return (Object.keys(map) as AppStatus[])
+      .filter((k) => map[k] > 0)
+      .map((k) => ({
+        name: STATUS_KO[k], value: map[k], color: colors[k],
+      }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apps, isDark]);
 
