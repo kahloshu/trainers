@@ -215,8 +215,8 @@ export default function StatsPage() {
   if (loading) {
     return (
       <div className="p-6 flex flex-col gap-4 animate-pulse">
-        <div className="grid grid-cols-4 gap-3">
-          {[1,2,3,4].map((i) => <div key={i} className="h-28 rounded-2xl" style={{ background: "var(--dash-card)" }} />)}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {[1,2,3,4,5].map((i) => <div key={i} className={`h-24 rounded-2xl${i === 5 ? " col-span-2 md:col-span-1" : ""}`} style={{ background: "var(--dash-card)" }} />)}
         </div>
         {[1,2,3].map((i) => <div key={i} className="h-64 rounded-2xl" style={{ background: "var(--dash-card)" }} />)}
       </div>
@@ -224,7 +224,7 @@ export default function StatsPage() {
   }
 
   return (
-    <div className="p-8 flex flex-col gap-5">
+    <div className="p-4 md:p-8 flex flex-col gap-5">
 
       {/* 헤더 */}
       <div className="flex items-start justify-between">
@@ -237,15 +237,16 @@ export default function StatsPage() {
       </div>
 
       {/* ── KPI 카드 ── */}
-      <div className="flex gap-4">
+      <div className="grid grid-cols-2 md:flex gap-4">
         {[
-          { label: "전체 신청", value: kpi.total,              sub: "누적 신청 건수" },
-          { label: "대기 중",   value: kpi.pending,            sub: "응답 필요" },
-          { label: "확정됨",    value: kpi.confirmed,          sub: "일정 조율 중" },
-          { label: "완료",      value: kpi.completed,          sub: "OT 완료" },
-          { label: "전환율",    value: `${kpi.convRate}%`,     sub: "신청 → 완료 비율" },
-        ].map(({ label, value, sub }) => (
-          <div key={label} className="dash-card-el flex-1 px-5 py-4 rounded-xl"
+          { label: "전체 신청", value: kpi.total,          sub: "누적 신청 건수" },
+          { label: "대기 중",   value: kpi.pending,        sub: "응답 필요" },
+          { label: "확정됨",    value: kpi.confirmed,      sub: "일정 조율 중" },
+          { label: "완료",      value: kpi.completed,      sub: "OT 완료" },
+          { label: "전환율",    value: `${kpi.convRate}%`, sub: "신청 → 완료 비율" },
+        ].map(({ label, value, sub }, idx) => (
+          <div key={label}
+            className={`dash-card-el flex-1 px-5 py-4 rounded-xl${idx === 4 ? " col-span-2 md:col-span-1" : ""}`}
             style={{ background: "var(--dash-card)", minWidth: 0 }}>
             <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
               style={{ color: "var(--dash-text-dimmed)" }}>{label}</p>
