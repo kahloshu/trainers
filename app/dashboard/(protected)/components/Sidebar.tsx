@@ -67,22 +67,39 @@ const NAV_ITEMS = [
 
 interface SidebarProps {
   collapsed: boolean;
+  mobileOpen: boolean;
+  isMobile: boolean;
+  onClose: () => void;
 }
 
-export default function Sidebar({ collapsed }: SidebarProps) {
+export default function Sidebar({ collapsed, mobileOpen, isMobile, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   function isActive(href: string, exact: boolean) {
     return exact ? pathname === href : pathname.startsWith(href);
   }
 
+  const width = isMobile ? 240 : (collapsed ? 64 : 232);
+
   return (
     <aside
       className="flex flex-col h-full transition-all duration-200"
-      style={{
-        width: collapsed ? 64 : 232,
+      style={isMobile ? {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        height: "100%",
+        width,
+        zIndex: 50,
+        background: "var(--dash-sidebar)",
+        transform: mobileOpen ? "translateX(0)" : "translateX(-100%)",
+        transition: "transform 0.22s cubic-bezier(0.4,0,0.2,1)",
+        boxShadow: mobileOpen ? "4px 0 24px rgba(0,0,0,0.4)" : "none",
+      } : {
+        width,
         background: "var(--dash-sidebar)",
         flexShrink: 0,
+        transition: "width 0.2s ease",
       }}
     >
       {/* 로고 */}
@@ -129,6 +146,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               key={href}
               href={href}
               title={collapsed ? label : undefined}
+              onClick={isMobile ? onClose : undefined}
               className="flex items-center gap-3 transition-all"
               style={{
                 padding: collapsed ? "11px 0" : "11px 20px",

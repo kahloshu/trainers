@@ -24,7 +24,9 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
 
   const [authState, setAuthState] = useState<"loading" | "authed" | "none">("loading");
   const [userEmail, setUserEmail] = useState("");
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed]   = useState(false);
+  const [isMobile, setIsMobile]     = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   /* ── 초기 세션 확인 ── */
   useEffect(() => {
@@ -58,7 +60,22 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
     }
   }, [authState, router]);
 
-  const toggleSidebar = useCallback(() => setCollapsed((v) => !v), []);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  /* 모바일에서 페이지 이동 시 드로어 닫기 */
+  useEffect(() => {
+    if (isMobile) setMobileOpen(false);
+  }, [pathname, isMobile]);
+
+  const toggleSidebar = useCallback(() => {
+    if (isMobile) setMobileOpen((v) => !v);
+    else setCollapsed((v) => !v);
+  }, [isMobile]);
 
   /* ── 로딩 ── */
   if (authState !== "authed") {
@@ -80,8 +97,17 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
       className={`fixed inset-0 flex overflow-hidden dash-root${theme === "light" ? " light" : ""}`}
       style={{ background: "var(--dash-bg)", fontFamily: "var(--font-lexend), sans-serif" }}
     >
+      {/* 모바일 백드롭 */}
+      {isMobile && mobileOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(2px)" }}
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
       {/* 사이드바 */}
-      <Sidebar collapsed={collapsed} />
+      <Sidebar collapsed={collapsed} mobileOpen={mobileOpen} isMobile={isMobile} onClose={() => setMobileOpen(false)} />
 
       {/* 메인 영역 */}
       <div className="flex flex-col flex-1 min-w-0">

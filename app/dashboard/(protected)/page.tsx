@@ -97,7 +97,7 @@ export default function DashboardPage() {
   const recent    = apps.slice(0, 8);
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
 
       {/* 헤더 */}
       <div className="flex items-start justify-between mb-8">
@@ -111,13 +111,13 @@ export default function DashboardPage() {
 
       {/* 통계 카드 */}
       {loading ? (
-        <div className="flex gap-4 mb-8">
+        <div className="grid grid-cols-2 md:flex gap-4 mb-8">
           {[1,2,3,4].map((i) => (
             <div key={i} className="flex-1 h-20 rounded-xl animate-pulse" style={{ background: "var(--dash-card)" }} />
           ))}
         </div>
       ) : (
-        <div className="flex gap-4 mb-8">
+        <div className="grid grid-cols-2 md:flex gap-4 mb-8">
           <StatCard label="전체 신청"    value={apps.length}     sub="누적 OT 신청 건" />
           <StatCard label="대기 중"      value={pending}         sub="응답 필요" />
           <StatCard label="확정됨"       value={confirmed}       sub="일정 조율 중" />

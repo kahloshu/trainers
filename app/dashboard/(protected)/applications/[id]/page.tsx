@@ -298,7 +298,7 @@ export default function DashboardAppDetailPage({
       </div>
 
       {/* 콘텐츠 그리드: 왼쪽(2열) + 오른쪽(1열) */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: "1fr 340px" }}>
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-[1fr_340px]">
 
         {/* ── 왼쪽 ── */}
         <div className="flex flex-col gap-4">

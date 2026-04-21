@@ -255,7 +255,7 @@ export default function DashboardTrainersPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
 
       {/* ── 헤더 ── */}
       <div className="flex items-start justify-between mb-8">
@@ -286,7 +286,7 @@ export default function DashboardTrainersPage() {
       </div>
 
       {/* ── 통계 카드 ── */}
-      <div className="flex gap-4 mb-8">
+      <div className="grid grid-cols-2 md:flex gap-4 mb-8">
         <StatCard label="전체 트레이너" value={stats.total} />
         <StatCard label="활성 트레이너" value={stats.active} />
         <StatCard label="상위 노출"    value={stats.featured} />

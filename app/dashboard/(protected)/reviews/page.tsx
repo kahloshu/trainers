@@ -162,7 +162,7 @@ export default function DashboardReviewsPage() {
   const hasFilter = filter.search !== "" || trainerFilter !== "" || ratingFilter !== "";
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
 
       {/* 헤더 */}
       <div className="flex items-start justify-between mb-8">
@@ -175,7 +175,7 @@ export default function DashboardReviewsPage() {
       </div>
 
       {/* 통계 카드 */}
-      <div className="flex gap-4 mb-8">
+      <div className="grid grid-cols-2 md:flex gap-4 mb-8">
         {/* 평균 평점 */}
         <div className="dash-card-el flex-1 px-5 py-4 rounded-xl"
           style={{ background: "var(--dash-card)", minWidth: 0 }}>
