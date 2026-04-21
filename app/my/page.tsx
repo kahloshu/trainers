@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getApplicationsByPhone, type AppStatus } from "@/app/data/applications";
 import BottomNav from "@/app/components/BottomNav";
 
@@ -43,30 +43,37 @@ function ChevronRight() {
   );
 }
 
+type Step = "phone" | "otp" | "done";
+
 export default function MyPage() {
-  const [phone, setPhone]       = useState("");
-  const [input, setInput]       = useState("");
-  const [counts, setCounts]     = useState({ total: 0, pending: 0, confirmed: 0, completed: 0 });
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState("");
+  const [step, setStep]           = useState<Step>("phone");
+  const [phone, setPhone]         = useState("");
+  const [phoneInput, setPhoneInput] = useState("");
+  const [otpDigits, setOtpDigits] = useState(["","","","","",""]);
+  const [counts, setCounts]       = useState({ total: 0, pending: 0, confirmed: 0, completed: 0 });
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   /* 저장된 전화번호 복원 */
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) loadByPhone(saved);
+    if (saved) loadDashboard(saved);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function loadByPhone(ph: string) {
-    setLoading(true);
+  /* 재전송 쿨다운 */
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown((v) => v - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
+
+  async function loadDashboard(ph: string) {
     const apps = await getApplicationsByPhone(ph);
-    setLoading(false);
-    if (apps.length === 0 && ph !== phone) {
-      setError("해당 번호로 신청 내역이 없습니다.");
-      return;
-    }
-    setError("");
     setPhone(ph);
-    localStorage.setItem(STORAGE_KEY, ph);
+    setStep("done");
     setCounts({
       total:     apps.length,
       pending:   apps.filter((a) => ["pending","received","checking","contact_scheduled","scheduling"].includes(a.status)).length,
@@ -75,31 +82,80 @@ export default function MyPage() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  /* 1단계: 전화번호 제출 → OTP 발송 */
+  async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
-    if (input.length < 12) { setError("전화번호를 정확히 입력해 주세요."); return; }
-    loadByPhone(input);
+    if (phoneInput.length < 12) { setError("전화번호를 정확히 입력해 주세요."); return; }
+    setLoading(true); setError("");
+    const res = await fetch("/api/user/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: phoneInput }),
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (!res.ok) { setError(data.error ?? "오류가 발생했습니다."); return; }
+    setStep("otp");
+    setOtpDigits(["","","","","",""]);
+    setResendCooldown(60);
+    setTimeout(() => otpRefs.current[0]?.focus(), 100);
+  }
+
+  /* 2단계: OTP 확인 */
+  async function handleVerifyOtp() {
+    const code = otpDigits.join("");
+    if (code.length < 6) return;
+    setLoading(true); setError("");
+    const res = await fetch("/api/user/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: phoneInput, code }),
+    });
+    const data = await res.json();
+    setLoading(false);
+    if (!res.ok) {
+      setError(data.error ?? "오류가 발생했습니다.");
+      setOtpDigits(["","","","","",""]);
+      setTimeout(() => otpRefs.current[0]?.focus(), 100);
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, phoneInput);
+    await loadDashboard(phoneInput);
+  }
+
+  /* OTP 입력 핸들러 */
+  function handleOtpChange(idx: number, val: string) {
+    const digit = val.replace(/\D/g, "").slice(-1);
+    const next = [...otpDigits];
+    next[idx] = digit;
+    setOtpDigits(next);
+    if (digit && idx < 5) otpRefs.current[idx + 1]?.focus();
+    if (next.every((d) => d !== "")) {
+      setTimeout(() => handleVerifyOtp(), 100);
+    }
+  }
+  function handleOtpKeyDown(idx: number, e: React.KeyboardEvent) {
+    if (e.key === "Backspace" && !otpDigits[idx] && idx > 0) {
+      otpRefs.current[idx - 1]?.focus();
+    }
   }
 
   function handleLogout() {
     localStorage.removeItem(STORAGE_KEY);
-    setPhone("");
-    setInput("");
+    setStep("phone"); setPhone(""); setPhoneInput(""); setError("");
     setCounts({ total: 0, pending: 0, confirmed: 0, completed: 0 });
   }
 
   return (
     <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
-      <header
-        className="sticky top-0 z-40 px-4 pt-safe-top"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}
-      >
+      <header className="sticky top-0 z-40 px-4"
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="pt-5 pb-4 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>MY</p>
             <h1 className="text-[22px] font-bold tracking-tight" style={{ color: "#ffffff" }}>마이페이지</h1>
           </div>
-          {phone && (
+          {step === "done" && (
             <button onClick={handleLogout} className="text-[12px] px-3 py-1.5 rounded-xl"
               style={{ background: "#1a1a1a", color: "#5a5a5a", border: "1px solid rgba(255,255,255,0.06)" }}>
               전화번호 변경
@@ -110,8 +166,8 @@ export default function MyPage() {
 
       <main className="page-scroll pb-28">
 
-        {!phone ? (
-          /* ── 전화번호 입력 ── */
+        {/* ── 1단계: 전화번호 입력 ── */}
+        {step === "phone" && (
           <div className="px-4 pt-10 flex flex-col items-center">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
               style={{ background: "rgba(47,107,255,0.10)" }}>
@@ -122,41 +178,91 @@ export default function MyPage() {
             </div>
             <h2 className="text-[18px] font-bold mb-1.5" style={{ color: "#ffffff" }}>신청 내역 확인</h2>
             <p className="text-[13px] text-center mb-8 leading-relaxed" style={{ color: "#5a5a5a" }}>
-              OT 신청 시 입력한 전화번호로<br />내 신청 내역을 확인할 수 있습니다.
+              OT 신청 시 입력한 전화번호로<br />인증 후 내 신청 내역을 확인할 수 있습니다.
             </p>
-
-            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
+            <form onSubmit={handleSendOtp} className="w-full flex flex-col gap-3">
               <input
-                type="tel"
-                inputMode="numeric"
-                value={input}
-                onChange={(e) => { setInput(formatPhone(e.target.value)); setError(""); }}
+                type="tel" inputMode="numeric"
+                value={phoneInput}
+                onChange={(e) => { setPhoneInput(formatPhone(e.target.value)); setError(""); }}
                 placeholder="010-0000-0000"
                 className="w-full px-4 py-4 rounded-2xl text-[15px] outline-none text-center tracking-widest"
                 style={{ background: "#1a1a1a", border: `1.5px solid ${error ? "#f87171" : "rgba(255,255,255,0.08)"}`, color: "#ffffff" }}
               />
               {error && <p className="text-[12.5px] text-center" style={{ color: "#f87171" }}>{error}</p>}
-              <button
-                type="submit"
-                disabled={loading}
+              <button type="submit" disabled={loading}
                 className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg,#2F6BFF,#1a55d4)", color: "#fff" }}
-              >
-                {loading ? "조회 중…" : "내 신청 내역 보기"}
+                style={{ background: "linear-gradient(135deg,#2F6BFF,#1a55d4)", color: "#fff" }}>
+                {loading ? "전송 중…" : "인증코드 받기"}
               </button>
             </form>
           </div>
-        ) : (
-          /* ── 신청 현황 ── */
+        )}
+
+        {/* ── 2단계: OTP 입력 ── */}
+        {step === "otp" && (
+          <div className="px-4 pt-10 flex flex-col items-center">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style={{ background: "rgba(47,107,255,0.10)" }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="11" width="14" height="10" rx="2" stroke="#2F6BFF" strokeWidth="1.6" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h2 className="text-[18px] font-bold mb-1.5" style={{ color: "#ffffff" }}>인증코드 입력</h2>
+            <p className="text-[13px] text-center mb-8 leading-relaxed" style={{ color: "#5a5a5a" }}>
+              <span style={{ color: "#9ca3af" }}>{phoneInput}</span>으로<br />발송된 6자리 코드를 입력해 주세요.
+            </p>
+
+            {/* OTP 6칸 */}
+            <div className="flex gap-2 mb-4">
+              {otpDigits.map((d, i) => (
+                <input
+                  key={i}
+                  ref={(el) => { otpRefs.current[i] = el; }}
+                  type="text" inputMode="numeric"
+                  maxLength={1} value={d}
+                  onChange={(e) => handleOtpChange(i, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                  className="w-11 h-14 text-center text-[20px] font-bold rounded-xl outline-none"
+                  style={{
+                    background: "#1a1a1a",
+                    border: `1.5px solid ${error ? "#f87171" : d ? "#2F6BFF" : "rgba(255,255,255,0.08)"}`,
+                    color: "#ffffff",
+                  }}
+                />
+              ))}
+            </div>
+
+            {error && <p className="text-[12.5px] text-center mb-3" style={{ color: "#f87171" }}>{error}</p>}
+            {loading && <p className="text-[12.5px] mb-3" style={{ color: "#5a5a5a" }}>확인 중…</p>}
+
+            <div className="flex items-center gap-3 mt-2">
+              <button onClick={() => { setStep("phone"); setError(""); }}
+                className="text-[12.5px]" style={{ color: "#5a5a5a" }}>
+                번호 변경
+              </button>
+              <span style={{ color: "#2a2a2a" }}>|</span>
+              <button
+                onClick={() => { setStep("phone"); setTimeout(() => { document.querySelector("form")?.requestSubmit(); }, 50); }}
+                disabled={resendCooldown > 0}
+                className="text-[12.5px] disabled:opacity-40"
+                style={{ color: resendCooldown > 0 ? "#5a5a5a" : "#2F6BFF" }}>
+                {resendCooldown > 0 ? `재전송 (${resendCooldown}s)` : "재전송"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── 3단계: 대시보드 ── */}
+        {step === "done" && (
           <>
             <div className="px-4 pt-5">
               <p className="text-[11px] mb-1" style={{ color: "#3a3a3a" }}>{phone}</p>
               <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>신청 현황</p>
-              <Link
-                href="/my/applications"
+              <Link href="/my/applications"
                 className="block rounded-2xl p-4 transition-opacity active:opacity-70"
-                style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}
-              >
+                style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-[13px] font-semibold" style={{ color: "#ffffff" }}>전체 신청</span>
                   <span className="text-[24px] font-bold" style={{ color: "#2F6BFF" }}>{counts.total}</span>
