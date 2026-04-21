@@ -155,6 +155,8 @@ function GallerySlider({ images }: { images: string[] }) {
 
   if (images.length === 0) return null;
 
+  const isSmall = images.length <= 2;
+
   return (
     <>
       {/* ── 갤러리 트랙 ── */}
@@ -166,39 +168,24 @@ function GallerySlider({ images }: { images: string[] }) {
           갤러리
         </h2>
 
-        {/* 왼쪽 여백을 주기 위한 wrapper */}
-        <div style={{ paddingLeft: "16px" }}>
+        {/* 1~2장: 그리드, 3장+: 스크롤 슬라이더 */}
+        {isSmall ? (
           <div
-            ref={scrollRef}
-            onMouseDown={onMouseDown}
-            onMouseMove={onMouseMove}
-            onMouseUp={onMouseUp}
-            onMouseLeave={onMouseUp}
             style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "nowrap",
-              overflowX: "scroll",
-              WebkitOverflowScrolling: "touch",
-              scrollSnapType: "x mandatory",
+              display: "grid",
+              gridTemplateColumns: images.length === 1 ? "1fr" : "1fr 1fr",
               gap: "8px",
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-              cursor: "grab",
-              userSelect: "none",
-            } as React.CSSProperties}
+              padding: "0 16px",
+            }}
           >
-            {imgW > 0 && images.map((url, i) => (
+            {images.map((url, i) => (
               <div
                 key={i}
-                onClick={() => { if (!didDrag.current) setLightboxIdx(i); }}
+                onClick={() => setLightboxIdx(i)}
                 style={{
-                  flex: `0 0 ${imgW}px`,
-                  width: `${imgW}px`,
-                  height: `${imgW}px`,
+                  aspectRatio: "1",
                   borderRadius: "12px",
                   overflow: "hidden",
-                  scrollSnapAlign: "start",
                   cursor: "pointer",
                 }}
               >
@@ -207,13 +194,60 @@ function GallerySlider({ images }: { images: string[] }) {
                   src={url}
                   alt={`갤러리 ${i + 1}`}
                   draggable={false}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </div>
             ))}
-            <div style={{ flexShrink: 0, width: "8px" }} />
           </div>
-        </div>
+        ) : (
+          <div style={{ paddingLeft: "16px" }}>
+            <div
+              ref={scrollRef}
+              onMouseDown={onMouseDown}
+              onMouseMove={onMouseMove}
+              onMouseUp={onMouseUp}
+              onMouseLeave={onMouseUp}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "nowrap",
+                overflowX: "scroll",
+                WebkitOverflowScrolling: "touch",
+                scrollSnapType: "x mandatory",
+                gap: "8px",
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+                cursor: "grab",
+                userSelect: "none",
+              } as React.CSSProperties}
+            >
+              {imgW > 0 && images.map((url, i) => (
+                <div
+                  key={i}
+                  onClick={() => { if (!didDrag.current) setLightboxIdx(i); }}
+                  style={{
+                    flex: `0 0 ${imgW}px`,
+                    width: `${imgW}px`,
+                    height: `${imgW}px`,
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    scrollSnapAlign: "start",
+                    cursor: "pointer",
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={`갤러리 ${i + 1}`}
+                    draggable={false}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }}
+                  />
+                </div>
+              ))}
+              <div style={{ flexShrink: 0, width: "8px" }} />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── 라이트박스 ── */}
