@@ -41,7 +41,9 @@ export default function MyPage() {
   const [counts, setCounts] = useState({ total: 0, pending: 0, confirmed: 0, completed: 0 });
 
   useEffect(() => {
-    getAllApplications().then((apps) => {
+    const myNos = JSON.parse(localStorage.getItem("jg_my_apps") ?? "[]") as string[];
+    getAllApplications().then((all) => {
+      const apps = myNos.length > 0 ? all.filter((a) => myNos.includes(a.applicationNumber)) : [];
       setCounts({
         total:     apps.length,
         pending:   apps.filter((a) => a.status === "pending").length,

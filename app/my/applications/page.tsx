@@ -196,7 +196,10 @@ export default function MyApplicationsPage() {
   const [activeTab, setActiveTab] = useState<TabId>("all");
 
   useEffect(() => {
-    getAllApplications().then(setApps);
+    const myNos = JSON.parse(localStorage.getItem("jg_my_apps") ?? "[]") as string[];
+    getAllApplications().then((all) => {
+      setApps(myNos.length > 0 ? all.filter((a) => myNos.includes(a.applicationNumber)) : []);
+    });
   }, []);
 
   const filtered = apps.filter((a: Application) => {
