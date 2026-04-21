@@ -208,6 +208,39 @@ export async function getReviewsByTrainerId(trainerId: string): Promise<Review[]
   return (data ?? []).map(rowToReview);
 }
 
+export async function addReview(review: {
+  trainerId: string;
+  authorName: string;
+  rating: number;
+  comment: string;
+}): Promise<boolean> {
+  const masked = review.authorName.length >= 2
+    ? review.authorName[0] + "*".repeat(review.authorName.length - 2) + review.authorName[review.authorName.length - 1]
+    : review.authorName[0] + "*";
+
+  const { error } = await supabase.from("reviews").insert({
+    trainer_id:    review.trainerId,
+    author_masked: masked,
+    rating:        review.rating,
+    comment:       review.comment,
+  });
+  if (error) { console.error("[addReview]", error); return false; }
+
+  // 트레이너 평점 재계산
+  const { data: reviews } = await supabase
+    .from("reviews")
+    .select("rating")
+    .eq("trainer_id", review.trainerId);
+  if (reviews && reviews.length > 0) {
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+    await supabase.from("trainers").update({
+      rating_avg:   Math.round(avg * 10) / 10,
+      review_count: reviews.length,
+    }).eq("id", review.trainerId);
+  }
+  return true;
+}
+
 export async function deleteReview(id: string): Promise<void> {
   const { error } = await supabase.from("reviews").delete().eq("id", id);
   if (error) console.error("[deleteReview]", error);

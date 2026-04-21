@@ -2,7 +2,8 @@
 
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getTrainerById, type Trainer } from "@/app/data/trainers";
+import { getTrainerById, addReview, type Trainer } from "@/app/data/trainers";
+import { getApplicationsByPhone } from "@/app/data/applications";
 import { notFound } from "next/navigation";
 
 /* ────────────── 상수 ────────────── */
@@ -194,8 +195,17 @@ export default function ReviewPage({
   async function handleSubmit() {
     if (!isValid || !trainer || trainer === "loading") return;
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 800));
-    router.push(
+
+    // localStorage 전화번호로 신청자 이름 조회
+    const phone = localStorage.getItem("jg_my_phone") ?? "";
+    const apps = phone ? await getApplicationsByPhone(phone) : [];
+    const authorName = apps[0]?.applicantName ?? "익명";
+
+    const ok = await addReview({ trainerId, authorName, rating, comment });
+    setSubmitting(false);
+    if (!ok) return;
+
+    router.replace(
       `/my/review/${trainerId}/done?rating=${rating}&trainer=${encodeURIComponent(trainer.name)}&comment=${encodeURIComponent(comment)}`
     );
   }
