@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 const TRAINERS = [
   { id:"1", name:"김민준", specialty:"퍼스널 트레이닝", career_years:7, short_bio:"몸의 변화보다 습관의 변화를 만들어 드립니다.", introduction:"10년간 국가대표 선수 출신의 트레이너로, 기능성 훈련과 체형 교정을 전문으로 합니다.", certifications:["생활스포츠지도사 2급","NSCA-CPT 자격 보유","前 국가대표 트레이닝 코치","現 제임스짐 소속 7년차"], tags:["근력 향상","체형 교정","재활 트레이닝"], rating_avg:4.9, review_count:23, profile_image:"", featured:false },
   { id:"2", name:"박서연", specialty:"다이어트 · 필라테스", career_years:5, short_bio:"지속 가능한 몸을 함께 만들어 갑니다.", introduction:"무리하지 않으면서도 확실히 변화하는 방법을 알고 있습니다.", certifications:["생활스포츠지도사 2급","필라테스 지도자 1급","식품영양학과 졸업","現 제임스짐 소속 5년차"], tags:["다이어트","필라테스","체형 교정"], rating_avg:4.7, review_count:18, profile_image:"", featured:false },
