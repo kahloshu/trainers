@@ -159,7 +159,7 @@ function AppCard({ app }: { app: Application }) {
 function EmptyState({ tab }: { tab: TabId }) {
   const msg: Record<TabId, string> = {
     all:       "신청 내역이 없습니다.",
-    pending:   "대기 중인 신청이 없습니다.",
+    received:  "접수된 신청이 없습니다.",
     confirmed: "확정된 신청이 없습니다.",
     completed: "완료된 신청이 없습니다.",
     cancelled: "취소된 신청이 없습니다.",

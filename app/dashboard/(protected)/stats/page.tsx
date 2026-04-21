@@ -87,7 +87,9 @@ function PeriodTab({
 /* ─────────────────────── 페이지 ─────────────────────── */
 
 const STATUS_KO: Record<AppStatus, string> = {
-  pending: "대기", confirmed: "확정", completed: "완료", cancelled: "취소",
+  pending: "대기", received: "접수", checking: "확인중",
+  contact_scheduled: "연락예정", scheduling: "일정조율",
+  confirmed: "확정", completed: "완료", cancelled: "취소",
 };
 const DAY_KO: Record<string, string> = { weekday: "평일", saturday: "토요일", sunday: "일요일" };
 const TIME_KO: Record<string, string> = { morning: "오전", afternoon: "오후", evening: "저녁" };

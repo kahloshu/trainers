@@ -23,10 +23,14 @@ function todayLabel() {
 
 /* ── 상태 뱃지 색상 ── */
 const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }> = {
-  pending:   { bg: "rgba(248,113,113,0.10)",  text: "#f87171", dot: "#f87171" },
-  confirmed: { bg: "rgba(234,179,8,0.10)",    text: "#fbbf24", dot: "#eab308" },
-  completed: { bg: "rgba(52,211,153,0.10)",   text: "#34d399", dot: "#10b981" },
-  cancelled: { bg: "rgba(90,90,90,0.10)",     text: "#a0a0a0", dot: "#5a5a5a" },
+  pending:           { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
+  received:          { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
+  checking:          { bg: "rgba(251,191,36,0.10)",  text: "#fbbf24", dot: "#fbbf24" },
+  contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa" },
+  scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c" },
+  confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
 };
 
 /* ── 아이콘 ── */

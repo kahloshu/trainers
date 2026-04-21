@@ -17,16 +17,24 @@ import {
 
 /* ── 상태 색상 ── */
 const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string; border: string }> = {
-  pending:   { bg: "rgba(248,113,113,0.10)",   text: "#f87171", dot: "#f87171", border: "rgba(248,113,113,0.2)"   },
-  confirmed: { bg: "rgba(234,179,8,0.1)",   text: "#fbbf24", dot: "#eab308", border: "rgba(234,179,8,0.2)"   },
-  completed: { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981", border: "rgba(52,211,153,0.2)"  },
-  cancelled: { bg: "rgba(90,90,90,0.10)", text: "#a0a0a0", dot: "#5a5a5a", border: "rgba(90,90,90,0.2)" },
+  pending:           { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa", border: "rgba(96,165,250,0.2)"  },
+  received:          { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa", border: "rgba(96,165,250,0.2)"  },
+  checking:          { bg: "rgba(251,191,36,0.10)",  text: "#fbbf24", dot: "#fbbf24", border: "rgba(251,191,36,0.2)"  },
+  contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa", border: "rgba(167,139,250,0.2)" },
+  scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c", border: "rgba(251,146,60,0.2)"  },
+  confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308", border: "rgba(234,179,8,0.2)"   },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981", border: "rgba(52,211,153,0.2)"  },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a", border: "rgba(90,90,90,0.2)"    },
 };
 
 /* ── 상태 흐름 ── */
 const NEXT_STATUS: Partial<Record<AppStatus, { status: AppStatus; label: string; color: string }>> = {
-  pending:   { status: "confirmed", label: "확정하기",  color: "#34d399" },
-  confirmed: { status: "completed", label: "완료 처리", color: "#2F6BFF" },
+  pending:           { status: "checking",          label: "확인 처리", color: "#fbbf24" },
+  received:          { status: "checking",          label: "확인 처리", color: "#fbbf24" },
+  checking:          { status: "contact_scheduled", label: "연락 예정", color: "#a78bfa" },
+  contact_scheduled: { status: "scheduling",        label: "일정 조율", color: "#fb923c" },
+  scheduling:        { status: "confirmed",         label: "확정 처리", color: "#34d399" },
+  confirmed:         { status: "completed",         label: "완료 처리", color: "#2F6BFF" },
 };
 
 /* ── 아이콘 ── */
@@ -253,10 +261,14 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
     setApp((prev) => prev && prev !== "loading" ? { ...prev, status: newStatus } : prev);
     setModal(null);
     const labels: Record<AppStatus, string> = {
-      confirmed: "확정 처리되었습니다.",
-      completed: "완료 처리되었습니다.",
-      cancelled: "취소 처리되었습니다.",
-      pending: "",
+      pending:           "",
+      received:          "접수 처리되었습니다.",
+      checking:          "확인 처리되었습니다.",
+      contact_scheduled: "연락 예정으로 변경되었습니다.",
+      scheduling:        "일정 조율 중으로 변경되었습니다.",
+      confirmed:         "확정 처리되었습니다.",
+      completed:         "완료 처리되었습니다.",
+      cancelled:         "취소 처리되었습니다.",
     };
     showToast(labels[newStatus]);
   }

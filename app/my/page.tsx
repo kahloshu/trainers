@@ -7,16 +7,24 @@ import BottomNav from "@/app/components/BottomNav";
 
 /* ── 상태 색상 ── */
 const STATUS_COLOR: Record<AppStatus, { text: string; bg: string }> = {
-  pending:   { text: "#f87171", bg: "rgba(248,113,113,0.10)" },
-  confirmed: { text: "#fbbf24", bg: "rgba(234,179,8,0.10)" },
-  completed: { text: "#34d399", bg: "rgba(52,211,153,0.10)" },
-  cancelled: { text: "#a0a0a0", bg: "rgba(90,90,90,0.10)" },
+  pending:           { text: "#60a5fa", bg: "rgba(96,165,250,0.10)"  },
+  received:          { text: "#60a5fa", bg: "rgba(96,165,250,0.10)"  },
+  checking:          { text: "#fbbf24", bg: "rgba(251,191,36,0.10)"  },
+  contact_scheduled: { text: "#a78bfa", bg: "rgba(167,139,250,0.10)" },
+  scheduling:        { text: "#fb923c", bg: "rgba(251,146,60,0.10)"  },
+  confirmed:         { text: "#fbbf24", bg: "rgba(234,179,8,0.10)"   },
+  completed:         { text: "#34d399", bg: "rgba(52,211,153,0.10)"  },
+  cancelled:         { text: "#a0a0a0", bg: "rgba(90,90,90,0.10)"    },
 };
 const STATUS_LABEL: Record<AppStatus, string> = {
-  pending:   "대기 중",
-  confirmed: "확정됨",
-  completed: "완료",
-  cancelled: "취소됨",
+  pending:           "대기 중",
+  received:          "접수됨",
+  checking:          "확인중",
+  contact_scheduled: "연락 예정",
+  scheduling:        "일정 조율중",
+  confirmed:         "확정됨",
+  completed:         "완료",
+  cancelled:         "취소됨",
 };
 
 /* ── 아이콘 ── */
