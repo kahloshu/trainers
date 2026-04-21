@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
-  getAllApplications,
+  getApplicationsByPhone,
   STATUS_LABEL,
   DAY_LABEL,
   TIME_LABEL,
@@ -192,15 +193,15 @@ function EmptyState({ tab }: { tab: TabId }) {
 
 /* ── 페이지 ── */
 export default function MyApplicationsPage() {
-  const [apps, setApps]         = useState<Application[]>([]);
+  const router = useRouter();
+  const [apps, setApps]           = useState<Application[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>("all");
 
   useEffect(() => {
-    const myNos = JSON.parse(localStorage.getItem("jg_my_apps") ?? "[]") as string[];
-    getAllApplications().then((all) => {
-      setApps(myNos.length > 0 ? all.filter((a) => myNos.includes(a.applicationNumber)) : []);
-    });
-  }, []);
+    const phone = localStorage.getItem("jg_my_phone");
+    if (!phone) { router.replace("/my"); return; }
+    getApplicationsByPhone(phone).then(setApps);
+  }, [router]);
 
   const filtered = apps.filter((a: Application) => {
     if (activeTab === "all") return true;

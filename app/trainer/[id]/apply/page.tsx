@@ -237,8 +237,7 @@ export default function ApplyPage({
       status:         "received",
     });
     if (appNo) {
-      const prev = JSON.parse(localStorage.getItem("jg_my_apps") ?? "[]") as string[];
-      localStorage.setItem("jg_my_apps", JSON.stringify([...prev, appNo]));
+      localStorage.setItem("jg_my_phone", phone);
     }
     router.replace(
       `/trainer/${id}/apply/done?name=${encodeURIComponent(name)}&trainer=${encodeURIComponent(trainer.name)}&days=${days.join(",")}&times=${times.join(",")}&appNo=${encodeURIComponent(appNo ?? "")}`

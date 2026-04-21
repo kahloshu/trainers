@@ -106,6 +106,19 @@ export async function getApplicationByNumber(
   return data ? rowToApp(data) : null;
 }
 
+/** 전화번호로 복수 조회 (최근순) */
+export async function getApplicationsByPhone(
+  phone: string
+): Promise<Application[]> {
+  const { data, error } = await supabase
+    .from("applications")
+    .select("*")
+    .eq("applicant_phone", phone.trim())
+    .order("created_at", { ascending: false });
+  if (error) { console.error("[getApplicationsByPhone]", error); return []; }
+  return (data ?? []).map(rowToApp);
+}
+
 /** 이름 + 전화번호로 복수 조회 (최근순) */
 export async function getApplicationsByContact(
   name: string,
