@@ -236,7 +236,7 @@ export default function ApplyPage({
       userMessage:    message,
       status:         "received",
     });
-    router.push(
+    router.replace(
       `/trainer/${id}/apply/done?name=${encodeURIComponent(name)}&trainer=${encodeURIComponent(trainer.name)}&days=${days.join(",")}&times=${times.join(",")}&appNo=${encodeURIComponent(appNo ?? "")}`
     );
   }
