@@ -18,17 +18,24 @@ import DashboardFilter, {
 
 /* ── 상태 스타일 ── */
 const STATUS_STYLE: Record<AppStatus, { text: string; bg: string }> = {
-  pending:   { text: "#f87171", bg: "rgba(248,113,113,0.10)" },
-  confirmed: { text: "#fbbf24", bg: "rgba(234,179,8,0.10)"   },
-  completed: { text: "#34d399", bg: "rgba(52,211,153,0.10)"  },
-  cancelled: { text: "#5a5a5a", bg: "rgba(90,90,90,0.10)"    },
+  pending:           { text: "#60a5fa", bg: "rgba(96,165,250,0.10)"  },
+  received:          { text: "#60a5fa", bg: "rgba(96,165,250,0.10)"  },
+  checking:          { text: "#fbbf24", bg: "rgba(251,191,36,0.10)"  },
+  contact_scheduled: { text: "#a78bfa", bg: "rgba(167,139,250,0.10)" },
+  scheduling:        { text: "#fb923c", bg: "rgba(251,146,60,0.10)"  },
+  confirmed:         { text: "#fbbf24", bg: "rgba(234,179,8,0.10)"   },
+  completed:         { text: "#34d399", bg: "rgba(52,211,153,0.10)"  },
+  cancelled:         { text: "#5a5a5a", bg: "rgba(90,90,90,0.10)"    },
 };
 
 const STATUS_CHIPS = [
-  { value: "pending",   label: "대기 중" },
-  { value: "confirmed", label: "확정됨"  },
-  { value: "completed", label: "완료"    },
-  { value: "cancelled", label: "취소됨"  },
+  { value: "received",          label: "접수됨"    },
+  { value: "checking",          label: "확인중"    },
+  { value: "contact_scheduled", label: "연락 예정"  },
+  { value: "scheduling",        label: "일정 조율중" },
+  { value: "confirmed",         label: "확정됨"    },
+  { value: "completed",         label: "완료"      },
+  { value: "cancelled",         label: "취소됨"    },
 ];
 
 /* ── 날짜 포맷 ── */
@@ -89,32 +96,35 @@ export default function DashboardApplicationsPage() {
   }), [apps]);
 
   return (
-    <div className="p-6">
+    <div className="p-8">
 
-      {/* 페이지 타이틀 + 요약 뱃지 */}
-      <div className="flex items-start justify-between mb-6">
+      {/* 헤더 */}
+      <div className="flex items-start justify-between mb-8">
         <div>
-          <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>신청 관리</h2>
-          <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>
-            전체 {apps.length}건
+          <h2 className="text-[28px] font-black tracking-tight uppercase mb-1.5"
+            style={{ color: "var(--dash-text)" }}>신청 관리</h2>
+          <p className="text-[13px] max-w-[420px] leading-relaxed"
+            style={{ color: "var(--dash-text-sub)" }}>
+            OT 신청 목록을 관리하세요. 상태별로 필터링하고 상세 내용을 확인할 수 있습니다.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {STATUS_CHIPS.map(({ value, label }) => {
-            const count = counts[value as AppStatus];
-            if (count === 0) return null;
-            const s = STATUS_STYLE[value as AppStatus];
-            return (
-              <span
-                key={value}
-                className="px-3 py-1 rounded-full text-[12px] font-semibold"
-                style={{ background: s.bg, color: s.text }}
-              >
-                {label} {count}
-              </span>
-            );
-          })}
-        </div>
+      </div>
+
+      {/* 통계 카드 */}
+      <div className="flex gap-4 mb-8">
+        {[
+          { label: "전체 신청",   value: apps.length },
+          { label: "대기 중",     value: counts.pending },
+          { label: "확정됨",      value: counts.confirmed },
+          { label: "완료",        value: counts.completed },
+        ].map(({ label, value }) => (
+          <div key={label} className="dash-card-el flex-1 px-5 py-4 rounded-xl"
+            style={{ background: "var(--dash-card)", minWidth: 0 }}>
+            <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+              style={{ color: "var(--dash-text-dimmed)" }}>{label}</p>
+            <p className="text-[28px] font-bold leading-none" style={{ color: "var(--dash-text)" }}>{value}</p>
+          </div>
+        ))}
       </div>
 
       {/* 필터 */}
@@ -130,7 +140,7 @@ export default function DashboardApplicationsPage() {
 
       {/* 테이블 */}
       <div
-        className="rounded-2xl overflow-hidden"
+        className="dash-card-el rounded-2xl overflow-hidden"
         style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
       >
         {loading ? (
@@ -179,7 +189,7 @@ export default function DashboardApplicationsPage() {
                         <div className="flex items-center gap-2">
                           <div
                             className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                            style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}
+                            style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}
                           >
                             {app.applicantName.charAt(0)}
                           </div>
@@ -194,7 +204,7 @@ export default function DashboardApplicationsPage() {
                             <span
                               key={p}
                               className="px-2 py-0.5 rounded-full text-[11px] font-medium whitespace-nowrap"
-                              style={{ background: "rgba(142,171,255,0.10)", color: "#8eabff" }}
+                              style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}
                             >
                               {p}
                             </span>

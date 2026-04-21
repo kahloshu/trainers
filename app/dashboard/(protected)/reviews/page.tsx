@@ -162,42 +162,56 @@ export default function DashboardReviewsPage() {
   const hasFilter = filter.search !== "" || trainerFilter !== "" || ratingFilter !== "";
 
   return (
-    <div className="p-6">
+    <div className="p-8">
 
       {/* 헤더 */}
-      <div className="mb-6">
-        <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>후기 관리</h2>
-        <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>전체 {reviews.length}건</p>
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <h2 className="text-[28px] font-black tracking-tight uppercase mb-1.5"
+            style={{ color: "var(--dash-text)" }}>후기 관리</h2>
+          <p className="text-[13px] max-w-[420px] leading-relaxed"
+            style={{ color: "var(--dash-text-sub)" }}>트레이너별 고객 후기를 관리하세요.</p>
+        </div>
       </div>
 
-      {/* 상단 요약 카드 */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-5">
+      {/* 통계 카드 */}
+      <div className="flex gap-4 mb-8">
         {/* 평균 평점 */}
-        <div className="rounded-2xl p-5 col-span-2 lg:col-span-1"
-          style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
-          <p className="text-[12px] mb-2" style={{ color: "var(--dash-text-muted)" }}>전체 평균 평점</p>
+        <div className="dash-card-el flex-1 px-5 py-4 rounded-xl"
+          style={{ background: "var(--dash-card)", minWidth: 0 }}>
+          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+            style={{ color: "var(--dash-text-dimmed)" }}>평균 평점</p>
           <div className="flex items-end gap-2">
-            <p className="text-[32px] font-bold leading-none" style={{ color: "#c9a96e" }}>
+            <p className="text-[28px] font-bold leading-none" style={{ color: "#c9a96e" }}>
               {avgRating.toFixed(1)}
             </p>
-            <div className="mb-1">
-              <Stars rating={Math.round(avgRating)} size={14} />
+            <div className="mb-0.5">
+              <Stars rating={Math.round(avgRating)} size={13} />
             </div>
           </div>
         </div>
 
+        {/* 전체 후기 수 */}
+        <div className="dash-card-el flex-1 px-5 py-4 rounded-xl"
+          style={{ background: "var(--dash-card)", minWidth: 0 }}>
+          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+            style={{ color: "var(--dash-text-dimmed)" }}>전체 후기</p>
+          <p className="text-[28px] font-bold leading-none" style={{ color: "var(--dash-text)" }}>{reviews.length}</p>
+        </div>
+
         {/* 평점 분포 */}
-        <div className="rounded-2xl p-5 col-span-2 lg:col-span-3"
-          style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
-          <p className="text-[12px] mb-3" style={{ color: "var(--dash-text-muted)" }}>평점 분포</p>
+        <div className="dash-card-el flex-[3] px-5 py-4 rounded-xl"
+          style={{ background: "var(--dash-card)", minWidth: 0 }}>
+          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-3"
+            style={{ color: "var(--dash-text-dimmed)" }}>평점 분포</p>
           <div className="flex flex-col gap-1.5">
             {[5, 4, 3, 2, 1].map((star) => {
               const count = ratingDist[star] ?? 0;
               const pct   = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="text-[11.5px] w-4 text-right flex-shrink-0" style={{ color: "var(--dash-text-muted)" }}>{star}</span>
-                  <svg width="11" height="11" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+                  <span className="text-[11px] w-3 text-right flex-shrink-0" style={{ color: "var(--dash-text-muted)" }}>{star}</span>
+                  <svg width="10" height="10" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
                       fill="#c9a96e" />
                   </svg>
@@ -205,7 +219,7 @@ export default function DashboardReviewsPage() {
                     <div className="h-full rounded-full transition-all duration-500"
                       style={{ width: `${pct}%`, background: "#c9a96e", opacity: 0.75 }} />
                   </div>
-                  <span className="text-[11.5px] w-6 text-right flex-shrink-0" style={{ color: "var(--dash-text-dimmed)" }}>{count}</span>
+                  <span className="text-[11px] w-5 text-right flex-shrink-0" style={{ color: "var(--dash-text-dimmed)" }}>{count}</span>
                 </div>
               );
             })}
@@ -229,9 +243,9 @@ export default function DashboardReviewsPage() {
             onChange={(e) => setTrainerFilter(e.target.value)}
             className="px-3 py-2 rounded-xl text-[12.5px] outline-none"
             style={{
-              background: trainerFilter ? "rgba(142,171,255,0.10)" : "var(--dash-card)",
-              border: `1px solid ${trainerFilter ? "rgba(142,171,255,0.25)" : "var(--dash-border)"}`,
-              color: trainerFilter ? "#8eabff" : "var(--dash-text-muted)",
+              background: trainerFilter ? "rgba(47,107,255,0.10)" : "var(--dash-card)",
+              border: `1px solid ${trainerFilter ? "rgba(47,107,255,0.25)" : "var(--dash-border)"}`,
+              color: trainerFilter ? "#2F6BFF" : "var(--dash-text-muted)",
             }}
           >
             <option value="">전체 트레이너</option>
@@ -269,7 +283,7 @@ export default function DashboardReviewsPage() {
       </div>
 
       {/* 후기 목록 */}
-      <div className="rounded-2xl overflow-hidden"
+      <div className="dash-card-el rounded-2xl overflow-hidden"
         style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
 
         {/* 컬럼 헤더 */}
@@ -319,7 +333,7 @@ export default function DashboardReviewsPage() {
                 {/* 트레이너 */}
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                    style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}>
+                    style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}>
                     {trainerName.charAt(0)}
                   </div>
                   <div>

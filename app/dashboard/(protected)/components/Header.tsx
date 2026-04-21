@@ -70,8 +70,8 @@ export default function Header({ title, userEmail, onToggleSidebar, theme, onTog
       style={{
         height: 64,
         background: "var(--dash-header-bg)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid var(--dash-border)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
         flexShrink: 0,
       }}
     >
@@ -106,20 +106,20 @@ export default function Header({ title, userEmail, onToggleSidebar, theme, onTog
           className="flex items-center justify-center w-9 h-9 rounded-xl transition-all"
           title={isLight ? "다크 모드로 전환" : "라이트 모드로 전환"}
           style={{
-            color: isLight ? "#8eabff" : "var(--dash-text-muted)",
-            background: isLight ? "rgba(142,171,255,0.10)" : "transparent",
+            color: isLight ? "#2F6BFF" : "var(--dash-text-muted)",
+            background: isLight ? "rgba(47,107,255,0.10)" : "transparent",
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.background = isLight
-              ? "rgba(142,171,255,0.16)"
+              ? "rgba(47,107,255,0.16)"
               : "var(--dash-hover-btn)";
-            (e.currentTarget as HTMLElement).style.color = isLight ? "#8eabff" : "var(--dash-text)";
+            (e.currentTarget as HTMLElement).style.color = isLight ? "#2F6BFF" : "var(--dash-text)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.background = isLight
-              ? "rgba(142,171,255,0.10)"
+              ? "rgba(47,107,255,0.10)"
               : "transparent";
-            (e.currentTarget as HTMLElement).style.color = isLight ? "#8eabff" : "var(--dash-text-muted)";
+            (e.currentTarget as HTMLElement).style.color = isLight ? "#2F6BFF" : "var(--dash-text-muted)";
           }}
         >
           {isLight ? <MoonIcon /> : <SunIcon />}
@@ -148,7 +148,7 @@ export default function Header({ title, userEmail, onToggleSidebar, theme, onTog
         <div className="flex items-center gap-2.5">
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold"
-            style={{ background: "linear-gradient(135deg, #8eabff, #156aff)", color: "#000" }}
+            style={{ background: "linear-gradient(135deg, #2F6BFF, #1a55d4)", color: "#fff" }}
           >
             {initials}
           </div>

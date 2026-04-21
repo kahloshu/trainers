@@ -261,7 +261,7 @@ export default function AdminReviewsPage() {
       >
         <div className="flex items-center justify-between px-4 pt-5 pb-3">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#8eabff" }}>
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>
               관리
             </p>
             <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
@@ -294,9 +294,9 @@ export default function AdminReviewsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-150"
                 style={{
-                  background: isActive ? "#156aff" : "#1a1a1a",
+                  background: isActive ? "#1a55d4" : "#1a1a1a",
                   color:      isActive ? "#fff"    : "#5a5a5a",
-                  border:     `1.5px solid ${isActive ? "#156aff" : "rgba(255,255,255,0.06)"}`,
+                  border:     `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
                 }}
               >
                 {tab.label}

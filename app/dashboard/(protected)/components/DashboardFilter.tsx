@@ -86,10 +86,10 @@ export default function DashboardFilter({
           className="relative flex items-center gap-2 px-3.5 py-2.5 rounded-xl flex-1 min-w-[200px] transition-all"
           style={{
             background: "var(--dash-card)",
-            border: `1.5px solid ${searchFocus ? "#8eabff" : "var(--dash-hover-btn)"}`,
+            border: `1.5px solid ${searchFocus ? "#2F6BFF" : "var(--dash-hover-btn)"}`,
           }}
         >
-          <span style={{ color: searchFocus ? "#8eabff" : "var(--dash-text-dimmed)", flexShrink: 0 }}>
+          <span style={{ color: searchFocus ? "#2F6BFF" : "var(--dash-text-dimmed)", flexShrink: 0 }}>
             <SearchIcon />
           </span>
           <input
@@ -184,9 +184,9 @@ export default function DashboardFilter({
                 onClick={() => set({ status: chip.value })}
                 className="px-3.5 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
                 style={{
-                  background: active ? "rgba(142,171,255,0.12)" : "var(--dash-card)",
-                  color: active ? "#8eabff" : "var(--dash-text-muted)",
-                  border: `1px solid ${active ? "rgba(142,171,255,0.25)" : "var(--dash-border)"}`,
+                  background: active ? "rgba(47,107,255,0.12)" : "var(--dash-card)",
+                  color: active ? "#2F6BFF" : "var(--dash-text-muted)",
+                  border: `1px solid ${active ? "rgba(47,107,255,0.25)" : "var(--dash-border)"}`,
                 }}
               >
                 {chip.label}

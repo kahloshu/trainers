@@ -15,19 +15,19 @@ function ChevronRight() {
 function PersonIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="4" stroke="#8eabff" strokeWidth="1.6" />
+      <circle cx="12" cy="8" r="4" stroke="#2F6BFF" strokeWidth="1.6" />
       <path d="M4 20C4 17.24 7.58 15 12 15C16.42 15 20 17.24 20 20"
-        stroke="#8eabff" strokeWidth="1.6" strokeLinecap="round" />
+        stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }
 function ClipboardIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <rect x="5" y="4" width="14" height="17" rx="2" stroke="#8eabff" strokeWidth="1.6" />
+      <rect x="5" y="4" width="14" height="17" rx="2" stroke="#2F6BFF" strokeWidth="1.6" />
       <path d="M9 4V3C9 2.45 9.45 2 10 2H14C14.55 2 15 2.45 15 3V4"
-        stroke="#8eabff" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M9 11H15M9 15H13" stroke="#8eabff" strokeWidth="1.5" strokeLinecap="round" />
+        stroke="#2F6BFF" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M9 11H15M9 15H13" stroke="#2F6BFF" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -35,7 +35,7 @@ function StarIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-        stroke="#8eabff" strokeWidth="1.6" strokeLinejoin="round" fill="none" />
+        stroke="#2F6BFF" strokeWidth="1.6" strokeLinejoin="round" fill="none" />
     </svg>
   );
 }
@@ -43,7 +43,7 @@ function HomeIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
       <path d="M3 12L12 3L21 12V20C21 20.55 20.55 21 20 21H15V16H9V21H4C3.45 21 3 20.55 3 20V12Z"
-        stroke="#8eabff" strokeWidth="1.6" strokeLinejoin="round" />
+        stroke="#2F6BFF" strokeWidth="1.6" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -107,7 +107,7 @@ function MenuItem({
       {badge && (
         <span
           className="text-[10px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
-          style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff" }}
+          style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}
         >
           {badge}
         </span>
@@ -145,7 +145,7 @@ export default function AdminMorePage() {
         }}
       >
         <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1"
-          style={{ color: "#8eabff" }}>관리</p>
+          style={{ color: "#2F6BFF" }}>관리</p>
         <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
           더보기
         </h1>

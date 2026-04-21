@@ -87,7 +87,7 @@ export default function TrainerCard({ trainer }: Props) {
       {/* 정보 영역 */}
       <div className="px-4 pt-4 pb-4" style={{ background: "#1a1a1a" }}>
         {/* 전문분야 오버라인 */}
-        <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-1.5" style={{ color: "#8eabff" }}>
+        <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-1.5" style={{ color: "#2F6BFF" }}>
           {trainer.specialty}
         </p>
 
@@ -99,7 +99,7 @@ export default function TrainerCard({ trainer }: Props) {
         {/* 한줄 소개 */}
         <p
           className="text-[13px] leading-relaxed mb-3 pl-3 italic"
-          style={{ color: "#a0a0a0", borderLeft: "2px solid rgba(142,171,255,0.3)" }}
+          style={{ color: "#a0a0a0", borderLeft: "2px solid rgba(47,107,255,0.3)" }}
         >
           &ldquo;{trainer.shortBio}&rdquo;
         </p>
@@ -110,7 +110,7 @@ export default function TrainerCard({ trainer }: Props) {
             <span
               key={tag}
               className="text-[11px] font-medium px-2.5 py-1 rounded-full tracking-[0.03em]"
-              style={{ background: "rgba(142,171,255,0.10)", color: "#8eabff" }}
+              style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}
             >
               {tag}
             </span>
@@ -120,9 +120,6 @@ export default function TrainerCard({ trainer }: Props) {
         {/* OT 신청 버튼 */}
         <Link href={`/trainer/${trainer.id}/apply`} className="btn-primary">
           <span>OT 신청하기</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M5 12H19M13 6L19 12L13 18" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
         </Link>
 
         {/* 상세 보기 */}

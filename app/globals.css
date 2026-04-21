@@ -19,11 +19,11 @@
   --text-muted:      #5a5a5a;
 
   /* ── Primary: high-frequency pulse blue ── */
-  --accent:          #8eabff;
-  --accent-2:        #156aff;
+  --accent:          #2F6BFF;
+  --accent-2:        #1a55d4;
   --accent-hover:    #0066ff;
-  --accent-subtle:   rgba(142,171,255,0.10);
-  --accent-glow:     rgba(142,171,255,0.08);
+  --accent-subtle:   rgba(47,107,255,0.10);
+  --accent-glow:     rgba(47,107,255,0.08);
 
   /* ── Gold (rating) ── */
   --gold:            #c9a96e;
@@ -95,9 +95,9 @@ body {
 
 /* ── Primary Button: gradient CTA ── */
 .btn-primary {
-  background: linear-gradient(135deg, #8eabff 0%, #156aff 100%);
-  color: #000000;
-  border-radius: 14px;
+  background: linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%);
+  color: #ffffff;
+  border-radius: 6px;
   font-weight: 700;
   font-size: 15px;
   letter-spacing: 0.01em;
@@ -125,7 +125,7 @@ body {
   transform: translateX(-50%);
   width: 100%;
   max-width: 480px;
-  background: rgba(26,26,26,0.70);
+  background: rgba(10,10,10,0.92);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--border-subtle);
@@ -139,85 +139,128 @@ body {
 /* ── Divider (ghost fallback only) ── */
 .divider { height: 1px; background: var(--border-subtle); }
 
+/* ── Dashboard input: bottom-accent focus style ── */
+.dash-input {
+  background: var(--dash-input-bg);
+  border: none;
+  border-bottom: 2px solid var(--dash-border);
+  border-radius: 8px 8px 0 0;
+  color: var(--dash-text);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.dash-input:focus {
+  border-bottom-color: #2F6BFF;
+}
+.dash-root.light .dash-input {
+  border-bottom-color: rgba(0,0,0,0.12);
+}
+.dash-root.light .dash-input:focus {
+  border-bottom-color: #2F6BFF;
+}
+
 /* ══════════════════════════════════════════
    Dashboard Theme Variables
    .dash-root = dark (default)
    .dash-root.light = light mode
 ══════════════════════════════════════════ */
 .dash-root {
-  /* Backgrounds */
-  --dash-bg:          #0e0e0e;
-  --dash-card:        #141414;
-  --dash-sidebar:     #111111;
-  --dash-surface:     #1a1a1a;
-  --dash-surface-2:   #1f1f1f;
-  --dash-header-bg:   rgba(14,14,14,0.95);
-  --dash-input-bg:    #0e0e0e;
+  /* Backgrounds — cool blue-steel dark hierarchy */
+  --dash-bg:          #111318;   /* main content bg */
+  --dash-card:        #1a1b22;   /* card surface */
+  --dash-sidebar:     #0c0d12;   /* sidebar — darker than main */
+  --dash-surface:     #22232e;   /* nested surface */
+  --dash-surface-2:   #2a2b38;   /* elevated surface */
+  --dash-floating:    #323344;   /* modals / popovers */
+  --dash-header-bg:   rgba(13,14,20,0.85); /* glassmorphism */
+  --dash-input-bg:    #090a0e;   /* input bg */
 
-  /* Borders */
-  --dash-border:      rgba(255,255,255,0.05);
+  /* Ghost Borders */
+  --dash-border:      rgba(255,255,255,0.06);
   --dash-border-sm:   rgba(255,255,255,0.04);
   --dash-border-xs:   rgba(255,255,255,0.03);
-  --dash-modal-border: rgba(255,255,255,0.08);
+  --dash-modal-border: rgba(255,255,255,0.10);
 
   /* Hover / interactive */
-  --dash-hover-row:   rgba(255,255,255,0.02);
-  --dash-hover-btn:   rgba(255,255,255,0.06);
-  --dash-nav-hover:   rgba(255,255,255,0.04);
-  --dash-toggle-off:  rgba(255,255,255,0.08);
+  --dash-hover-row:   rgba(255,255,255,0.03);
+  --dash-hover-btn:   rgba(255,255,255,0.07);
+  --dash-nav-hover:   rgba(47,107,255,0.08);
+  --dash-toggle-off:  rgba(255,255,255,0.12);
 
-  /* Text */
-  --dash-text:        #ffffff;
-  --dash-text-body:   #d0d0d0;
-  --dash-text-sub:    #a0a0a0;
-  --dash-text-muted:  #5a5a5a;
-  --dash-text-dimmed: #3a3a3a;
-  --dash-text-faint:  #2a2a2a;
+  /* Text — cool-neutral */
+  --dash-text:        #eeedf2;
+  --dash-text-body:   #c4c3cc;
+  --dash-text-sub:    #888896;
+  --dash-text-muted:  #565664;
+  --dash-text-dimmed: #383844;
+  --dash-text-faint:  #262630;
 
   /* Misc */
-  --dash-avatar-bg:   #1f1f1f;
-  --dash-stars-empty: rgba(255,255,255,0.06);
-  --dash-stars-stroke: rgba(255,255,255,0.08);
-  --dash-progress-bg: rgba(255,255,255,0.04);
-  --dash-input-border: rgba(255,255,255,0.06);
+  --dash-avatar-bg:   #22232e;
+  --dash-stars-empty: rgba(255,255,255,0.08);
+  --dash-stars-stroke: rgba(255,255,255,0.10);
+  --dash-progress-bg: rgba(255,255,255,0.05);
+  --dash-input-border: rgba(255,255,255,0.00); /* bottom-accent only on focus */
   --dash-date-scheme: dark;
+
+  /* Nav active: gray (dark mode) */
+  --dash-nav-active-bg:     rgba(255,255,255,0.10);
+  --dash-nav-active-text:   #ffffff;
+  --dash-nav-active-border: rgba(255,255,255,0.25);
 }
 
 .dash-root.light {
-  /* Backgrounds */
-  --dash-bg:          #ffffff;
-  --dash-card:        #ffffff;
-  --dash-sidebar:     #ffffff;
-  --dash-surface:     #f4f5f7;
-  --dash-surface-2:   #eaecf0;
-  --dash-header-bg:   rgba(255,255,255,0.95);
-  --dash-input-bg:    #f8f9fb;
+  /* Backgrounds — clean white editorial */
+  --dash-bg:          #f2f3f5;   /* off-white main content */
+  --dash-card:        #ffffff;   /* white cards */
+  --dash-sidebar:     #ffffff;   /* white sidebar */
+  --dash-surface:     #f8f8f8;   /* slightly off-white nested surface */
+  --dash-surface-2:   #efefef;
+  --dash-floating:    #ffffff;
+  --dash-header-bg:   rgba(242,243,245,0.92);
+  --dash-input-bg:    #f5f5f5;
 
-  /* Borders */
-  --dash-border:      rgba(0,0,0,0.08);
-  --dash-border-sm:   rgba(0,0,0,0.06);
-  --dash-border-xs:   rgba(0,0,0,0.04);
-  --dash-modal-border: rgba(0,0,0,0.10);
+  /* Ghost borders — very subtle in light mode */
+  --dash-border:      rgba(0,0,0,0.06);
+  --dash-border-sm:   rgba(0,0,0,0.04);
+  --dash-border-xs:   rgba(0,0,0,0.03);
+  --dash-modal-border: rgba(0,0,0,0.08);
 
   /* Hover / interactive */
   --dash-hover-row:   rgba(0,0,0,0.025);
   --dash-hover-btn:   rgba(0,0,0,0.05);
-  --dash-nav-hover:   rgba(0,0,0,0.04);
-  --dash-toggle-off:  rgba(0,0,0,0.12);
+  --dash-nav-hover:   rgba(0,0,0,0.05);
+  --dash-toggle-off:  rgba(0,0,0,0.14);
 
-  /* Text */
-  --dash-text:        #111827;
-  --dash-text-body:   #374151;
-  --dash-text-sub:    #6b7280;
-  --dash-text-muted:  #9ca3af;
-  --dash-text-dimmed: #9ca3af;
-  --dash-text-faint:  #c4c9d4;
+  /* Text — very dark for editorial clarity */
+  --dash-text:        #0d0d0d;
+  --dash-text-body:   #2a2a2a;
+  --dash-text-sub:    #6b6b6b;
+  --dash-text-muted:  #999999;
+  --dash-text-dimmed: #bbbbbb;
+  --dash-text-faint:  #d8d8d8;
 
   /* Misc */
-  --dash-avatar-bg:   #e5e7eb;
-  --dash-stars-empty: rgba(0,0,0,0.08);
-  --dash-stars-stroke: rgba(0,0,0,0.12);
+  --dash-avatar-bg:   #e8e8e8;
+  --dash-stars-empty: rgba(0,0,0,0.10);
+  --dash-stars-stroke: rgba(0,0,0,0.14);
   --dash-progress-bg: rgba(0,0,0,0.06);
-  --dash-input-border: rgba(0,0,0,0.10);
+  --dash-input-border: rgba(0,0,0,0.00); /* bottom-accent only on focus */
   --dash-date-scheme: light;
+
+  /* Nav active: dark pill (light mode only) */
+  --dash-nav-active-bg:     #111111;
+  --dash-nav-active-text:   #ffffff;
+  --dash-nav-active-border: transparent;
+}
+
+/* Light mode card elevation — add .dash-card-el to card root divs */
+.dash-root.light .dash-card-el {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+/* Light mode input bottom-accent */
+.dash-root.light .dash-input {
+  background: var(--dash-input-bg);
+  border-bottom-color: rgba(0,0,0,0.12);
 }

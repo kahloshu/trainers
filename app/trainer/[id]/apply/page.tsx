@@ -225,7 +225,7 @@ export default function ApplyPage({
     if (times.length === 0) { scrollTo(timesRef); return; }
 
     setSubmitting(true);
-    await addApplication({
+    const appNo = await addApplication({
       applicantName:  name.trim(),
       applicantPhone: phone,
       trainerId:      id,
@@ -234,9 +234,11 @@ export default function ApplyPage({
       preferredDays:  days,
       preferredTimes: times,
       userMessage:    message,
-      status:         "pending",
+      status:         "received",
     });
-    router.push(`/trainer/${id}/apply/done?name=${encodeURIComponent(name)}&trainer=${encodeURIComponent(trainer.name)}&days=${days.join(",")}&times=${times.join(",")}`);
+    router.push(
+      `/trainer/${id}/apply/done?name=${encodeURIComponent(name)}&trainer=${encodeURIComponent(trainer.name)}&days=${days.join(",")}&times=${times.join(",")}&appNo=${encodeURIComponent(appNo ?? "")}`
+    );
   }
 
   return (

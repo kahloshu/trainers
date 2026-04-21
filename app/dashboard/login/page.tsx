@@ -35,7 +35,7 @@ export default function DashboardLoginPage() {
   if (checking) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#0a0a0a" }}>
-        <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "#8eabff", borderTopColor: "transparent" }} />
+        <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "#2F6BFF", borderTopColor: "transparent" }} />
       </div>
     );
   }
@@ -54,7 +54,7 @@ export default function DashboardLoginPage() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -60%)",
-          background: "radial-gradient(circle, rgba(142,171,255,0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(47,107,255,0.06) 0%, transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -64,7 +64,7 @@ export default function DashboardLoginPage() {
         <div className="text-center mb-10">
           <div
             className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
-            style={{ background: "linear-gradient(135deg, #8eabff 0%, #156aff 100%)" }}
+            style={{ background: "linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%)" }}
           >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
               <path d="M3 9L12 2L21 9V20C21 20.55 20.55 21 20 21H15V15H9V21H4C3.45 21 3 20.55 3 20V9Z"
@@ -107,7 +107,7 @@ export default function DashboardLoginPage() {
                   border: "1.5px solid rgba(255,255,255,0.06)",
                   color: "#ffffff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
+                onFocus={(e) => (e.target.style.borderColor = "#2F6BFF")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
               />
             </div>
@@ -130,7 +130,7 @@ export default function DashboardLoginPage() {
                   border: "1.5px solid rgba(255,255,255,0.06)",
                   color: "#ffffff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
+                onFocus={(e) => (e.target.style.borderColor = "#2F6BFF")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
               />
             </div>
@@ -151,7 +151,7 @@ export default function DashboardLoginPage() {
               disabled={loading || !email || !password}
               className="w-full py-3.5 rounded-xl text-[14px] font-bold mt-1 transition-opacity disabled:opacity-40"
               style={{
-                background: "linear-gradient(135deg, #8eabff 0%, #156aff 100%)",
+                background: "linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%)",
                 color: "#000000",
               }}
             >

@@ -28,7 +28,7 @@ function EditIcon() {
 function CheckIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-      <path d="M5 13L9 17L19 7" stroke="#8eabff" strokeWidth="2"
+      <path d="M5 13L9 17L19 7" stroke="#2F6BFF" strokeWidth="2"
         strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -67,7 +67,7 @@ function Avatar({ name }: { name: string }) {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-[11px] font-semibold tracking-[0.15em] uppercase mb-3"
-      style={{ color: "#8eabff" }}>
+      style={{ color: "#2F6BFF" }}>
       {children}
     </p>
   );
@@ -158,7 +158,7 @@ export default function AdminTrainerDetailPage({
         <Link
           href={`/admin/trainers/${id}/edit`}
           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12.5px] font-semibold transition-opacity active:opacity-80"
-          style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff" }}
+          style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}
         >
           <EditIcon />
           수정
@@ -179,7 +179,7 @@ export default function AdminTrainerDetailPage({
         />
         <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
           <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-0.5"
-            style={{ color: "#8eabff" }}>
+            style={{ color: "#2F6BFF" }}>
             {trainer.specialty}
           </p>
           <h1 className="text-[24px] font-bold" style={{ color: "#ffffff" }}>
@@ -204,7 +204,7 @@ export default function AdminTrainerDetailPage({
         {/* 한줄 소개 */}
         <div
           className="px-4 py-3.5 rounded-2xl border-l-2"
-          style={{ background: "rgba(142,171,255,0.05)", borderColor: "#8eabff" }}
+          style={{ background: "rgba(47,107,255,0.05)", borderColor: "#2F6BFF" }}
         >
           <p className="text-[13.5px] leading-relaxed italic" style={{ color: "#a0a0a0" }}>
             &ldquo;{trainer.shortBio}&rdquo;
@@ -232,7 +232,7 @@ export default function AdminTrainerDetailPage({
                 <li key={i} className="flex items-start gap-2.5">
                   <span
                     className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{ background: "rgba(142,171,255,0.10)" }}
+                    style={{ background: "rgba(47,107,255,0.10)" }}
                   >
                     <CheckIcon />
                   </span>
@@ -254,7 +254,7 @@ export default function AdminTrainerDetailPage({
                 <span
                   key={tag}
                   className="px-3 py-1.5 rounded-full text-[12px] font-medium"
-                  style={{ background: "rgba(142,171,255,0.08)", color: "#8eabff" }}
+                  style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}
                 >
                   {tag}
                 </span>

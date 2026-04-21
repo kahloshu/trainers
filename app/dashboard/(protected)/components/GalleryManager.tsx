@@ -125,7 +125,7 @@ const GalleryManager = forwardRef<GalleryManagerRef, Props>(
     return (
       <div>
         {uploading && (
-          <div className="flex items-center gap-2 mb-3 text-[12.5px]" style={{ color: "#8eabff" }}>
+          <div className="flex items-center gap-2 mb-3 text-[12.5px]" style={{ color: "#2F6BFF" }}>
             <svg className="animate-spin flex-shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" strokeDasharray="30 56" />
             </svg>
@@ -148,7 +148,7 @@ const GalleryManager = forwardRef<GalleryManagerRef, Props>(
                 style={{
                   aspectRatio: "1/1",
                   border: dragFrom === i
-                    ? "2px solid #8eabff"
+                    ? "2px solid #2F6BFF"
                     : "1px solid var(--dash-hover-btn)",
                   opacity: dragFrom === i ? 0.45 : 1,
                   cursor: disabled ? "default" : "grab",
@@ -205,8 +205,8 @@ const GalleryManager = forwardRef<GalleryManagerRef, Props>(
                 color: "var(--dash-text-dimmed)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(142,171,255,0.4)";
-                (e.currentTarget as HTMLElement).style.color = "#8eabff";
+                (e.currentTarget as HTMLElement).style.borderColor = "rgba(47,107,255,0.4)";
+                (e.currentTarget as HTMLElement).style.color = "#2F6BFF";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLElement).style.borderColor = "var(--dash-modal-border)";

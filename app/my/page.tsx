@@ -50,9 +50,9 @@ export default function MyPage() {
       sub:   "OT 신청 현황 확인",
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <rect x="5" y="4" width="14" height="17" rx="2" stroke="#8eabff" strokeWidth="1.6" />
-          <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" stroke="#8eabff" strokeWidth="1.4" strokeLinecap="round" />
-          <path d="M9 11h6M9 15h4" stroke="#8eabff" strokeWidth="1.4" strokeLinecap="round" />
+          <rect x="5" y="4" width="14" height="17" rx="2" stroke="#2F6BFF" strokeWidth="1.6" />
+          <path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" stroke="#2F6BFF" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M9 11h6M9 15h4" stroke="#2F6BFF" strokeWidth="1.4" strokeLinecap="round" />
         </svg>
       ),
       badge: counts.pending > 0 ? counts.pending : null,
@@ -64,8 +64,8 @@ export default function MyPage() {
       sub:   "OT 신청하기",
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <circle cx="11" cy="11" r="7" stroke="#8eabff" strokeWidth="1.6" />
-          <path d="M20 20L16.65 16.65" stroke="#8eabff" strokeWidth="1.6" strokeLinecap="round" />
+          <circle cx="11" cy="11" r="7" stroke="#2F6BFF" strokeWidth="1.6" />
+          <path d="M20 20L16.65 16.65" stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       ),
       badge: null,
@@ -82,7 +82,7 @@ export default function MyPage() {
         style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}
       >
         <div className="pt-5 pb-4">
-          <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#8eabff" }}>
+          <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>
             MY
           </p>
           <h1 className="text-[22px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
@@ -105,7 +105,7 @@ export default function MyPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <span className="text-[13px] font-semibold" style={{ color: "#ffffff" }}>전체 신청</span>
-              <span className="text-[24px] font-bold" style={{ color: "#8eabff" }}>{counts.total}</span>
+              <span className="text-[24px] font-bold" style={{ color: "#2F6BFF" }}>{counts.total}</span>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {(["pending", "confirmed", "completed"] as AppStatus[]).map((s) => (
@@ -141,7 +141,7 @@ export default function MyPage() {
               >
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: "rgba(142,171,255,0.08)" }}
+                  style={{ background: "rgba(47,107,255,0.08)" }}
                 >
                   {item.icon}
                 </div>
@@ -183,7 +183,7 @@ export default function MyPage() {
                 <div key={item.icon} className="flex items-start gap-3">
                   <span
                     className="text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0 mt-0.5"
-                    style={{ background: "rgba(142,171,255,0.08)", color: "#8eabff" }}
+                    style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}
                   >
                     {item.icon}
                   </span>

@@ -19,16 +19,26 @@ import { getAllTrainers, type Trainer } from "@/app/data/trainers";
 
 /* ── 상태 스타일 ── */
 const STATUS_STYLE: Record<AppStatus, { text: string; bg: string; border: string }> = {
-  pending:   { text: "#f87171", bg: "rgba(248,113,113,0.10)", border: "rgba(248,113,113,0.2)" },
-  confirmed: { text: "#fbbf24", bg: "rgba(234,179,8,0.10)",   border: "rgba(234,179,8,0.2)"   },
-  completed: { text: "#34d399", bg: "rgba(52,211,153,0.10)",  border: "rgba(52,211,153,0.2)"  },
-  cancelled: { text: "#5a5a5a", bg: "rgba(90,90,90,0.10)",    border: "rgba(90,90,90,0.2)"    },
+  pending:           { text: "#60a5fa", bg: "rgba(96,165,250,0.10)",  border: "rgba(96,165,250,0.2)"  },
+  received:          { text: "#60a5fa", bg: "rgba(96,165,250,0.10)",  border: "rgba(96,165,250,0.2)"  },
+  checking:          { text: "#fbbf24", bg: "rgba(251,191,36,0.10)",  border: "rgba(251,191,36,0.2)"  },
+  contact_scheduled: { text: "#a78bfa", bg: "rgba(167,139,250,0.10)", border: "rgba(167,139,250,0.2)" },
+  scheduling:        { text: "#fb923c", bg: "rgba(251,146,60,0.10)",  border: "rgba(251,146,60,0.2)"  },
+  confirmed:         { text: "#fbbf24", bg: "rgba(234,179,8,0.10)",   border: "rgba(234,179,8,0.2)"   },
+  completed:         { text: "#34d399", bg: "rgba(52,211,153,0.10)",  border: "rgba(52,211,153,0.2)"  },
+  cancelled:         { text: "#5a5a5a", bg: "rgba(90,90,90,0.10)",    border: "rgba(90,90,90,0.2)"    },
 };
 
 const NEXT_STATUS: Partial<Record<AppStatus, { status: AppStatus; label: string; color: string }>> = {
-  pending:   { status: "confirmed", label: "확정 처리",  color: "#34d399" },
-  confirmed: { status: "completed", label: "완료 처리",  color: "#8eabff" },
+  pending:           { status: "checking",          label: "확인 처리",  color: "#fbbf24" },
+  received:          { status: "checking",          label: "확인 처리",  color: "#fbbf24" },
+  checking:          { status: "contact_scheduled", label: "연락 예정",  color: "#a78bfa" },
+  contact_scheduled: { status: "scheduling",        label: "일정 조율",  color: "#fb923c" },
+  scheduling:        { status: "confirmed",         label: "확정 처리",  color: "#34d399" },
+  confirmed:         { status: "completed",         label: "완료 처리",  color: "#2F6BFF" },
 };
+
+const STATUS_FLOW: AppStatus[] = ["received", "checking", "contact_scheduled", "scheduling", "confirmed", "completed"];
 
 /* ── 아이콘 ── */
 function BackIcon() {
@@ -79,7 +89,7 @@ function fmtDate(iso: string) {
 /* ── 섹션 카드 ── */
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
+    <div className="dash-card-el rounded-2xl overflow-hidden" style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
       <div className="px-5 py-3.5" style={{ borderBottom: "1px solid var(--dash-border-sm)" }}>
         <p className="text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--dash-text-dimmed)" }}>{title}</p>
       </div>
@@ -166,7 +176,7 @@ export default function DashboardAppDetailPage({
   const [trainers, setTrainers]   = useState<Trainer[]>([]);
   const [note, setNote]           = useState("");
   const [noteSaved, setNoteSaved] = useState(false);
-  const [modal, setModal]         = useState<null | "confirm" | "complete" | "cancel">(null);
+  const [modal, setModal]         = useState<null | "step" | "cancel">(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [toast, setToast]         = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
@@ -215,12 +225,16 @@ export default function DashboardAppDetailPage({
     setModal(null);
     setActionLoading(false);
     const msgs: Record<AppStatus, string> = {
-      confirmed: "확정 처리되었습니다.",
-      completed: "완료 처리되었습니다.",
-      cancelled: "취소 처리되었습니다.",
-      pending: "",
+      pending:           "",
+      received:          "접수 처리되었습니다.",
+      checking:          "확인 처리되었습니다.",
+      contact_scheduled: "연락 예정으로 변경되었습니다.",
+      scheduling:        "일정 조율 중으로 변경되었습니다.",
+      confirmed:         "확정 처리되었습니다.",
+      completed:         "완료 처리되었습니다.",
+      cancelled:         "취소 처리되었습니다.",
     };
-    showToast(msgs[newStatus]);
+    showToast(msgs[newStatus] || "상태가 변경되었습니다.");
   }
 
   /* ── 트레이너 배정 ── */
@@ -238,19 +252,14 @@ export default function DashboardAppDetailPage({
 
   /* ── 모달 설정 ── */
   const MODAL_CONFIG = {
-    confirm: {
-      title: "이 신청을 확정하시겠습니까?",
-      desc:  "확정 후 회원에게 연락하여 일정을 조율해 주세요.",
-      confirmLabel: "확정 처리",
-      confirmColor: "#34d399",
-      onConfirm: () => changeStatus("confirmed"),
-    },
-    complete: {
-      title: "OT를 완료 처리하시겠습니까?",
-      desc:  "완료 처리 후에는 되돌리기 어렵습니다. 실제 진행이 완료된 경우에만 처리하세요.",
-      confirmLabel: "완료 처리",
-      confirmColor: "#8eabff",
-      onConfirm: () => changeStatus("completed"),
+    step: {
+      title: next ? `${next.label}하시겠습니까?` : "",
+      desc:  next?.status === "completed"
+        ? "완료 처리 후에는 되돌리기 어렵습니다. 실제 진행이 완료된 경우에만 처리하세요."
+        : "상태를 다음 단계로 진행합니다.",
+      confirmLabel: next?.label ?? "",
+      confirmColor: next?.color ?? "#2F6BFF",
+      onConfirm: () => next && changeStatus(next.status),
     },
     cancel: {
       title: "이 신청을 취소하시겠습니까?",
@@ -299,7 +308,7 @@ export default function DashboardAppDetailPage({
             <InfoRow label="이름" value={app.applicantName} />
             <InfoRow label="연락처" value={
               <a href={`tel:${app.applicantPhone.replace(/-/g,"")}`}
-                className="font-semibold" style={{ color: "#8eabff" }}>
+                className="font-semibold" style={{ color: "#2F6BFF" }}>
                 {app.applicantPhone}
               </a>
             } />
@@ -323,7 +332,7 @@ export default function DashboardAppDetailPage({
               <div className="flex flex-wrap gap-2 pt-1">
                 {app.purposes.map((p) => (
                   <span key={p} className="px-3 py-1.5 rounded-full text-[12.5px] font-medium"
-                    style={{ background: "rgba(142,171,255,0.08)", color: "#8eabff" }}>
+                    style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
                     {p}
                   </span>
                 ))}
@@ -349,7 +358,7 @@ export default function DashboardAppDetailPage({
               rows={4}
               className="w-full px-4 py-3 rounded-xl text-[13px] outline-none resize-none leading-relaxed transition-all"
               style={{ background: "var(--dash-input-bg)", border: "1.5px solid var(--dash-input-border)", color: "var(--dash-text)" }}
-              onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
+              onFocus={(e) => (e.target.style.borderColor = "#2F6BFF")}
               onBlur={(e) => (e.target.style.borderColor = "var(--dash-input-border)")}
             />
             <div className="flex items-center justify-between mt-2">
@@ -359,9 +368,9 @@ export default function DashboardAppDetailPage({
                 disabled={note === app.adminNote}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all disabled:opacity-30"
                 style={{
-                  background: note !== app.adminNote ? "rgba(142,171,255,0.12)" : "var(--dash-card)",
-                  color:      note !== app.adminNote ? "#8eabff" : "var(--dash-text-dimmed)",
-                  border:     `1px solid ${note !== app.adminNote ? "rgba(142,171,255,0.3)" : "transparent"}`,
+                  background: note !== app.adminNote ? "rgba(47,107,255,0.12)" : "var(--dash-card)",
+                  color:      note !== app.adminNote ? "#2F6BFF" : "var(--dash-text-dimmed)",
+                  border:     `1px solid ${note !== app.adminNote ? "rgba(47,107,255,0.3)" : "transparent"}`,
                 }}
               >
                 {noteSaved ? <CheckIcon /> : <SaveIcon />}
@@ -382,7 +391,7 @@ export default function DashboardAppDetailPage({
                   value={selectedTrainerId}
                   onChange={(e) => setSelectedTrainerId(e.target.value)}
                   className="w-full px-3 py-2.5 rounded-xl text-[13px] outline-none"
-                  style={{ background: "var(--dash-input-bg)", border: "1.5px solid #8eabff", color: "var(--dash-text)" }}
+                  style={{ background: "var(--dash-input-bg)", border: "1.5px solid #2F6BFF", color: "var(--dash-text)" }}
                 >
                   {trainers.map((t) => (
                     <option key={t.id} value={t.id}>{t.name} — {t.specialty}</option>
@@ -400,7 +409,7 @@ export default function DashboardAppDetailPage({
                     onClick={saveTrainer}
                     disabled={trainerSaving}
                     className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold transition-opacity disabled:opacity-50"
-                    style={{ background: "rgba(142,171,255,0.15)", color: "#8eabff" }}
+                    style={{ background: "rgba(47,107,255,0.15)", color: "#2F6BFF" }}
                   >
                     {trainerSaving ? "저장 중…" : "저장"}
                   </button>
@@ -411,7 +420,7 @@ export default function DashboardAppDetailPage({
                 <div className="flex items-center gap-2.5">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0"
-                    style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}
+                    style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}
                   >
                     {app.trainerName.charAt(0)}
                   </div>
@@ -427,8 +436,8 @@ export default function DashboardAppDetailPage({
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11.5px] font-medium transition-colors"
                   style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)", border: "1px solid var(--dash-border)" }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.color = "#8eabff";
-                    (e.currentTarget as HTMLElement).style.background = "rgba(142,171,255,0.08)";
+                    (e.currentTarget as HTMLElement).style.color = "#2F6BFF";
+                    (e.currentTarget as HTMLElement).style.background = "rgba(47,107,255,0.08)";
                   }}
                   onMouseLeave={(e) => {
                     (e.currentTarget as HTMLElement).style.color = "var(--dash-text-muted)";
@@ -449,7 +458,7 @@ export default function DashboardAppDetailPage({
               {/* 주요 액션 */}
               {next ? (
                 <button
-                  onClick={() => setModal(app.status === "pending" ? "confirm" : "complete")}
+                  onClick={() => setModal("step")}
                   className="w-full py-3.5 rounded-xl font-semibold text-[14px] flex items-center justify-center gap-2 transition-opacity active:opacity-80"
                   style={{ background: next.color, color: "#fff" }}
                 >
@@ -464,7 +473,7 @@ export default function DashboardAppDetailPage({
               )}
 
               {/* 취소 처리 */}
-              {(app.status === "pending" || app.status === "confirmed") && (
+              {app.status !== "completed" && app.status !== "cancelled" && (
                 <button
                   onClick={() => setModal("cancel")}
                   className="w-full py-2.5 rounded-xl text-[12.5px] font-medium flex items-center justify-center gap-1.5 transition-opacity"
@@ -480,11 +489,12 @@ export default function DashboardAppDetailPage({
               {/* 상태 흐름 안내 */}
               <div className="mt-1 pt-3" style={{ borderTop: "1px solid var(--dash-border-sm)" }}>
                 <div className="flex items-center justify-between">
-                  {(["pending","confirmed","completed"] as AppStatus[]).map((s, i, arr) => {
-                    const isCurrentOrPast = ["pending","confirmed","completed"].indexOf(app.status) >= i;
-                    const isCurrent = app.status === s;
+                  {STATUS_FLOW.map((s, i, arr) => {
+                    const flowIdx = STATUS_FLOW.indexOf(app.status === "pending" ? "received" : app.status);
+                    const isCurrentOrPast = flowIdx >= i;
+                    const isCurrent = app.status === s || (s === "received" && app.status === "pending");
                     return (
-                      <div key={s} className="flex items-center gap-1.5">
+                      <div key={s} className="flex items-center gap-0.5">
                         <div className="flex flex-col items-center gap-1">
                           <div
                             className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
@@ -496,12 +506,12 @@ export default function DashboardAppDetailPage({
                           >
                             {i+1}
                           </div>
-                          <p className="text-[9.5px] whitespace-nowrap" style={{ color: isCurrent ? STATUS_STYLE[s].text : "var(--dash-text-faint)" }}>
+                          <p className="text-[8.5px] whitespace-nowrap" style={{ color: isCurrent ? STATUS_STYLE[s].text : "var(--dash-text-faint)" }}>
                             {STATUS_LABEL[s]}
                           </p>
                         </div>
                         {i < arr.length - 1 && (
-                          <div className="w-6 h-px mb-4" style={{ background: isCurrentOrPast && app.status !== s ? "var(--dash-toggle-off)" : "var(--dash-border-sm)" }} />
+                          <div className="w-3 h-px mb-4 flex-shrink-0" style={{ background: isCurrentOrPast && !isCurrent ? "var(--dash-toggle-off)" : "var(--dash-border-sm)" }} />
                         )}
                       </div>
                     );

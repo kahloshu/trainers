@@ -16,7 +16,7 @@ function BackIcon() {
     </svg>
   );
 }
-function PlusIcon({ color = "#8eabff" }: { color?: string }) {
+function PlusIcon({ color = "#2F6BFF" }: { color?: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
       <path d="M12 5v14M5 12h14" stroke={color} strokeWidth="2" strokeLinecap="round" />
@@ -84,7 +84,7 @@ function FieldLabel({
       {required && (
         <span
           className="text-[10px] font-medium px-1.5 py-0.5 rounded-md"
-          style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff" }}
+          style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}
         >
           필수
         </span>
@@ -120,7 +120,7 @@ function TextInput({
       placeholder={placeholder}
       className="w-full px-4 py-3.5 rounded-xl text-[14px] outline-none transition-all"
       style={{ background: "#1a1a1a", border: "1.5px solid rgba(255,255,255,0.06)", color: "#ffffff" }}
-      onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
+      onFocus={(e) => (e.target.style.borderColor = "#2F6BFF")}
       onBlur={(e)  => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
     />
   );
@@ -145,7 +145,7 @@ function Textarea({
       rows={rows}
       className="w-full px-4 py-3.5 rounded-xl text-[13.5px] outline-none resize-none leading-relaxed transition-all"
       style={{ background: "#1a1a1a", border: "1.5px solid rgba(255,255,255,0.06)", color: "#ffffff" }}
-      onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
+      onFocus={(e) => (e.target.style.borderColor = "#2F6BFF")}
       onBlur={(e)  => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
     />
   );
@@ -346,8 +346,8 @@ export default function TrainerEditPage({
           disabled={!isValid || submitting}
           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12.5px] font-semibold transition-opacity active:opacity-80"
           style={{
-            background: isValid ? "rgba(142,171,255,0.12)" : "transparent",
-            color:      isValid ? "#8eabff" : "rgba(255,255,255,0.06)",
+            background: isValid ? "rgba(47,107,255,0.12)" : "transparent",
+            color:      isValid ? "#2F6BFF" : "rgba(255,255,255,0.06)",
           }}
         >
           <SaveIcon />
@@ -519,7 +519,7 @@ export default function TrainerEditPage({
               placeholder="자격증 또는 경력 입력 후 추가"
               className="flex-1 px-4 py-3 rounded-xl text-[13.5px] outline-none transition-all"
               style={{ background: "#1a1a1a", border: "1.5px solid rgba(255,255,255,0.06)", color: "#ffffff" }}
-              onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
+              onFocus={(e) => (e.target.style.borderColor = "#2F6BFF")}
               onBlur={(e)  => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
             />
             <button
@@ -527,8 +527,8 @@ export default function TrainerEditPage({
               disabled={!certInput.trim()}
               className="w-11 h-11 flex items-center justify-center rounded-xl flex-shrink-0 transition-opacity active:opacity-70"
               style={{
-                background: certInput.trim() ? "#156aff" : "#1a1a1a",
-                border: `1.5px solid ${certInput.trim() ? "#156aff" : "rgba(255,255,255,0.06)"}`,
+                background: certInput.trim() ? "#1a55d4" : "#1a1a1a",
+                border: `1.5px solid ${certInput.trim() ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
               }}
             >
               <PlusIcon color={certInput.trim() ? "#fff" : "#3a3a3a"} />
@@ -546,7 +546,7 @@ export default function TrainerEditPage({
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: "#8eabff" }}
+                    style={{ background: "#2F6BFF" }}
                   />
                   <span className="flex-1 text-[13px]" style={{ color: "#c0c0c0" }}>
                     {cert}
@@ -586,8 +586,8 @@ export default function TrainerEditPage({
                   onClick={() => toggleTag(tag)}
                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium border transition-all duration-150 active:scale-95"
                   style={{
-                    background:  on ? "#156aff" : "#1a1a1a",
-                    borderColor: on ? "#156aff" : "rgba(255,255,255,0.06)",
+                    background:  on ? "#1a55d4" : "#1a1a1a",
+                    borderColor: on ? "#1a55d4" : "rgba(255,255,255,0.06)",
                     color:       on ? "#fff"    : "#a0a0a0",
                   }}
                 >
@@ -616,7 +616,7 @@ export default function TrainerEditPage({
             <button
               onClick={() => setActive((p) => !p)}
               className="relative w-12 h-6 rounded-full transition-all duration-200 flex-shrink-0"
-              style={{ background: active ? "#156aff" : "rgba(255,255,255,0.06)" }}
+              style={{ background: active ? "#1a55d4" : "rgba(255,255,255,0.06)" }}
             >
               <span
                 className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-200"
@@ -641,7 +641,7 @@ export default function TrainerEditPage({
           disabled={!isValid || submitting}
           className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-semibold text-[15px] transition-all duration-200"
           style={{
-            background: isValid && !submitting ? "linear-gradient(135deg, #8eabff 0%, #156aff 100%)" : "#1a1a1a",
+            background: isValid && !submitting ? "linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%)" : "#1a1a1a",
             color:      isValid && !submitting ? "#fff"    : "#3a3a3a",
             cursor:     isValid && !submitting ? "pointer" : "not-allowed",
           }}

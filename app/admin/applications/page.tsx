@@ -16,19 +16,26 @@ import AdminBottomNav from "@/app/admin/components/AdminBottomNav";
 
 /* ── 상태 색상 ── */
 const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }> = {
-  pending:   { bg: "rgba(248,113,113,0.10)",   text: "#f87171", dot: "#f87171" },
-  confirmed: { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
-  completed: { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
-  cancelled: { bg: "rgba(90,90,90,0.10)", text: "#a0a0a0", dot: "#5a5a5a" },
+  pending:           { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
+  received:          { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
+  checking:          { bg: "rgba(251,191,36,0.10)",  text: "#fbbf24", dot: "#fbbf24" },
+  contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa" },
+  scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c" },
+  confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
 };
 
 /* ── 필터 탭 정의 ── */
 const TABS: { id: AppStatus | "all"; label: string }[] = [
-  { id: "all",       label: "전체"   },
-  { id: "pending",   label: "대기 중" },
-  { id: "confirmed", label: "확정됨" },
-  { id: "completed", label: "완료"   },
-  { id: "cancelled", label: "취소됨" },
+  { id: "all",               label: "전체"     },
+  { id: "received",          label: "접수됨"   },
+  { id: "checking",          label: "확인중"   },
+  { id: "contact_scheduled", label: "연락 예정" },
+  { id: "scheduling",        label: "일정 조율중" },
+  { id: "confirmed",         label: "확정됨"   },
+  { id: "completed",         label: "완료"     },
+  { id: "cancelled",         label: "취소됨"   },
 ];
 
 /* ── 아이콘 ── */
@@ -51,7 +58,7 @@ function NoteIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
       <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-        stroke="#8eabff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -178,7 +185,7 @@ function AppCard({
         {app.adminNote && (
           <div
             className="flex items-start gap-1.5 px-3 py-2.5 rounded-xl"
-            style={{ background: "rgba(142,171,255,0.06)", border: "1px solid rgba(142,171,255,0.10)" }}
+            style={{ background: "rgba(47,107,255,0.06)", border: "1px solid rgba(47,107,255,0.10)" }}
           >
             <span className="mt-0.5 flex-shrink-0"><NoteIcon /></span>
             <p className="text-[11.5px] leading-snug" style={{ color: "#5a5a5a" }}>
@@ -194,28 +201,39 @@ function AppCard({
         style={{ borderColor: "rgba(255,255,255,0.04)" }}
       >
         {/* 상태별 주요 액션 버튼 */}
-        {app.status === "pending" && (
-          <button
-            onClick={() => onConfirm(app.id)}
+        {(app.status === "pending" || app.status === "received") && (
+          <button onClick={() => onConfirm(app.id)}
             className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#34d399" }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <path d="M5 13L9 17L19 7" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            확정하기
+            style={{ color: "#60a5fa" }}>
+            확인하기 →
+          </button>
+        )}
+        {app.status === "checking" && (
+          <button onClick={() => onConfirm(app.id)}
+            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
+            style={{ color: "#a78bfa" }}>
+            연락 예정 →
+          </button>
+        )}
+        {app.status === "contact_scheduled" && (
+          <button onClick={() => onConfirm(app.id)}
+            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
+            style={{ color: "#fb923c" }}>
+            일정 조율 →
+          </button>
+        )}
+        {app.status === "scheduling" && (
+          <button onClick={() => onConfirm(app.id)}
+            className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
+            style={{ color: "#34d399" }}>
+            확정하기 →
           </button>
         )}
         {app.status === "confirmed" && (
-          <button
-            onClick={() => onConfirm(app.id)}
+          <button onClick={() => onConfirm(app.id)}
             className="flex-1 py-3 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-opacity active:opacity-70"
-            style={{ color: "#fbbf24" }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <path d="M5 13L9 17L19 7" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            완료 처리
+            style={{ color: "#fbbf24" }}>
+            완료 처리 →
           </button>
         )}
         {(app.status === "completed" || app.status === "cancelled") && (
@@ -244,11 +262,15 @@ function AppCard({
 /* ── 빈 상태 ── */
 function EmptyState({ status }: { status: AppStatus | "all" }) {
   const messages: Record<string, string> = {
-    all:       "신청 내역이 없습니다.",
-    pending:   "대기 중인 신청이 없습니다.",
-    confirmed: "확정된 신청이 없습니다.",
-    completed: "완료된 신청이 없습니다.",
-    cancelled: "취소된 신청이 없습니다.",
+    all:               "신청 내역이 없습니다.",
+    pending:           "접수된 신청이 없습니다.",
+    received:          "접수된 신청이 없습니다.",
+    checking:          "확인 중인 신청이 없습니다.",
+    contact_scheduled: "연락 예정인 신청이 없습니다.",
+    scheduling:        "일정 조율 중인 신청이 없습니다.",
+    confirmed:         "확정된 신청이 없습니다.",
+    completed:         "완료된 신청이 없습니다.",
+    cancelled:         "취소된 신청이 없습니다.",
   };
   return (
     <div
@@ -257,7 +279,7 @@ function EmptyState({ status }: { status: AppStatus | "all" }) {
     >
       <div
         className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-        style={{ background: "rgba(142,171,255,0.07)" }}
+        style={{ background: "rgba(47,107,255,0.07)" }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <rect x="5" y="4" width="14" height="17" rx="2" stroke="#3a3a3a" strokeWidth="1.6" />
@@ -282,11 +304,15 @@ export default function AdminApplicationsPage() {
 
   /* 탭별 카운트 */
   const counts = useMemo(() => ({
-    all:       apps.length,
-    pending:   apps.filter((a: Application) => a.status === "pending").length,
-    confirmed: apps.filter((a: Application) => a.status === "confirmed").length,
-    completed: apps.filter((a: Application) => a.status === "completed").length,
-    cancelled: apps.filter((a: Application) => a.status === "cancelled").length,
+    all:               apps.length,
+    pending:           apps.filter((a) => a.status === "pending").length,
+    received:          apps.filter((a) => a.status === "received" || a.status === "pending").length,
+    checking:          apps.filter((a) => a.status === "checking").length,
+    contact_scheduled: apps.filter((a) => a.status === "contact_scheduled").length,
+    scheduling:        apps.filter((a) => a.status === "scheduling").length,
+    confirmed:         apps.filter((a) => a.status === "confirmed").length,
+    completed:         apps.filter((a) => a.status === "completed").length,
+    cancelled:         apps.filter((a) => a.status === "cancelled").length,
   }), [apps]);
 
   /* 필터된 목록 */
@@ -295,11 +321,20 @@ export default function AdminApplicationsPage() {
     [apps, activeTab]
   );
 
-  /* 확정/완료 처리 */
+  /* 상태 단계별 진행 */
   async function handleConfirm(id: string) {
     const app = apps.find((a: Application) => a.id === id);
     if (!app) return;
-    const newStatus: AppStatus = app.status === "pending" ? "confirmed" : "completed";
+    const progressMap: Partial<Record<AppStatus, AppStatus>> = {
+      pending:  "checking",
+      received: "checking",
+      checking: "contact_scheduled",
+      contact_scheduled: "scheduling",
+      scheduling: "confirmed",
+      confirmed: "completed",
+    };
+    const newStatus = progressMap[app.status];
+    if (!newStatus) return;
     await updateApplicationStatus(id, newStatus);
     setApps((prev: Application[]) =>
       prev.map((a: Application) => a.id === id ? { ...a, status: newStatus } : a)
@@ -316,7 +351,7 @@ export default function AdminApplicationsPage() {
       >
         <div className="flex items-center justify-between px-4 pt-5 pb-3">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#8eabff" }}>
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>
               관리
             </p>
             <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
@@ -326,9 +361,9 @@ export default function AdminApplicationsPage() {
           {/* 전체 카운트 */}
           <div
             className="px-3 py-1.5 rounded-full"
-            style={{ background: "rgba(142,171,255,0.10)", border: "1px solid rgba(142,171,255,0.2)" }}
+            style={{ background: "rgba(47,107,255,0.10)", border: "1px solid rgba(47,107,255,0.2)" }}
           >
-            <span className="text-[12px] font-semibold" style={{ color: "#8eabff" }}>
+            <span className="text-[12px] font-semibold" style={{ color: "#2F6BFF" }}>
               전체 {counts.all}건
             </span>
           </div>
@@ -345,9 +380,9 @@ export default function AdminApplicationsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-150"
                 style={{
-                  background:   isActive ? "#156aff" : "#1a1a1a",
+                  background:   isActive ? "#1a55d4" : "#1a1a1a",
                   color:        isActive ? "#fff"    : "#5a5a5a",
-                  border:       `1.5px solid ${isActive ? "#156aff" : "rgba(255,255,255,0.06)"}`,
+                  border:       `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
                 }}
               >
                 {tab.label}

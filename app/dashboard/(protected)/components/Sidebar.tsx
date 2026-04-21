@@ -82,18 +82,17 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       style={{
         width: collapsed ? 64 : 232,
         background: "var(--dash-sidebar)",
-        borderRight: "1px solid var(--dash-border)",
         flexShrink: 0,
       }}
     >
       {/* 로고 */}
       <div
         className="flex items-center gap-3 px-4 py-5"
-        style={{ borderBottom: "1px solid var(--dash-border-sm)", height: 64 }}
+        style={{ height: 64 }}
       >
         <div
           className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: "linear-gradient(135deg, #8eabff 0%, #156aff 100%)" }}
+          style={{ background: "linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%)" }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M3 9L12 2L21 9V20C21 20.55 20.55 21 20 21H15V15H9V21H4C3.45 21 3 20.55 3 20V9Z"
@@ -113,10 +112,10 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       </div>
 
       {/* 네비 */}
-      <nav className="flex-1 py-3 px-2 flex flex-col gap-0.5 overflow-y-auto">
+      <nav className="flex-1 py-3 flex flex-col gap-0.5 overflow-y-auto">
         {!collapsed && (
           <p
-            className="text-[10px] font-semibold tracking-[0.18em] uppercase px-3 py-2"
+            className="text-[10px] font-semibold tracking-[0.18em] uppercase px-5 py-2"
             style={{ color: "var(--dash-text-faint)" }}
           >
             메뉴
@@ -130,12 +129,13 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               key={href}
               href={href}
               title={collapsed ? label : undefined}
-              className="flex items-center gap-3 rounded-xl transition-all group"
+              className="flex items-center gap-3 transition-all"
               style={{
-                padding: collapsed ? "10px 13px" : "10px 12px",
+                padding: collapsed ? "11px 0" : "11px 20px",
                 justifyContent: collapsed ? "center" : "flex-start",
-                background: active ? "rgba(142,171,255,0.10)" : "transparent",
-                color: active ? "#8eabff" : "var(--dash-text-muted)",
+                background: active ? "var(--dash-nav-active-bg)" : "transparent",
+                color: active ? "var(--dash-nav-active-text)" : "var(--dash-text-muted)",
+                borderRight: active ? `2px solid var(--dash-nav-active-border)` : "2px solid transparent",
               }}
               onMouseEnter={(e) => {
                 if (!active) (e.currentTarget as HTMLElement).style.background = "var(--dash-nav-hover)";
@@ -149,9 +149,9 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               </span>
               {!collapsed && (
                 <>
-                  <span className="flex-1 text-[13.5px] font-medium whitespace-nowrap">{label}</span>
+                  <span className="flex-1 text-[13.5px] font-semibold whitespace-nowrap">{label}</span>
                   {active && (
-                    <span style={{ color: "#8eabff", opacity: 0.5 }}>
+                    <span style={{ color: "var(--dash-nav-active-text)", opacity: 0.4 }}>
                       <ChevronIcon />
                     </span>
                   )}
@@ -166,7 +166,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       {!collapsed && (
         <div
           className="px-4 py-4"
-          style={{ borderTop: "1px solid var(--dash-border-sm)" }}
+          style={{ borderTop: "1px solid var(--dash-border-xs)" }}
         >
           <p className="text-[11px]" style={{ color: "var(--dash-text-faint)" }}>
             v2.0 · Supabase 연동됨

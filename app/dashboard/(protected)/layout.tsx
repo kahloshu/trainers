@@ -69,7 +69,7 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
       >
         <div
           className="w-9 h-9 rounded-full border-2 animate-spin"
-          style={{ borderColor: "#8eabff", borderTopColor: "transparent" }}
+          style={{ borderColor: "#2F6BFF", borderTopColor: "transparent" }}
         />
       </div>
     );

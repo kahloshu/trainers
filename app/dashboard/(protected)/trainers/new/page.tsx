@@ -66,10 +66,7 @@ function Input({ value, onChange, placeholder, type = "text" }: {
 }) {
   return (
     <input type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-      className="w-full px-4 py-3 rounded-xl text-[13.5px] outline-none transition-all"
-      style={{ background: "var(--dash-input-bg)", border: "1.5px solid var(--dash-input-border)", color: "var(--dash-text)" }}
-      onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
-      onBlur={(e) => (e.target.style.borderColor = "var(--dash-input-border)")} />
+      className="dash-input w-full px-4 py-3 text-[13.5px]" />
   );
 }
 function Textarea({ value, onChange, placeholder, rows = 4 }: {
@@ -77,19 +74,16 @@ function Textarea({ value, onChange, placeholder, rows = 4 }: {
 }) {
   return (
     <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={rows}
-      className="w-full px-4 py-3 rounded-xl text-[13.5px] outline-none resize-none leading-relaxed transition-all"
-      style={{ background: "var(--dash-input-bg)", border: "1.5px solid var(--dash-input-border)", color: "var(--dash-text)" }}
-      onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
-      onBlur={(e) => (e.target.style.borderColor = "var(--dash-input-border)")} />
+      className="dash-input w-full px-4 py-3 text-[13.5px] resize-none leading-relaxed" />
   );
 }
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
-      <div className="px-5 py-3.5" style={{ borderBottom: "1px solid var(--dash-border-sm)" }}>
+    <div className="dash-card-el rounded-2xl overflow-hidden" style={{ background: "var(--dash-card)" }}>
+      <div className="px-5 pt-5 pb-2">
         <p className="text-[11px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--dash-text-dimmed)" }}>{title}</p>
       </div>
-      <div className="px-5 py-5">{children}</div>
+      <div className="px-5 pb-5">{children}</div>
     </div>
   );
 }
@@ -167,7 +161,7 @@ export default function DashboardTrainerNewPage() {
           {error && <p className="text-[12.5px]" style={{ color: "#f87171" }}>{error}</p>}
           <button onClick={handleSubmit} disabled={saving}
             className="px-5 py-2.5 rounded-xl text-[13.5px] font-bold disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg,#8eabff,#156aff)", color: "#000" }}>
+            style={{ background: "linear-gradient(135deg,#2F6BFF,#1a55d4)", color: "#fff" }}>
             {saving ? "등록 중…" : "등록"}
           </button>
         </div>
@@ -189,9 +183,9 @@ export default function DashboardTrainerNewPage() {
                     <button key={b || "none"} onClick={() => setBranch(b)}
                       className="px-3 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
                       style={{
-                        background: branch === b ? "rgba(142,171,255,0.12)" : "var(--dash-surface)",
-                        color:      branch === b ? "#8eabff" : "var(--dash-text-muted)",
-                        border:     `1px solid ${branch === b ? "rgba(142,171,255,0.25)" : "var(--dash-border)"}`,
+                        background: branch === b ? "rgba(47,107,255,0.12)" : "var(--dash-surface)",
+                        color:      branch === b ? "#2F6BFF" : "var(--dash-text-muted)",
+                        border:     `1px solid ${branch === b ? "rgba(47,107,255,0.25)" : "var(--dash-border)"}`,
                       }}>
                       {b || "미배정"}
                     </button>
@@ -207,19 +201,16 @@ export default function DashboardTrainerNewPage() {
             <div className="flex gap-2 mb-3">
               <input value={certInput} onChange={(e) => setCertInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && addCert()} placeholder="예: NSCA-CPT 자격증 보유"
-                className="flex-1 px-4 py-2.5 rounded-xl text-[13px] outline-none transition-all"
-                style={{ background: "var(--dash-input-bg)", border: "1.5px solid var(--dash-input-border)", color: "var(--dash-text)" }}
-                onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
-                onBlur={(e) => (e.target.style.borderColor = "var(--dash-input-border)")} />
+                className="dash-input flex-1 px-4 py-2.5 text-[13px]" />
               <button onClick={addCert} className="px-3.5 py-2.5 rounded-xl"
-                style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff" }}><PlusIcon /></button>
+                style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}><PlusIcon /></button>
             </div>
             {certifications.length === 0
               ? <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>경력·자격 항목이 없습니다.</p>
               : <div className="flex flex-col gap-2">
                   {certifications.map((c, i) => (
                     <div key={i} className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"
-                      style={{ background: "var(--dash-input-bg)", border: "1px solid var(--dash-border-xs)" }}>
+                      style={{ background: "var(--dash-surface)" }}>
                       <span className="text-[13px]" style={{ color: "var(--dash-text-body)" }}>{c}</span>
                       <button onClick={() => setCertifications((p) => p.filter((_, j) => j !== i))} style={{ color: "var(--dash-text-dimmed)" }}
                         onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#f87171")}
@@ -239,21 +230,18 @@ export default function DashboardTrainerNewPage() {
             <div className="flex gap-2 mb-3">
               <input value={tagInput} onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && addTag()} placeholder="예: 다이어트, 체형 교정…"
-                className="flex-1 px-4 py-2.5 rounded-xl text-[13px] outline-none transition-all"
-                style={{ background: "var(--dash-input-bg)", border: "1.5px solid var(--dash-input-border)", color: "var(--dash-text)" }}
-                onFocus={(e) => (e.target.style.borderColor = "#8eabff")}
-                onBlur={(e) => (e.target.style.borderColor = "var(--dash-input-border)")} />
+                className="dash-input flex-1 px-4 py-2.5 text-[13px]" />
               <button onClick={addTag} className="px-3.5 py-2.5 rounded-xl"
-                style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff" }}><PlusIcon /></button>
+                style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}><PlusIcon /></button>
             </div>
             {tags.length === 0
               ? <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>등록된 태그가 없습니다.</p>
               : <div className="flex flex-wrap gap-2">
                   {tags.map((tag, i) => (
                     <span key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium"
-                      style={{ background: "rgba(142,171,255,0.08)", color: "#8eabff", border: "1px solid rgba(142,171,255,0.15)" }}>
+                      style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF", border: "1px solid rgba(47,107,255,0.15)" }}>
                       {tag}
-                      <button onClick={() => setTags((p) => p.filter((_, j) => j !== i))} style={{ color: "#8eabff", opacity: 0.6 }}
+                      <button onClick={() => setTags((p) => p.filter((_, j) => j !== i))} style={{ color: "#2F6BFF", opacity: 0.6 }}
                         onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
                         onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.6")}>
                         <XIcon />

@@ -11,7 +11,7 @@ import { useTheme } from "@/app/dashboard/ThemeContext";
 
 /* ── 공통 차트 색 (테마 무관) ── */
 const C = {
-  blue:   "#8eabff",
+  blue:   "#2F6BFF",
   green:  "#34d399",
   yellow: "#fbbf24",
   red:    "#f87171",
@@ -41,45 +41,11 @@ function fmtDay(s: string) {
 
 /* ─────────────────────── 서브 컴포넌트 ─────────────────────── */
 
-/** KPI 카드 */
-function KpiCard({
-  label, value, sub, color, trend,
-}: {
-  label: string;
-  value: number | string;
-  sub?: string;
-  color: string;
-  trend?: { value: number; up: boolean };
-}) {
-  return (
-    <div className="rounded-2xl p-5 flex flex-col gap-3"
-      style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
-      <div className="flex items-center justify-between">
-        <p className="text-[12px] font-medium" style={{ color: "var(--dash-text-muted)" }}>{label}</p>
-        {trend && (
-          <span
-            className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
-            style={{
-              background: trend.up ? "rgba(52,211,153,0.10)" : "rgba(248,113,113,0.10)",
-              color: trend.up ? "#34d399" : "#f87171",
-            }}
-          >
-            {trend.up ? "▲" : "▼"} {Math.abs(trend.value)}%
-          </span>
-        )}
-      </div>
-      <div>
-        <p className="text-[32px] font-bold leading-none" style={{ color }}>{value}</p>
-        {sub && <p className="text-[12px] mt-1.5" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>}
-      </div>
-    </div>
-  );
-}
 
 /** 섹션 카드 래퍼 */
 function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl overflow-hidden"
+    <div className="dash-card-el rounded-2xl overflow-hidden"
       style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}>
       <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--dash-border)" }}>
         <p className="text-[14px] font-semibold" style={{ color: "var(--dash-text)" }}>{title}</p>
@@ -106,9 +72,9 @@ function PeriodTab({
           onClick={() => onChange(o.value)}
           className="px-3 py-1 rounded-lg text-[12px] font-medium transition-all"
           style={{
-            background: value === o.value ? "rgba(142,171,255,0.12)" : "transparent",
+            background: value === o.value ? "rgba(47,107,255,0.12)" : "transparent",
             color:      value === o.value ? C.blue : "var(--dash-text-dimmed)",
-            border:     `1px solid ${value === o.value ? "rgba(142,171,255,0.25)" : "transparent"}`,
+            border:     `1px solid ${value === o.value ? "rgba(47,107,255,0.25)" : "transparent"}`,
           }}
         >
           {o.label}
@@ -258,15 +224,35 @@ export default function StatsPage() {
   }
 
   return (
-    <div className="p-6 max-w-[1200px] flex flex-col gap-5">
+    <div className="p-8 flex flex-col gap-5">
+
+      {/* 헤더 */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-[28px] font-black tracking-tight uppercase mb-1.5"
+            style={{ color: "var(--dash-text)" }}>통계</h2>
+          <p className="text-[13px] max-w-[420px] leading-relaxed"
+            style={{ color: "var(--dash-text-sub)" }}>신청 추이, 트레이너별 현황, 시간대 분포를 확인하세요.</p>
+        </div>
+      </div>
 
       {/* ── KPI 카드 ── */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <KpiCard label="전체 신청" value={kpi.total}     color="var(--dash-text)"  sub="누적 신청 건수" />
-        <KpiCard label="대기 중"   value={kpi.pending}   color={C.red}    sub="응답 필요" />
-        <KpiCard label="확정됨"    value={kpi.confirmed} color={C.yellow} sub="일정 조율 중" />
-        <KpiCard label="완료"      value={kpi.completed} color={C.green}  sub="OT 완료" />
-        <KpiCard label="전환율"    value={`${kpi.convRate}%`} color={C.blue} sub="신청 → 완료 비율" />
+      <div className="flex gap-4">
+        {[
+          { label: "전체 신청", value: kpi.total,              sub: "누적 신청 건수" },
+          { label: "대기 중",   value: kpi.pending,            sub: "응답 필요" },
+          { label: "확정됨",    value: kpi.confirmed,          sub: "일정 조율 중" },
+          { label: "완료",      value: kpi.completed,          sub: "OT 완료" },
+          { label: "전환율",    value: `${kpi.convRate}%`,     sub: "신청 → 완료 비율" },
+        ].map(({ label, value, sub }) => (
+          <div key={label} className="dash-card-el flex-1 px-5 py-4 rounded-xl"
+            style={{ background: "var(--dash-card)", minWidth: 0 }}>
+            <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+              style={{ color: "var(--dash-text-dimmed)" }}>{label}</p>
+            <p className="text-[28px] font-bold leading-none mb-1" style={{ color: "var(--dash-text)" }}>{value}</p>
+            <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>
+          </div>
+        ))}
       </div>
 
       {/* ── 신청 추이 ── */}

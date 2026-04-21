@@ -16,7 +16,7 @@ import BottomNav from "@/app/components/BottomNav";
 /* ── 탭 ── */
 const TABS = [
   { id: "all",       label: "전체" },
-  { id: "pending",   label: "대기 중" },
+  { id: "received",  label: "접수됨" },
   { id: "confirmed", label: "확정됨" },
   { id: "completed", label: "완료" },
   { id: "cancelled", label: "취소" },
@@ -25,10 +25,14 @@ type TabId = (typeof TABS)[number]["id"];
 
 /* ── 상태 스타일 ── */
 const STATUS_STYLE: Record<AppStatus, { bg: string; text: string; dot: string }> = {
-  pending:   { bg: "rgba(248,113,113,0.10)",  text: "#f87171", dot: "#f87171" },
-  confirmed: { bg: "rgba(234,179,8,0.10)",    text: "#fbbf24", dot: "#eab308" },
-  completed: { bg: "rgba(52,211,153,0.10)",   text: "#34d399", dot: "#10b981" },
-  cancelled: { bg: "rgba(90,90,90,0.10)",     text: "#a0a0a0", dot: "#5a5a5a" },
+  pending:           { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
+  received:          { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa" },
+  checking:          { bg: "rgba(251,191,36,0.10)",  text: "#fbbf24", dot: "#fbbf24" },
+  contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa" },
+  scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c" },
+  confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
 };
 
 /* ── 아이콘 ── */
@@ -116,9 +120,9 @@ function AppCard({ app }: { app: Application }) {
       {app.adminNote && (
         <div
           className="mx-4 mb-3 px-3 py-2.5 rounded-xl"
-          style={{ background: "rgba(142,171,255,0.06)", border: "1px solid rgba(142,171,255,0.12)" }}
+          style={{ background: "rgba(47,107,255,0.06)", border: "1px solid rgba(47,107,255,0.12)" }}
         >
-          <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#8eabff" }}>관리자 메모</p>
+          <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#2F6BFF" }}>관리자 메모</p>
           <p className="text-[12px] leading-relaxed" style={{ color: "#a0a0a0" }}>{app.adminNote}</p>
         </div>
       )}
@@ -177,7 +181,7 @@ function EmptyState({ tab }: { tab: TabId }) {
         <Link
           href="/"
           className="mt-1 px-5 py-2.5 rounded-2xl text-[13px] font-semibold transition-opacity active:opacity-80"
-          style={{ background: "linear-gradient(135deg, #8eabff 0%, #156aff 100%)", color: "#fff" }}
+          style={{ background: "linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%)", color: "#fff" }}
         >
           트레이너 찾기
         </Link>
@@ -195,16 +199,18 @@ export default function MyApplicationsPage() {
     getAllApplications().then(setApps);
   }, []);
 
-  const filtered = apps.filter((a: Application) =>
-    activeTab === "all" ? true : a.status === activeTab
-  );
+  const filtered = apps.filter((a: Application) => {
+    if (activeTab === "all") return true;
+    if (activeTab === "received") return ["pending","received","checking","contact_scheduled","scheduling"].includes(a.status);
+    return a.status === activeTab;
+  });
 
   const counts: Record<TabId, number> = {
     all:       apps.length,
-    pending:   apps.filter((a: Application) => a.status === "pending").length,
-    confirmed: apps.filter((a: Application) => a.status === "confirmed").length,
-    completed: apps.filter((a: Application) => a.status === "completed").length,
-    cancelled: apps.filter((a: Application) => a.status === "cancelled").length,
+    received:  apps.filter((a) => a.status === "received" || a.status === "pending" || a.status === "checking" || a.status === "contact_scheduled" || a.status === "scheduling").length,
+    confirmed: apps.filter((a) => a.status === "confirmed").length,
+    completed: apps.filter((a) => a.status === "completed").length,
+    cancelled: apps.filter((a) => a.status === "cancelled").length,
   };
 
   return (
@@ -221,7 +227,7 @@ export default function MyApplicationsPage() {
       >
         <div className="px-4 pt-5 pb-3">
           <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1"
-            style={{ color: "#8eabff" }}>MY</p>
+            style={{ color: "#2F6BFF" }}>MY</p>
           <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
             내 신청 내역
           </h1>
@@ -238,9 +244,9 @@ export default function MyApplicationsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-150"
                 style={{
-                  background: isActive ? "#156aff" : "#1a1a1a",
+                  background: isActive ? "#1a55d4" : "#1a1a1a",
                   color:      isActive ? "#fff"    : "#5a5a5a",
-                  border:     `1.5px solid ${isActive ? "#156aff" : "rgba(255,255,255,0.06)"}`,
+                  border:     `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
                 }}
               >
                 {tab.label}

@@ -26,7 +26,7 @@ const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string; b
 /* ── 상태 흐름 ── */
 const NEXT_STATUS: Partial<Record<AppStatus, { status: AppStatus; label: string; color: string }>> = {
   pending:   { status: "confirmed", label: "확정하기",  color: "#34d399" },
-  confirmed: { status: "completed", label: "완료 처리", color: "#8eabff" },
+  confirmed: { status: "completed", label: "완료 처리", color: "#2F6BFF" },
 };
 
 /* ── 아이콘 ── */
@@ -42,7 +42,7 @@ function PhoneIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.97-.97a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 21.72 16.92z"
-        stroke="#8eabff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -274,7 +274,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
       title: "OT가 완료되었습니까?",
       desc:  "완료 처리 후 회원이 후기를 작성할 수 있습니다.",
       confirmLabel: "완료 처리",
-      confirmColor: "#8eabff",
+      confirmColor: "#2F6BFF",
       onConfirm: () => changeStatus("completed"),
     },
     cancel: {
@@ -331,7 +331,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
               <a
                 href={`tel:${app.applicantPhone.replace(/-/g, "")}`}
                 className="flex items-center gap-1.5 font-semibold transition-opacity active:opacity-70"
-                style={{ color: "#8eabff" }}
+                style={{ color: "#2F6BFF" }}
               >
                 <PhoneIcon />
                 {app.applicantPhone}
@@ -367,7 +367,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
             <div className="flex flex-wrap gap-2 px-5 py-4">
               {app.purposes.map((p) => (
                 <span key={p} className="px-3 py-1 rounded-full text-[12px] font-medium"
-                  style={{ background: "rgba(142,171,255,0.08)", color: "#8eabff" }}>
+                  style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
                   {p}
                 </span>
               ))}
@@ -398,7 +398,7 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
               rows={4}
               className="w-full px-4 py-3.5 rounded-xl text-[13px] outline-none resize-none leading-relaxed transition-all"
               style={{ background: "#0e0e0e", border: "1.5px solid rgba(255,255,255,0.06)", color: "#ffffff" }}
-              onFocus={(e)  => (e.target.style.borderColor = "#8eabff")}
+              onFocus={(e)  => (e.target.style.borderColor = "#2F6BFF")}
               onBlur={(e)   => (e.target.style.borderColor = "rgba(255,255,255,0.06)")}
             />
             <div className="flex items-center justify-between mt-2">
@@ -408,9 +408,9 @@ export default function AppDetailPage({ params }: { params: Promise<{ id: string
                 disabled={note === app.adminNote}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-semibold transition-all"
                 style={{
-                  background: note !== app.adminNote ? "rgba(142,171,255,0.12)" : "#131313",
-                  color:      note !== app.adminNote ? "#8eabff" : "rgba(255,255,255,0.06)",
-                  border:     `1px solid ${note !== app.adminNote ? "rgba(142,171,255,0.3)" : "#131313"}`,
+                  background: note !== app.adminNote ? "rgba(47,107,255,0.12)" : "#131313",
+                  color:      note !== app.adminNote ? "#2F6BFF" : "rgba(255,255,255,0.06)",
+                  border:     `1px solid ${note !== app.adminNote ? "rgba(47,107,255,0.3)" : "#131313"}`,
                 }}
               >
                 {noteSaved ? <CheckIcon color="#34d399" /> : <SaveIcon />}

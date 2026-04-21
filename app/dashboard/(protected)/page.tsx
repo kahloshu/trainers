@@ -4,85 +4,42 @@ import { useState, useEffect } from "react";
 import { getAllApplications, type Application } from "@/app/data/applications";
 import { getAllTrainers, type Trainer } from "@/app/data/trainers";
 
-/* ── 아이콘 ── */
-function TrendUpIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M23 6L13.5 15.5L8.5 10.5L1 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M17 6H23V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function ClockIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </svg>
-  );
-}
-function PersonIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.7" />
-      <path d="M4 20C4 17.24 7.58 15 12 15C16.42 15 20 17.24 20 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-    </svg>
-  );
-}
-function CheckIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 /* ── 통계 카드 ── */
 function StatCard({
   label,
   value,
   sub,
-  icon,
-  color,
 }: {
   label: string;
   value: number | string;
   sub?: string;
-  icon: React.ReactNode;
-  color: string;
 }) {
   return (
-    <div
-      className="rounded-2xl p-5 flex flex-col gap-3"
-      style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
-    >
-      <div className="flex items-center justify-between">
-        <p className="text-[12px] font-medium" style={{ color: "var(--dash-text-muted)" }}>{label}</p>
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: color + "18", color }}
-        >
-          {icon}
-        </div>
-      </div>
-      <div>
-        <p className="text-[28px] font-bold leading-none" style={{ color: "var(--dash-text)" }}>
-          {value}
-        </p>
-        {sub && (
-          <p className="text-[12px] mt-1.5" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>
-        )}
-      </div>
+    <div className="dash-card-el flex-1 px-5 py-4 rounded-xl"
+      style={{ background: "var(--dash-card)", minWidth: 0 }}>
+      <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2"
+        style={{ color: "var(--dash-text-dimmed)" }}>{label}</p>
+      <p className="text-[28px] font-bold leading-none mb-1" style={{ color: "var(--dash-text)" }}>
+        {value}
+      </p>
+      {sub && (
+        <p className="text-[11px]" style={{ color: "var(--dash-text-dimmed)" }}>{sub}</p>
+      )}
     </div>
   );
 }
 
 /* ── 최근 신청 행 ── */
 const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
-  pending:   { text: "#f87171", bg: "rgba(248,113,113,0.10)" },
-  confirmed: { text: "#fbbf24", bg: "rgba(234,179,8,0.10)" },
-  completed: { text: "#34d399", bg: "rgba(52,211,153,0.10)" },
-  cancelled: { text: "#5a5a5a", bg: "rgba(90,90,90,0.10)" },
+  pending:           { text: "#60a5fa", bg: "rgba(96,165,250,0.10)"  },
+  received:          { text: "#60a5fa", bg: "rgba(96,165,250,0.10)"  },
+  checking:          { text: "#fbbf24", bg: "rgba(251,191,36,0.10)"  },
+  contact_scheduled: { text: "#a78bfa", bg: "rgba(167,139,250,0.10)" },
+  scheduling:        { text: "#fb923c", bg: "rgba(251,146,60,0.10)"  },
+  confirmed:         { text: "#fbbf24", bg: "rgba(234,179,8,0.10)"   },
+  completed:         { text: "#34d399", bg: "rgba(52,211,153,0.10)"  },
+  cancelled:         { text: "#5a5a5a", bg: "rgba(90,90,90,0.10)"    },
 };
 const STATUS_KO: Record<string, string> = {
   pending: "대기", confirmed: "확정", completed: "완료", cancelled: "취소",
@@ -98,7 +55,7 @@ function RecentRow({ app }: { app: Application }) {
       <div className="flex items-center gap-3">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0"
-          style={{ background: "var(--dash-avatar-bg)", color: "#8eabff" }}
+          style={{ background: "var(--dash-avatar-bg)", color: "#2F6BFF" }}
         >
           {app.applicantName.charAt(0)}
         </div>
@@ -140,57 +97,37 @@ export default function DashboardPage() {
   const recent    = apps.slice(0, 8);
 
   return (
-    <div className="p-6 max-w-[1200px]">
+    <div className="p-8">
 
-      {/* 페이지 제목 */}
-      <div className="mb-6">
-        <h2 className="text-[20px] font-bold" style={{ color: "var(--dash-text)" }}>개요</h2>
-        <p className="text-[13px] mt-0.5" style={{ color: "var(--dash-text-dimmed)" }}>전체 현황을 한눈에 확인하세요.</p>
+      {/* 헤더 */}
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <h2 className="text-[28px] font-black tracking-tight uppercase mb-1.5"
+            style={{ color: "var(--dash-text)" }}>개요</h2>
+          <p className="text-[13px] max-w-[420px] leading-relaxed"
+            style={{ color: "var(--dash-text-sub)" }}>전체 현황을 한눈에 확인하세요.</p>
+        </div>
       </div>
 
-      {/* 통계 카드 그리드 */}
+      {/* 통계 카드 */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-6">
+        <div className="flex gap-4 mb-8">
           {[1,2,3,4].map((i) => (
-            <div key={i} className="rounded-2xl h-28 animate-pulse" style={{ background: "var(--dash-card)" }} />
+            <div key={i} className="flex-1 h-20 rounded-xl animate-pulse" style={{ background: "var(--dash-card)" }} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-6">
-          <StatCard
-            label="전체 신청"
-            value={apps.length}
-            sub="누적 OT 신청 건"
-            icon={<TrendUpIcon />}
-            color="#8eabff"
-          />
-          <StatCard
-            label="대기 중"
-            value={pending}
-            sub="응답 필요"
-            icon={<ClockIcon />}
-            color="#f87171"
-          />
-          <StatCard
-            label="확정됨"
-            value={confirmed}
-            sub="일정 조율 중"
-            icon={<CheckIcon />}
-            color="#fbbf24"
-          />
-          <StatCard
-            label="등록 트레이너"
-            value={trainers.length}
-            sub={`상위 노출 ${trainers.filter((t) => t.featured).length}명`}
-            icon={<PersonIcon />}
-            color="#34d399"
-          />
+        <div className="flex gap-4 mb-8">
+          <StatCard label="전체 신청"    value={apps.length}     sub="누적 OT 신청 건" />
+          <StatCard label="대기 중"      value={pending}         sub="응답 필요" />
+          <StatCard label="확정됨"       value={confirmed}       sub="일정 조율 중" />
+          <StatCard label="등록 트레이너" value={trainers.length} sub={`상위 노출 ${trainers.filter((t) => t.featured).length}명`} />
         </div>
       )}
 
       {/* 최근 신청 */}
       <div
-        className="rounded-2xl overflow-hidden"
+        className="dash-card-el rounded-2xl overflow-hidden"
         style={{ background: "var(--dash-card)", border: "1px solid var(--dash-border)" }}
       >
         <div
@@ -201,7 +138,7 @@ export default function DashboardPage() {
           <a
             href="/dashboard/applications"
             className="text-[12px] font-medium"
-            style={{ color: "#8eabff" }}
+            style={{ color: "#2F6BFF" }}
           >
             전체 보기
           </a>

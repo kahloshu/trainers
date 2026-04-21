@@ -16,9 +16,9 @@ function BackIcon() {
 function GlobeIcon({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="#8eabff" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="9" stroke="#2F6BFF" strokeWidth="1.6" />
       <path d="M12 3c-2 3-2 15 0 18M12 3c2 3 2 15 0 18M3 12h18"
-        stroke="#8eabff" strokeWidth="1.4" strokeLinecap="round" />
+        stroke="#2F6BFF" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
@@ -50,7 +50,7 @@ function EyeOffIcon() {
 
 /* ── 별점 ── */
 function StarRow({ rating, size = 20 }: { rating: number; size?: number }) {
-  const COLORS = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#8eabff"];
+  const COLORS = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#2F6BFF"];
   const color = COLORS[rating] ?? "#c9a96e";
   return (
     <div className="flex items-center gap-1.5">
@@ -228,7 +228,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
   }
 
   const RATING_LABEL = ["", "아쉬웠습니다.", "조금 아쉬웠습니다.", "보통이었습니다.", "만족스러웠습니다.", "매우 만족스러웠습니다."];
-  const RATING_COLOR = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#8eabff"];
+  const RATING_COLOR = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#2F6BFF"];
 
   return (
     <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
@@ -253,14 +253,14 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         <div
           className="flex items-center gap-2.5 px-4 py-3 rounded-2xl"
           style={{
-            background: visible ? "rgba(142,171,255,0.07)" : "rgba(90,90,90,0.07)",
-            border: `1px solid ${visible ? "rgba(142,171,255,0.18)" : "rgba(90,90,90,0.18)"}`,
+            background: visible ? "rgba(47,107,255,0.07)" : "rgba(90,90,90,0.07)",
+            border: `1px solid ${visible ? "rgba(47,107,255,0.18)" : "rgba(90,90,90,0.18)"}`,
           }}
         >
-          <span style={{ color: visible ? "#8eabff" : "#5a5a5a" }}>
+          <span style={{ color: visible ? "#2F6BFF" : "#5a5a5a" }}>
             {visible ? <GlobeIcon size={15} /> : <LockIcon size={15} color="#5a5a5a" />}
           </span>
-          <p className="text-[12.5px] font-medium flex-1" style={{ color: visible ? "#8eabff" : "#5a5a5a" }}>
+          <p className="text-[12.5px] font-medium flex-1" style={{ color: visible ? "#2F6BFF" : "#5a5a5a" }}>
             {visible
               ? "현재 트레이너 상세 페이지에 공개 중입니다."
               : "비공개 처리됨 — 외부에서 노출되지 않습니다."}
@@ -310,7 +310,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
             </p>
             <span
               className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: "rgba(142,171,255,0.10)", color: "#8eabff" }}
+              style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}
             >
               외부 노출
             </span>
@@ -407,15 +407,15 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
             <div
               className="flex items-start gap-3 p-3.5 rounded-xl"
               style={{
-                background: visible ? "rgba(142,171,255,0.06)" : "rgba(90,90,90,0.06)",
-                border: `1px solid ${visible ? "rgba(142,171,255,0.10)" : "rgba(90,90,90,0.10)"}`,
+                background: visible ? "rgba(47,107,255,0.06)" : "rgba(90,90,90,0.06)",
+                border: `1px solid ${visible ? "rgba(47,107,255,0.10)" : "rgba(90,90,90,0.10)"}`,
               }}
             >
-              <span className="mt-0.5" style={{ color: visible ? "#8eabff" : "#5a5a5a" }}>
+              <span className="mt-0.5" style={{ color: visible ? "#2F6BFF" : "#5a5a5a" }}>
                 {visible ? <EyeIcon /> : <EyeOffIcon />}
               </span>
               <div>
-                <p className="text-[13px] font-semibold mb-0.5" style={{ color: visible ? "#8eabff" : "#a0a0a0" }}>
+                <p className="text-[13px] font-semibold mb-0.5" style={{ color: visible ? "#2F6BFF" : "#a0a0a0" }}>
                   {visible ? "공개 중" : "비공개"}
                 </p>
                 <p className="text-[12px] leading-snug" style={{ color: "#3a3a3a" }}>
@@ -430,9 +430,9 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               onClick={handleToggle}
               className="w-full py-3.5 rounded-2xl text-[14px] font-semibold flex items-center justify-center gap-2 transition-opacity active:opacity-80"
               style={{
-                background: visible ? "#1a1a1a" : "rgba(142,171,255,0.12)",
-                color:      visible ? "#a0a0a0" : "#8eabff",
-                border:     `1px solid ${visible ? "rgba(255,255,255,0.06)" : "rgba(142,171,255,0.3)"}`,
+                background: visible ? "#1a1a1a" : "rgba(47,107,255,0.12)",
+                color:      visible ? "#a0a0a0" : "#2F6BFF",
+                border:     `1px solid ${visible ? "rgba(255,255,255,0.06)" : "rgba(47,107,255,0.3)"}`,
               }}
             >
               {visible ? <><EyeOffIcon /> 비공개 처리</> : <><EyeIcon /> 공개 복원</>}

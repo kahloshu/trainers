@@ -137,11 +137,11 @@ function RecentAppCard({ app }: { app: Application }) {
       {app.adminNote && (
         <div
           className="flex items-start gap-1.5 px-2.5 py-2 rounded-xl"
-          style={{ background: "rgba(142,171,255,0.06)", border: "1px solid rgba(142,171,255,0.10)" }}
+          style={{ background: "rgba(47,107,255,0.06)", border: "1px solid rgba(47,107,255,0.10)" }}
         >
           <svg className="flex-shrink-0 mt-0.5" width="11" height="11" viewBox="0 0 24 24" fill="none">
             <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
-              stroke="#8eabff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <span className="text-[11px] leading-snug line-clamp-1" style={{ color: "#5a5a5a" }}>
             {app.adminNote}
@@ -196,7 +196,7 @@ function SectionHeader({ title, href, count }: { title: string; href: string; co
         {count !== undefined && (
           <span
             className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-            style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff" }}
+            style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}
           >
             {count}
           </span>
@@ -243,7 +243,7 @@ export default function AdminHomePage() {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#8eabff" }}>
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>
               James Gym
             </p>
             <h1 className="text-[20px] font-bold tracking-tight leading-tight" style={{ color: "#ffffff" }}>
@@ -252,7 +252,7 @@ export default function AdminHomePage() {
           </div>
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-bold"
-            style={{ background: "rgba(142,171,255,0.12)", color: "#8eabff", border: "1px solid rgba(142,171,255,0.2)" }}
+            style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF", border: "1px solid rgba(47,107,255,0.2)" }}
           >
             관
           </div>

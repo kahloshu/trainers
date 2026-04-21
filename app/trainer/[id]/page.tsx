@@ -42,7 +42,7 @@ function CheckIcon() {
 function ArrowIcon() {
   return (
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-      <path d="M5 12H19M13 6L19 12L13 18" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 12H19M13 6L19 12L13 18" stroke="#000000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -612,10 +612,9 @@ export default function TrainerDetailPage({
         <Link
           href={`/trainer/${trainer.id}/apply`}
           className="btn-primary"
-          style={{ borderRadius: "14px", padding: "15px 20px" }}
+          style={{ borderRadius: "6px", padding: "15px 20px" }}
         >
           <span>OT 신청하기</span>
-          <ArrowIcon />
         </Link>
       </div>
     </div>
