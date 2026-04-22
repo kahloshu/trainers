@@ -55,6 +55,15 @@ function BarChartIcon() {
     </svg>
   );
 }
+function SettingsIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+        stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 /* ── 네비게이션 항목 ── */
 const NAV_ITEMS = [
@@ -63,6 +72,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/trainers",     label: "트레이너",   Icon: PersonIcon,    exact: false },
   { href: "/dashboard/reviews",      label: "후기 관리",  Icon: StarIcon,      exact: false },
   { href: "/dashboard/stats",        label: "통계",       Icon: BarChartIcon,  exact: false },
+  { href: "/dashboard/settings",     label: "설정",       Icon: SettingsIcon,  exact: false },
 ];
 
 interface SidebarProps {

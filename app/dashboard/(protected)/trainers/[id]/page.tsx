@@ -9,6 +9,7 @@ import {
   BRANCHES,
   type Trainer,
 } from "@/app/data/trainers";
+import { getCategories, type Category } from "@/app/data/categories";
 import GalleryManager, { type GalleryManagerRef } from "../../components/GalleryManager";
 
 /* ── 이미지 압축 ── */
@@ -145,7 +146,7 @@ export default function DashboardTrainerEditPage({
   const [tags, setTags]                 = useState<string[]>([]);
   const [careerInput, setCareerInput]   = useState("");
   const [certInput, setCertInput]       = useState("");
-  const [tagInput, setTagInput]         = useState("");
+  const [categories, setCategories]     = useState<Category[]>([]);
   const [kakaoId, setKakaoId]           = useState("");
   const [instagramId, setInstagramId]   = useState("");
   const [saving, setSaving]             = useState(false);
@@ -153,6 +154,8 @@ export default function DashboardTrainerEditPage({
   const [error, setError]               = useState("");
   const fileRef    = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<GalleryManagerRef>(null);
+
+  useEffect(() => { getCategories().then(setCategories); }, []);
 
   useEffect(() => {
     getTrainerById(id).then((found) => {
@@ -200,12 +203,9 @@ export default function DashboardTrainerEditPage({
     setCertInput("");
   }
 
-  /* ── 태그 추가 ── */
-  function addTag() {
-    const v = tagInput.trim();
-    if (!v || tags.includes(v)) return;
-    setTags((prev) => [...prev, v]);
-    setTagInput("");
+  /* ── 태그 토글 ── */
+  function toggleTag(id: string) {
+    setTags((prev) => prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]);
   }
 
   /* ── 저장 ── */
@@ -295,7 +295,20 @@ export default function DashboardTrainerEditPage({
               </div>
               <div>
                 <Label>전문 분야 *</Label>
-                <Input value={specialty} onChange={setSpecialty} placeholder="근력 향상, 다이어트…" />
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((cat) => (
+                    <button key={cat.id} type="button" onClick={() => setSpecialty(cat.id === specialty ? "" : cat.id)}
+                      className="px-3 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
+                      style={{
+                        background: specialty === cat.id ? "rgba(47,107,255,0.12)" : "var(--dash-surface)",
+                        color:      specialty === cat.id ? "#2F6BFF" : "var(--dash-text-muted)",
+                        border:     `1px solid ${specialty === cat.id ? "rgba(47,107,255,0.25)" : "var(--dash-border)"}`,
+                      }}>
+                      {cat.label}
+                    </button>
+                  ))}
+                  {categories.length === 0 && <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>카테고리 로딩 중…</p>}
+                </div>
               </div>
               <div>
                 <Label>지점</Label>
@@ -437,41 +450,25 @@ export default function DashboardTrainerEditPage({
 
           {/* 전문 분야 태그 */}
           <Card title="전문 분야 태그">
-            <div className="flex gap-2 mb-3">
-              <input
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && addTag()}
-                placeholder="예: 다이어트, 체형 교정…"
-                className="dash-input flex-1 px-4 py-2.5 text-[13px]"
-              />
-              <button
-                onClick={addTag}
-                className="px-3.5 py-2.5 rounded-xl text-[13px] font-semibold"
-                style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}
-              >
-                <PlusIcon />
-              </button>
+            <p className="text-[12px] mb-3" style={{ color: "var(--dash-text-dimmed)" }}>복수 선택 가능합니다.</p>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => {
+                const active = tags.includes(cat.id);
+                return (
+                  <button key={cat.id} type="button" onClick={() => toggleTag(cat.id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium transition-all"
+                    style={{
+                      background: active ? "rgba(47,107,255,0.08)" : "var(--dash-surface)",
+                      color:      active ? "#2F6BFF" : "var(--dash-text-muted)",
+                      border:     `1px solid ${active ? "rgba(47,107,255,0.25)" : "var(--dash-border)"}`,
+                    }}>
+                    {active && <span style={{ fontSize: 10 }}>✓</span>}
+                    {cat.label}
+                  </button>
+                );
+              })}
+              {categories.length === 0 && <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>카테고리 로딩 중…</p>}
             </div>
-            {tags.length === 0 ? (
-              <p className="text-[12.5px]" style={{ color: "var(--dash-text-faint)" }}>등록된 태그가 없습니다.</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag, i) => (
-                  <span key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12.5px] font-medium"
-                    style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF", border: "1px solid rgba(47,107,255,0.15)" }}>
-                    {tag}
-                    <button onClick={() => setTags((prev) => prev.filter((_, j) => j !== i))}
-                      style={{ color: "#2F6BFF", opacity: 0.6 }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.6")}
-                    >
-                      <XIcon />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
           </Card>
         </div>
 
