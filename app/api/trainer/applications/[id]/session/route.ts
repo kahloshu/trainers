@@ -2,13 +2,14 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { getTrainerSession } from "@/lib/trainer-session";
+import { validateSession, SESSION_COOKIE } from "@/lib/trainer-session";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getTrainerSession(request);
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  const session = await validateSession(token);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
