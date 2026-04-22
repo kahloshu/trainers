@@ -26,6 +26,8 @@ export type Application = {
   status: AppStatus;
   createdAt: string;
   createdMinutesAgo: number;
+  session1CompletedAt?: string;
+  session2CompletedAt?: string;
 };
 
 /* ── 신청번호 생성 ── */
@@ -66,9 +68,11 @@ function rowToApp(row: any): Application {
     preferredTimes:    row.preferred_times ?? [],
     userMessage:       row.user_message ?? "",
     adminNote:         row.admin_note ?? "",
-    status:            row.status as AppStatus,
+    status:               row.status as AppStatus,
     createdAt,
     createdMinutesAgo,
+    session1CompletedAt:  row.session1_completed_at ?? undefined,
+    session2CompletedAt:  row.session2_completed_at ?? undefined,
   };
 }
 
@@ -177,6 +181,21 @@ export async function updateApplicationTrainer(
     .update({ trainer_id: trainerId, trainer_name: trainerName })
     .eq("id", id);
   if (error) console.error("[updateApplicationTrainer]", error);
+}
+
+export async function updateSessionCompletion(
+  id: string,
+  session: 1 | 2,
+  completed: boolean
+): Promise<boolean> {
+  const field = session === 1 ? "session1_completed_at" : "session2_completed_at";
+  const value = completed ? new Date().toISOString() : null;
+  const { error } = await supabase
+    .from("applications")
+    .update({ [field]: value })
+    .eq("id", id);
+  if (error) { console.error("[updateSessionCompletion]", error); return false; }
+  return true;
 }
 
 export async function updateApplicationNote(

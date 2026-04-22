@@ -130,6 +130,34 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
         </div>
       )}
 
+      {/* 세션 진행 현황 (confirmed/completed) */}
+      {(app.status === "confirmed" || app.status === "completed") && (
+        <div className="mx-4 mb-3 p-3 rounded-xl flex items-center gap-3"
+          style={{ background: "#0e0e0e", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <p className="text-[11px] font-semibold flex-shrink-0" style={{ color: "#3a3a3a" }}>운동 진행</p>
+          <div className="flex items-center gap-2 flex-1">
+            {([1, 2] as const).map((n) => {
+              const done = n === 1 ? !!app.session1CompletedAt : !!app.session2CompletedAt;
+              return (
+                <div key={n} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg flex-1 justify-center"
+                  style={{ background: done ? "rgba(52,211,153,0.08)" : "#1a1a1a", border: `1px solid ${done ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.05)"}` }}>
+                  {done ? (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                      <path d="M5 13L9 17L19 7" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <div className="w-3 h-3 rounded-full border" style={{ borderColor: "#2a2a2a" }} />
+                  )}
+                  <span className="text-[11.5px] font-semibold" style={{ color: done ? "#34d399" : "#3a3a3a" }}>
+                    {n}차 {done ? "완료" : "미완료"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* 하단: 시간 + 버튼 */}
       <div className="flex items-center justify-between px-4 pb-3.5">
         <p className="text-[11px]" style={{ color: "#3a3a3a" }}>

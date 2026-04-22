@@ -39,9 +39,11 @@ export async function GET(
       preferredTimes:   data.preferred_times ?? [],
       userMessage:      data.user_message ?? "",
       adminNote:        data.admin_note ?? "",
-      status:           data.status,
-      createdAt:        data.created_at,
-      createdMinutesAgo: Math.floor((now.getTime() - new Date(data.created_at).getTime()) / 60000),
+      status:              data.status,
+      createdAt:           data.created_at,
+      createdMinutesAgo:   Math.floor((now.getTime() - new Date(data.created_at).getTime()) / 60000),
+      session1CompletedAt: data.session1_completed_at ?? undefined,
+      session2CompletedAt: data.session2_completed_at ?? undefined,
     },
   });
 }

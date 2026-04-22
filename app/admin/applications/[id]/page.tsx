@@ -34,10 +34,16 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+function fmtShortDate(iso: string) {
+  const d = new Date(iso);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+
 export default function TrainerAppDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const [app, setApp] = useState<Application | null | "loading">("loading");
+  const [sessionLoading, setSessionLoading] = useState<1 | 2 | null>(null);
 
   useEffect(() => {
     fetch(`/api/trainer/applications/${id}`)
@@ -137,6 +143,75 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
             <p className="text-[13.5px] leading-relaxed italic" style={{ color: "#a0a0a0" }}>
               &ldquo;{app.userMessage}&rdquo;
             </p>
+          </div>
+        )}
+
+        {/* 운동 진행 세션 */}
+        {(app.status === "confirmed" || app.status === "completed") && (
+          <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+              운동 진행 현황
+            </p>
+            <div className="flex flex-col gap-2.5">
+              {([1, 2] as const).map((n) => {
+                const completedAt = n === 1 ? app.session1CompletedAt : app.session2CompletedAt;
+                const done = !!completedAt;
+                const isLoading = sessionLoading === n;
+                return (
+                  <div key={n} className="flex items-center justify-between gap-3 px-3 py-3 rounded-xl"
+                    style={{ background: done ? "rgba(52,211,153,0.06)" : "#131313", border: `1px solid ${done ? "rgba(52,211,153,0.18)" : "rgba(255,255,255,0.04)"}` }}>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: done ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.04)" }}>
+                        {done ? (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 13L9 17L19 7" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        ) : (
+                          <span className="text-[11px] font-bold" style={{ color: "#3a3a3a" }}>{n}</span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-semibold" style={{ color: done ? "#34d399" : "#5a5a5a" }}>
+                          {n}차 운동 {done ? "완료" : "미완료"}
+                        </p>
+                        {done && completedAt && (
+                          <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{fmtShortDate(completedAt)}</p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      disabled={isLoading}
+                      onClick={async () => {
+                        setSessionLoading(n);
+                        const res = await fetch(`/api/trainer/applications/${id}/session`, {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ session: n, completed: !done }),
+                        });
+                        if (res.ok) {
+                          const now = new Date().toISOString();
+                          setApp((prev) => prev && prev !== "loading" ? {
+                            ...prev,
+                            session1CompletedAt: n === 1 ? (!done ? now : undefined) : prev.session1CompletedAt,
+                            session2CompletedAt: n === 2 ? (!done ? now : undefined) : prev.session2CompletedAt,
+                          } : prev);
+                        }
+                        setSessionLoading(null);
+                      }}
+                      className="flex-shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-semibold transition-opacity disabled:opacity-40"
+                      style={{
+                        background: done ? "rgba(248,113,113,0.10)" : "rgba(52,211,153,0.12)",
+                        color:      done ? "#f87171" : "#34d399",
+                        border:     `1px solid ${done ? "rgba(248,113,113,0.2)" : "rgba(52,211,153,0.2)"}`,
+                      }}
+                    >
+                      {isLoading ? "…" : done ? "취소" : "완료"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

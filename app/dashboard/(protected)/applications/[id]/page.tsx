@@ -8,6 +8,7 @@ import {
   updateApplicationStatus,
   updateApplicationNote,
   updateApplicationTrainer,
+  updateSessionCompletion,
   STATUS_LABEL,
   DAY_LABEL,
   TIME_LABEL,
@@ -184,6 +185,7 @@ export default function DashboardAppDetailPage({
   const [trainerEdit, setTrainerEdit]           = useState(false);
   const [selectedTrainerId, setSelectedTrainerId] = useState("");
   const [trainerSaving, setTrainerSaving]         = useState(false);
+  const [sessionLoading, setSessionLoading]       = useState<1 | 2 | null>(null);
 
   useEffect(() => {
     getApplicationById(id).then((found) => {
@@ -520,6 +522,74 @@ export default function DashboardAppDetailPage({
               </div>
             </div>
           </Card>
+
+          {/* 운동 진행 세션 */}
+          {(app.status === "confirmed" || app.status === "completed") && (
+            <Card title="운동 진행 현황">
+              <div className="flex flex-col gap-2.5">
+                {([1, 2] as const).map((n) => {
+                  const completedAt = n === 1 ? app.session1CompletedAt : app.session2CompletedAt;
+                  const done = !!completedAt;
+                  const isLoading = sessionLoading === n;
+                  return (
+                    <div key={n}
+                      className="flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl transition-all"
+                      style={{ background: done ? "rgba(52,211,153,0.06)" : "var(--dash-surface)", border: `1px solid ${done ? "rgba(52,211,153,0.18)" : "var(--dash-border-sm)"}` }}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ background: done ? "rgba(52,211,153,0.15)" : "var(--dash-card)" }}>
+                          {done ? (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                              <path d="M5 13L9 17L19 7" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          ) : (
+                            <span className="text-[12px] font-bold" style={{ color: "var(--dash-text-faint)" }}>{n}</span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-[13px] font-semibold" style={{ color: done ? "#34d399" : "var(--dash-text-sub)" }}>
+                            {n}차 운동 {done ? "완료" : "미완료"}
+                          </p>
+                          {done && completedAt && (
+                            <p className="text-[11px]" style={{ color: "var(--dash-text-faint)" }}>
+                              {new Date(completedAt).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" })}{" "}
+                              {String(new Date(completedAt).getHours()).padStart(2,"0")}:{String(new Date(completedAt).getMinutes()).padStart(2,"0")}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        disabled={isLoading}
+                        onClick={async () => {
+                          setSessionLoading(n);
+                          const ok = await updateSessionCompletion(app.id, n, !done);
+                          if (ok) {
+                            const now = new Date().toISOString();
+                            setApp((prev) => prev && prev !== "loading" ? {
+                              ...prev,
+                              session1CompletedAt: n === 1 ? (!done ? now : undefined) : prev.session1CompletedAt,
+                              session2CompletedAt: n === 2 ? (!done ? now : undefined) : prev.session2CompletedAt,
+                            } : prev);
+                            showToast(`${n}차 운동 ${!done ? "완료 처리" : "취소"}되었습니다.`);
+                          }
+                          setSessionLoading(null);
+                        }}
+                        className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all disabled:opacity-40"
+                        style={{
+                          background: done ? "rgba(248,113,113,0.08)" : "rgba(52,211,153,0.10)",
+                          color:      done ? "#f87171" : "#34d399",
+                          border:     `1px solid ${done ? "rgba(248,113,113,0.2)" : "rgba(52,211,153,0.2)"}`,
+                        }}
+                      >
+                        {isLoading ? "…" : done ? "취소" : "완료"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
 
         </div>
       </div>
