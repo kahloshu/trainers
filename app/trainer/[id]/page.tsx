@@ -420,6 +420,7 @@ export default function TrainerDetailPage({
   const { id } = use(params);
   const [trainer, setTrainer] = useState<Trainer | null | "loading">("loading");
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   useEffect(() => {
     getTrainerById(id).then((found) => setTrainer(found ?? null));
@@ -429,7 +430,7 @@ export default function TrainerDetailPage({
   if (trainer === "loading") return <LoadingSkeleton />;
   if (trainer === null) notFound();
 
-  const previewReviews = reviews.slice(0, 3);
+  const visibleReviews = showAllReviews ? reviews : reviews.slice(0, 3);
 
   return (
     <div className="min-h-dvh" style={{ background: "#1e1e1e" }}>
@@ -628,13 +629,14 @@ export default function TrainerDetailPage({
             </div>
           </div>
 
-          {previewReviews.length > 0 ? (
+          {visibleReviews.length > 0 ? (
             <>
-              {previewReviews.map((review) => (
+              {visibleReviews.map((review) => (
                 <ReviewCard key={review.id} review={review} />
               ))}
-              {reviews.length > 3 && (
+              {!showAllReviews && reviews.length > 3 && (
                 <button
+                  onClick={() => setShowAllReviews(true)}
                   className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-medium border transition-colors"
                   style={{ borderColor: "#383838", color: "#9ca3af", background: "transparent" }}
                 >
