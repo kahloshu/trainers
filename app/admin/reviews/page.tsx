@@ -34,6 +34,13 @@ function ReviewCard({ review }: { review: Review }) {
       <p className="text-[13.5px] leading-relaxed italic" style={{ color: "#a0a0a0" }}>
         &ldquo;{review.comment}&rdquo;
       </p>
+      {review.adminNote && (
+        <div className="px-3 py-2 rounded-xl"
+          style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)" }}>
+          <p className="text-[10px] font-semibold mb-0.5" style={{ color: "#a78bfa" }}>관리자 메모</p>
+          <p className="text-[12.5px] leading-relaxed" style={{ color: "#a0a0a0" }}>{review.adminNote}</p>
+        </div>
+      )}
       <p className="text-[12px]" style={{ color: "#5a5a5a" }}>{review.authorMasked}</p>
     </div>
   );
