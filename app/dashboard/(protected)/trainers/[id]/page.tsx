@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import {
   getTrainerById,
   updateTrainer,
+  uploadProfileImage,
   BRANCHES,
   type Trainer,
 } from "@/app/data/trainers";
@@ -13,13 +14,13 @@ import { getCategories, type Category } from "@/app/data/categories";
 import GalleryManager, { type GalleryManagerRef } from "../../components/GalleryManager";
 
 /* ── 이미지 압축 ── */
-async function compressImage(file: File): Promise<string> {
-  return new Promise((resolve) => {
+async function compressToBlob(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 600;
+        const MAX = 500;
         let { width, height } = img;
         if (width > MAX || height > MAX) {
           if (width > height) { height = Math.round((height * MAX) / width); width = MAX; }
@@ -28,7 +29,7 @@ async function compressImage(file: File): Promise<string> {
         const canvas = document.createElement("canvas");
         canvas.width = width; canvas.height = height;
         canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.75));
+        canvas.toBlob((b) => b ? resolve(b) : reject(new Error("압축 실패")), "image/jpeg", 0.72);
       };
       img.src = e.target!.result as string;
     };
@@ -140,7 +141,8 @@ export default function DashboardTrainerEditPage({
   const [shortBio, setShortBio]         = useState("");
   const [introduction, setIntroduction] = useState("");
   const [branch, setBranch]             = useState("");
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState(""); // preview or Storage URL
+  const [profileBlob, setProfileBlob]   = useState<Blob | null>(null);
   const [career, setCareer]             = useState<string[]>([]);
   const [certifications, setCertifications] = useState<string[]>([]);
   const [tags, setTags]                 = useState<string[]>([]);
@@ -183,8 +185,9 @@ export default function DashboardTrainerEditPage({
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const compressed = await compressImage(file);
-    setProfileImage(compressed);
+    const blob = await compressToBlob(file);
+    setProfileBlob(blob);
+    setProfileImage(URL.createObjectURL(blob));
   }
 
   /* ── 경력 추가 ── */
@@ -215,9 +218,10 @@ export default function DashboardTrainerEditPage({
     if (!specialty.trim()) { setError("전문 분야를 입력하세요."); return; }
     setError("");
     setSaving(true);
-    const galleryImages = galleryRef.current
-      ? await galleryRef.current.save(id)
-      : trainer.galleryImages;
+    const [galleryImages, uploadedProfileUrl] = await Promise.all([
+      galleryRef.current ? galleryRef.current.save(id) : Promise.resolve(trainer.galleryImages),
+      profileBlob ? uploadProfileImage(id, profileBlob) : Promise.resolve(null),
+    ]);
     const ok = await updateTrainer({
       ...trainer,
       name:          name.trim(),
@@ -226,7 +230,7 @@ export default function DashboardTrainerEditPage({
       shortBio:      shortBio.trim(),
       introduction:  introduction.trim(),
       branch,
-      profileImage,
+      profileImage:  uploadedProfileUrl ?? profileImage,
       kakaoId,
       instagramId,
       career,

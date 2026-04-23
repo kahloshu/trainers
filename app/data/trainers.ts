@@ -329,6 +329,17 @@ export async function uploadGalleryImage(
   return data.publicUrl;
 }
 
+/** 프로필 이미지 업로드 → public URL 반환 (upsert로 덮어쓰기) */
+export async function uploadProfileImage(trainerId: string, blob: Blob): Promise<string | null> {
+  const path = `trainers/${trainerId}/profile.jpg`;
+  const { error } = await supabase.storage
+    .from("trainer-images")
+    .upload(path, blob, { contentType: "image/jpeg", upsert: true });
+  if (error) { console.error("[uploadProfileImage]", error); return null; }
+  const { data } = supabase.storage.from("trainer-images").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 /** 갤러리 이미지 여러 장 삭제 (Storage에서 제거) */
 export async function deleteGalleryImages(urls: string[]): Promise<void> {
   const paths = urls

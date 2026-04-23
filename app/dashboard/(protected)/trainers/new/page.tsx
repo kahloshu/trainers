@@ -2,17 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { addTrainer, BRANCHES } from "@/app/data/trainers";
+import { addTrainer, uploadProfileImage, BRANCHES } from "@/app/data/trainers";
 import { getCategories, type Category } from "@/app/data/categories";
 import GalleryManager, { type GalleryManagerRef } from "../../components/GalleryManager";
 
-async function compressImage(file: File): Promise<string> {
-  return new Promise((resolve) => {
+async function compressToBlob(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        const MAX = 600;
+        const MAX = 500;
         let { width, height } = img;
         if (width > MAX || height > MAX) {
           if (width > height) { height = Math.round((height * MAX) / width); width = MAX; }
@@ -21,7 +21,7 @@ async function compressImage(file: File): Promise<string> {
         const canvas = document.createElement("canvas");
         canvas.width = width; canvas.height = height;
         canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.75));
+        canvas.toBlob((b) => b ? resolve(b) : reject(new Error("압축 실패")), "image/jpeg", 0.72);
       };
       img.src = e.target!.result as string;
     };
@@ -97,7 +97,8 @@ export default function DashboardTrainerNewPage() {
   const [shortBio, setShortBio]         = useState("");
   const [introduction, setIntroduction] = useState("");
   const [branch, setBranch]             = useState("");
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState(""); // preview URL (objectURL or Storage URL)
+  const [profileBlob, setProfileBlob]   = useState<Blob | null>(null);
   const [career, setCareer]             = useState<string[]>([]);
   const [certifications, setCertifications] = useState<string[]>([]);
   const [tags, setTags]                 = useState<string[]>([]);
@@ -114,7 +115,9 @@ export default function DashboardTrainerNewPage() {
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setProfileImage(await compressImage(file));
+    const blob = await compressToBlob(file);
+    setProfileBlob(blob);
+    setProfileImage(URL.createObjectURL(blob));
   }
 
   function addCareer() {
@@ -136,15 +139,16 @@ export default function DashboardTrainerNewPage() {
     if (!specialty.trim()) { setError("전문 분야를 입력하세요."); return; }
     setError(""); setSaving(true);
     const newId = `t-${Date.now()}`;
-    const galleryImages = galleryRef.current
-      ? await galleryRef.current.save(newId)
-      : [];
+    const [galleryImages, uploadedProfileUrl] = await Promise.all([
+      galleryRef.current ? galleryRef.current.save(newId) : Promise.resolve([]),
+      profileBlob ? uploadProfileImage(newId, profileBlob) : Promise.resolve(""),
+    ]);
     await addTrainer({
       id: newId,
       name: name.trim(), specialty: specialty.trim(),
       careerYears: Number(careerYears) || 1,
       shortBio: shortBio.trim(), introduction: introduction.trim(),
-      branch, profileImage, career, certifications, tags,
+      branch, profileImage: uploadedProfileUrl ?? "", career, certifications, tags,
       galleryImages,
       isActive: true, featured: false, displayOrder: 0,
     });
