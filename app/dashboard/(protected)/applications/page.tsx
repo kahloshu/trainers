@@ -65,11 +65,42 @@ function Td({ children, muted }: { children: React.ReactNode; muted?: boolean })
   );
 }
 
+const PAGE_SIZE = 20;
+
+function Pagination({ page, total, onChange }: { page: number; total: number; onChange: (p: number) => void }) {
+  if (total <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-1.5 pt-4">
+      <button onClick={() => onChange(page - 1)} disabled={page === 1}
+        className="px-3 py-1.5 rounded-lg text-[12.5px] disabled:opacity-30 transition-opacity"
+        style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+        이전
+      </button>
+      {Array.from({ length: total }, (_, i) => i + 1).map((p) => (
+        <button key={p} onClick={() => onChange(p)}
+          className="w-8 h-8 rounded-lg text-[12.5px] font-semibold transition-all"
+          style={{
+            background: p === page ? "rgba(47,107,255,0.15)" : "var(--dash-surface)",
+            color: p === page ? "#2F6BFF" : "var(--dash-text-muted)",
+          }}>
+          {p}
+        </button>
+      ))}
+      <button onClick={() => onChange(page + 1)} disabled={page === total}
+        className="px-3 py-1.5 rounded-lg text-[12.5px] disabled:opacity-30 transition-opacity"
+        style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+        다음
+      </button>
+    </div>
+  );
+}
+
 export default function DashboardApplicationsPage() {
   const router = useRouter();
   const [apps, setApps]   = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter]   = useState<FilterState>(EMPTY_FILTER);
+  const [page, setPage]       = useState(1);
 
   useEffect(() => {
     getAllApplications().then((list) => {
@@ -77,6 +108,9 @@ export default function DashboardApplicationsPage() {
       setLoading(false);
     });
   }, []);
+
+  // 필터 변경 시 첫 페이지로
+  useEffect(() => { setPage(1); }, [filter]);
 
   const filtered = useMemo(() =>
     applyFilter(apps as unknown as Record<string, unknown>[], filter, {
@@ -86,6 +120,9 @@ export default function DashboardApplicationsPage() {
     }) as unknown as Application[],
     [apps, filter]
   );
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   /* 상태별 카운트 */
   const counts = useMemo(() => ({
@@ -156,7 +193,7 @@ export default function DashboardApplicationsPage() {
         <>
           {/* ── 모바일 카드 (md 미만) ── */}
           <div className="flex flex-col gap-3 md:hidden">
-            {filtered.map((app) => {
+            {paginated.map((app) => {
               const s = STATUS_STYLE[app.status];
               const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
               const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
@@ -229,7 +266,7 @@ export default function DashboardApplicationsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map((app) => {
+                  {paginated.map((app) => {
                     const s = STATUS_STYLE[app.status];
                     const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
                     const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
@@ -285,11 +322,14 @@ export default function DashboardApplicationsPage() {
         </>
       )}
 
-      {/* 결과 수 */}
+      {/* 페이지네이션 + 결과 수 */}
       {!loading && filtered.length > 0 && (
-        <p className="text-[12px] mt-3" style={{ color: "var(--dash-text-faint)" }}>
-          {filtered.length}건 표시 중 (전체 {apps.length}건)
-        </p>
+        <>
+          <Pagination page={page} total={totalPages} onChange={setPage} />
+          <p className="text-[12px] mt-3 text-center" style={{ color: "var(--dash-text-faint)" }}>
+            {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}건 / 전체 {filtered.length}건
+          </p>
+        </>
       )}
 
     </div>

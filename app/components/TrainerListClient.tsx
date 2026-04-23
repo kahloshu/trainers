@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { shuffleTrainers } from "@/app/data/trainers";
 import type { Trainer } from "@/app/data/trainers";
 import type { Category } from "@/app/data/categories";
 import TrainerCard from "@/app/components/TrainerCard";
 import CategoryFilter from "@/app/components/CategoryFilter";
 import BottomNav from "@/app/components/BottomNav";
+
+const PAGE_SIZE = 6;
 
 function SearchIcon() {
   return (
@@ -27,8 +29,13 @@ export default function TrainerListClient({ trainers, categories }: Props) {
   const [shuffled, setShuffled] = useState<Trainer[]>(trainers);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setShuffled(shuffleTrainers(trainers)); }, [trainers]);
+
+  // 필터/검색 변경 시 첫 페이지로 리셋
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [selectedCategory, searchQuery]);
 
   function closeSearch() {
     setSearchOpen(false);
@@ -47,6 +54,25 @@ export default function TrainerListClient({ trainers, categories }: Props) {
     }
     return list;
   }, [selectedCategory, shuffled, searchQuery]);
+
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
+
+  // IntersectionObserver로 무한 스크롤
+  const loadMore = useCallback(() => {
+    setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
+  }, [filtered.length]);
+
+  useEffect(() => {
+    const el = loaderRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) loadMore(); },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   return (
     <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
@@ -118,15 +144,28 @@ export default function TrainerListClient({ trainers, categories }: Props) {
       <main className="page-scroll">
         {filtered.length > 0 ? (
           <div className="flex flex-col gap-3 pt-3 pb-4">
-            {filtered.map((trainer) => (
+            {visible.map((trainer) => (
               <TrainerCard key={trainer.id} trainer={trainer} />
             ))}
-            <div className="text-center pt-3 pb-6">
-              <p className="text-[12px]" style={{ color: "#3a3a3a" }}>모든 트레이너를 확인했습니다.</p>
-              <button onClick={() => setSelectedCategory("all")} className="mt-1.5 text-[12px] font-medium" style={{ color: "#2F6BFF" }}>
-                전체 트레이너 다시 보기
-              </button>
-            </div>
+
+            {/* 무한 스크롤 트리거 */}
+            {hasMore ? (
+              <div ref={loaderRef} className="flex justify-center py-6">
+                <div className="flex gap-1.5">
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full animate-pulse"
+                      style={{ background: "#3a3a3a", animationDelay: `${i * 150}ms` }} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center pt-3 pb-6">
+                <p className="text-[12px]" style={{ color: "#3a3a3a" }}>모든 트레이너를 확인했습니다.</p>
+                <button onClick={() => setSelectedCategory("all")} className="mt-1.5 text-[12px] font-medium" style={{ color: "#2F6BFF" }}>
+                  전체 트레이너 다시 보기
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center pt-28 px-8 text-center">

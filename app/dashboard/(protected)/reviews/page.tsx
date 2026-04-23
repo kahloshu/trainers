@@ -90,6 +90,36 @@ const RATING_CHIPS = [
 ];
 
 /* ── 페이지 ── */
+const PAGE_SIZE = 20;
+
+function Pagination({ page, total, onChange }: { page: number; total: number; onChange: (p: number) => void }) {
+  if (total <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-1.5 pt-4">
+      <button onClick={() => onChange(page - 1)} disabled={page === 1}
+        className="px-3 py-1.5 rounded-lg text-[12.5px] disabled:opacity-30"
+        style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+        이전
+      </button>
+      {Array.from({ length: total }, (_, i) => i + 1).map((p) => (
+        <button key={p} onClick={() => onChange(p)}
+          className="w-8 h-8 rounded-lg text-[12.5px] font-semibold transition-all"
+          style={{
+            background: p === page ? "rgba(47,107,255,0.15)" : "var(--dash-surface)",
+            color: p === page ? "#2F6BFF" : "var(--dash-text-muted)",
+          }}>
+          {p}
+        </button>
+      ))}
+      <button onClick={() => onChange(page + 1)} disabled={page === total}
+        className="px-3 py-1.5 rounded-lg text-[12.5px] disabled:opacity-30"
+        style={{ background: "var(--dash-surface)", color: "var(--dash-text-muted)" }}>
+        다음
+      </button>
+    </div>
+  );
+}
+
 export default function DashboardReviewsPage() {
   const [reviews, setReviews]   = useState<Review[]>([]);
   const [trainers, setTrainers] = useState<Trainer[]>([]);
@@ -100,6 +130,7 @@ export default function DashboardReviewsPage() {
   const [deleteTarget, setDeleteTarget]   = useState<Review | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [toast, setToast]       = useState("");
+  const [page, setPage]         = useState(1);
 
   useEffect(() => {
     Promise.all([getAllReviews(), getAllTrainers()]).then(([r, t]) => {
@@ -114,6 +145,9 @@ export default function DashboardReviewsPage() {
     Object.fromEntries(trainers.map((t) => [t.id, t.name])),
     [trainers]
   );
+
+  // 필터 변경 시 첫 페이지로
+  useEffect(() => { setPage(1); }, [filter, trainerFilter, ratingFilter]);
 
   /* 필터링 */
   const filtered = useMemo(() => {
@@ -130,6 +164,9 @@ export default function DashboardReviewsPage() {
     if (ratingFilter)  result = result.filter((r) => r.rating === Number(ratingFilter));
     return result;
   }, [reviews, filter, trainerFilter, ratingFilter, trainerMap]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   /* 평균 평점 */
   const avgRating = useMemo(() => {
@@ -301,7 +338,7 @@ export default function DashboardReviewsPage() {
         <>
           {/* ── 모바일 카드 (md 미만) ── */}
           <div className="flex flex-col gap-3 md:hidden">
-            {filtered.map((review) => {
+            {paginated.map((review) => {
               const trainerName = trainerMap[review.trainerId] ?? "알 수 없음";
               const daysLabel =
                 review.daysAgo === 0 ? "오늘"
@@ -358,7 +395,7 @@ export default function DashboardReviewsPage() {
                   style={{ color: "var(--dash-text-dimmed)" }}>{h}</span>
               ))}
             </div>
-            {filtered.map((review) => {
+            {paginated.map((review) => {
               const trainerName = trainerMap[review.trainerId] ?? "알 수 없음";
               const daysLabel =
                 review.daysAgo === 0 ? "오늘"
@@ -417,11 +454,14 @@ export default function DashboardReviewsPage() {
         </>
       )}
 
-      {/* 결과 수 */}
+      {/* 페이지네이션 + 결과 수 */}
       {!loading && filtered.length > 0 && (
-        <p className="text-[12px] mt-3" style={{ color: "var(--dash-text-faint)" }}>
-          {filtered.length}건 표시 중 (전체 {reviews.length}건)
-        </p>
+        <>
+          <Pagination page={page} total={totalPages} onChange={setPage} />
+          <p className="text-[12px] mt-3 text-center" style={{ color: "var(--dash-text-faint)" }}>
+            {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)}건 / 전체 {filtered.length}건
+          </p>
+        </>
       )}
 
       {/* 삭제 모달 */}
