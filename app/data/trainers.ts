@@ -78,7 +78,13 @@ function rowToReview(row: any): Review {
 
 /* ── CRUD ── */
 
+const TRAINER_TTL = 30_000;
+let _trainersCache: { data: Trainer[]; ts: number } | null = null;
+
+export function invalidateTrainersCache() { _trainersCache = null; }
+
 export async function getAllTrainers(): Promise<Trainer[]> {
+  if (_trainersCache && Date.now() - _trainersCache.ts < TRAINER_TTL) return _trainersCache.data;
   const { data, error } = await supabase
     .from("trainers")
     .select("*")
@@ -86,7 +92,9 @@ export async function getAllTrainers(): Promise<Trainer[]> {
     .order("featured", { ascending: false })
     .order("created_at", { ascending: true });
   if (error) { console.error("[getAllTrainers]", error); return []; }
-  return (data ?? []).map(rowToTrainer);
+  const result = (data ?? []).map(rowToTrainer);
+  _trainersCache = { data: result, ts: Date.now() };
+  return result;
 }
 
 const LIST_FIELDS = "id,name,specialty,tags,short_bio,profile_image,career_years,rating_avg,review_count,featured,is_active,branch,display_order";
@@ -99,6 +107,16 @@ export async function getTrainersForList(): Promise<Trainer[]> {
     .order("display_order", { ascending: true, nullsFirst: false })
     .order("featured", { ascending: false });
   if (error) { console.error("[getTrainersForList]", error); return []; }
+  return (data ?? []).map(rowToTrainer);
+}
+
+export async function getTrainersByIds(ids: string[]): Promise<Trainer[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase
+    .from("trainers")
+    .select("id,name,specialty,short_bio,profile_image,career_years,rating_avg,review_count,featured,is_active,branch,display_order,tags")
+    .in("id", ids);
+  if (error) { console.error("[getTrainersByIds]", error); return []; }
   return (data ?? []).map(rowToTrainer);
 }
 
@@ -135,6 +153,7 @@ export async function addTrainer(t: Omit<Trainer, "ratingAvg" | "reviewCount">):
     display_order:  t.displayOrder ?? 0,
   });
   if (error) console.error("[addTrainer]", error);
+  else invalidateTrainersCache();
 }
 
 export async function updateTrainer(t: Trainer): Promise<boolean> {
@@ -160,12 +179,14 @@ export async function updateTrainer(t: Trainer): Promise<boolean> {
     display_order:  t.displayOrder ?? 0,
   });
   if (error) { console.error("[updateTrainer]", error); return false; }
+  invalidateTrainersCache();
   return true;
 }
 
 export async function deleteTrainer(id: string): Promise<void> {
   const { error } = await supabase.from("trainers").delete().eq("id", id);
   if (error) console.error("[deleteTrainer]", error);
+  else invalidateTrainersCache();
 }
 
 export async function toggleFeatured(id: string): Promise<boolean> {

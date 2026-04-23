@@ -78,13 +78,21 @@ function rowToApp(row: any): Application {
 
 /* ── CRUD ── */
 
+const TTL = 30_000; // 30초
+let _appsCache: { data: Application[]; ts: number } | null = null;
+
+export function invalidateApplicationsCache() { _appsCache = null; }
+
 export async function getAllApplications(): Promise<Application[]> {
+  if (_appsCache && Date.now() - _appsCache.ts < TTL) return _appsCache.data;
   const { data, error } = await supabase
     .from("applications")
     .select("*")
     .order("created_at", { ascending: false });
   if (error) { console.error("[getAllApplications]", error); return []; }
-  return (data ?? []).map(rowToApp);
+  const result = (data ?? []).map(rowToApp);
+  _appsCache = { data: result, ts: Date.now() };
+  return result;
 }
 
 export async function getApplicationById(id: string): Promise<Application | null> {
@@ -169,6 +177,7 @@ export async function updateApplicationStatus(
     .update({ status })
     .eq("id", id);
   if (error) console.error("[updateApplicationStatus]", error);
+  else invalidateApplicationsCache();
 }
 
 export async function updateApplicationTrainer(
@@ -181,6 +190,7 @@ export async function updateApplicationTrainer(
     .update({ trainer_id: trainerId, trainer_name: trainerName })
     .eq("id", id);
   if (error) console.error("[updateApplicationTrainer]", error);
+  else invalidateApplicationsCache();
 }
 
 export async function updateSessionCompletion(
@@ -195,6 +205,7 @@ export async function updateSessionCompletion(
     .update({ [field]: value })
     .eq("id", id);
   if (error) { console.error("[updateSessionCompletion]", error); return false; }
+  invalidateApplicationsCache();
   return true;
 }
 
@@ -207,6 +218,7 @@ export async function updateApplicationNote(
     .update({ admin_note: adminNote })
     .eq("id", id);
   if (error) console.error("[updateApplicationNote]", error);
+  else invalidateApplicationsCache();
 }
 
 /* ── 레이블 ── */

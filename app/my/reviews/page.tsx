@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getReviewsByPhone, getTrainerById, type Review, type Trainer } from "@/app/data/trainers";
+import { getReviewsByPhone, getTrainersByIds, type Review } from "@/app/data/trainers";
 import BottomNav from "@/app/components/BottomNav";
 
 const STORAGE_KEY = "jg_my_phone";
@@ -60,16 +60,14 @@ export default function MyReviewsPage() {
 
     (async () => {
       const raw = await getReviewsByPhone(phone);
-      const withTrainer = await Promise.all(
-        raw.map(async (r) => {
-          const t = await getTrainerById(r.trainerId);
-          return {
-            ...r,
-            trainerName:      t?.name ?? "알 수 없음",
-            trainerSpecialty: t?.specialty ?? "",
-          };
-        })
-      );
+      const trainerIds = [...new Set(raw.map((r) => r.trainerId))];
+      const trainers = await getTrainersByIds(trainerIds);
+      const trainerMap = Object.fromEntries(trainers.map((t) => [t.id, t]));
+      const withTrainer = raw.map((r) => ({
+        ...r,
+        trainerName:      trainerMap[r.trainerId]?.name ?? "알 수 없음",
+        trainerSpecialty: trainerMap[r.trainerId]?.specialty ?? "",
+      }));
       setReviews(withTrainer);
       setLoading(false);
     })();
