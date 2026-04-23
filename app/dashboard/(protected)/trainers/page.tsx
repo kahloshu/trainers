@@ -184,14 +184,14 @@ export default function DashboardTrainersPage() {
   async function handleToggleActive(t: Trainer) {
     const next = !(t.isActive ?? true);
     setTrainers((prev) => prev.map((tr) => tr.id === t.id ? { ...tr, isActive: next } : tr));
-    await toggleActive(t.id);
+    await toggleActive(t.id, t.isActive ?? true);
     showToast(`${t.name} ${next ? "활성화" : "비활성화"}됨`);
   }
 
   async function handleToggleFeatured(t: Trainer) {
     const next = !(t.featured ?? false);
     setTrainers((prev) => prev.map((tr) => tr.id === t.id ? { ...tr, featured: next } : tr));
-    await toggleFeatured(t.id);
+    await toggleFeatured(t.id, t.featured ?? false);
     showToast(`${t.name} ${next ? "상위 노출 설정" : "상위 노출 해제"}`);
   }
 

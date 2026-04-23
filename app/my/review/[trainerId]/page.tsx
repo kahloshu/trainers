@@ -210,7 +210,7 @@ export default function ReviewPage({
 
     let ok = false;
     if (existingReviewId) {
-      ok = await updateReview(existingReviewId, { rating, comment, adminNote: adminNote || undefined });
+      ok = await updateReview(existingReviewId, trainerId, { rating, comment, adminNote: adminNote || undefined });
     } else {
       const phone = localStorage.getItem("jg_my_phone") ?? "";
       const apps = phone ? await getApplicationsByPhone(phone) : [];

@@ -189,40 +189,32 @@ export async function deleteTrainer(id: string): Promise<void> {
   else invalidateTrainersCache();
 }
 
-export async function toggleFeatured(id: string): Promise<boolean> {
-  const trainer = await getTrainerById(id);
-  if (!trainer) return false;
-  const { error } = await supabase
-    .from("trainers")
-    .update({ featured: !trainer.featured })
-    .eq("id", id);
-  if (error) { console.error("[toggleFeatured]", error); return false; }
-  return !trainer.featured;
-}
-
-export async function toggleActive(id: string): Promise<boolean> {
-  const trainer = await getTrainerById(id);
-  if (!trainer) return false;
-  const next = !(trainer.isActive ?? true);
-  const { error } = await supabase
-    .from("trainers")
-    .update({ is_active: next })
-    .eq("id", id);
-  if (error) { console.error("[toggleActive]", error); return false; }
+export async function toggleFeatured(id: string, current: boolean): Promise<boolean> {
+  const next = !current;
+  const { error } = await supabase.from("trainers").update({ featured: next }).eq("id", id);
+  if (error) { console.error("[toggleFeatured]", error); return current; }
+  invalidateTrainersCache();
   return next;
 }
 
-/** 여러 트레이너의 display_order를 한 번에 업데이트 */
+export async function toggleActive(id: string, current: boolean): Promise<boolean> {
+  const next = !current;
+  const { error } = await supabase.from("trainers").update({ is_active: next }).eq("id", id);
+  if (error) { console.error("[toggleActive]", error); return current; }
+  invalidateTrainersCache();
+  return next;
+}
+
+/** 여러 트레이너의 display_order를 RPC로 한 번에 업데이트 */
 export async function updateDisplayOrders(
   updates: { id: string; displayOrder: number }[]
 ): Promise<void> {
-  const promises = updates.map(({ id, displayOrder }) =>
-    supabase.from("trainers").update({ display_order: displayOrder }).eq("id", id)
-  );
-  const results = await Promise.all(promises);
-  results.forEach(({ error }) => {
-    if (error) console.error("[updateDisplayOrders]", error);
+  if (updates.length === 0) return;
+  const { error } = await supabase.rpc("update_display_orders", {
+    updates: updates.map(({ id, displayOrder }) => ({ id, display_order: displayOrder })),
   });
+  if (error) console.error("[updateDisplayOrders]", error);
+  else invalidateTrainersCache();
 }
 
 /* ── 리뷰 ── */
@@ -281,41 +273,19 @@ export async function addReview(review: {
     reviewer_phone:  normalized,
   });
   if (error) { console.error("[addReview]", error.code, error.message, error.details, error.hint); return false; }
-
-  // 트레이너 평점 재계산
-  const { data: reviews } = await supabase
-    .from("reviews")
-    .select("rating")
-    .eq("trainer_id", review.trainerId);
-  if (reviews && reviews.length > 0) {
-    const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
-    await supabase.from("trainers").update({
-      rating_avg:   Math.round(avg * 10) / 10,
-      review_count: reviews.length,
-    }).eq("id", review.trainerId);
-  }
+  // 평점 재계산은 DB 트리거(trainer_rating_trigger)가 자동 처리
   return true;
 }
 
-export async function updateReview(id: string, patch: { rating: number; comment: string; adminNote?: string }): Promise<boolean> {
+export async function updateReview(id: string, trainerId: string, patch: { rating: number; comment: string; adminNote?: string }): Promise<boolean> {
   const { error } = await supabase.from("reviews").update({
     rating:     patch.rating,
     comment:    patch.comment,
     admin_note: patch.adminNote ?? null,
   }).eq("id", id);
   if (error) { console.error("[updateReview]", error); return false; }
-  // 트레이너 평점 재계산
-  const { data: rev } = await supabase.from("reviews").select("rating, trainer_id").eq("id", id).single();
-  if (rev) {
-    const { data: all } = await supabase.from("reviews").select("rating").eq("trainer_id", rev.trainer_id);
-    if (all && all.length > 0) {
-      const avg = all.reduce((s: number, r: { rating: number }) => s + r.rating, 0) / all.length;
-      await supabase.from("trainers").update({
-        rating_avg:   Math.round(avg * 10) / 10,
-        review_count: all.length,
-      }).eq("id", rev.trainer_id);
-    }
-  }
+  // 평점 재계산은 DB 트리거(trainer_rating_trigger)가 자동 처리
+  invalidateTrainersCache();
   return true;
 }
 
