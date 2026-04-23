@@ -89,6 +89,19 @@ export async function getAllTrainers(): Promise<Trainer[]> {
   return (data ?? []).map(rowToTrainer);
 }
 
+const LIST_FIELDS = "id,name,specialty,tags,short_bio,profile_image,career_years,rating_avg,review_count,featured,is_active,branch,display_order";
+
+export async function getTrainersForList(): Promise<Trainer[]> {
+  const { data, error } = await supabase
+    .from("trainers")
+    .select(LIST_FIELDS)
+    .eq("is_active", true)
+    .order("display_order", { ascending: true, nullsFirst: false })
+    .order("featured", { ascending: false });
+  if (error) { console.error("[getTrainersForList]", error); return []; }
+  return (data ?? []).map(rowToTrainer);
+}
+
 export async function getTrainerById(id: string): Promise<Trainer | null> {
   const { data, error } = await supabase
     .from("trainers")

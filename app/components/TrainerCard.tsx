@@ -35,7 +35,7 @@ export default function TrainerCard({ trainer }: Props) {
       <div className="relative w-full aspect-[4/3] overflow-hidden">
         {trainer.profileImage ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={trainer.profileImage} alt={trainer.name} className="w-full h-full object-cover" />
+          <img src={trainer.profileImage} alt={trainer.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
         ) : (
           <InitialAvatar name={trainer.name} />
         )}
