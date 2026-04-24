@@ -1,8 +1,7 @@
-export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { validateSession, SESSION_COOKIE } from "@/lib/trainer-session";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import { validateSession, SESSION_COOKIE } from "@/lib/trainer-auth";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE)?.value;

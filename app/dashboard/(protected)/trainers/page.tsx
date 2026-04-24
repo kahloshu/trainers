@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Toast from "../components/Toast";
 import {
   getAllTrainers,
   deleteTrainer,
@@ -129,16 +130,6 @@ function DeleteModal({ name, loading, onConfirm, onCancel }: {
           </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-/* ── 토스트 ── */
-function Toast({ message }: { message: string }) {
-  return (
-    <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl text-[13px] font-semibold shadow-xl"
-      style={{ background: "#34d399", color: "#fff" }}>
-      {message}
     </div>
   );
 }

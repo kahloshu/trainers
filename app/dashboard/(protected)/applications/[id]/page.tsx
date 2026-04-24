@@ -3,6 +3,9 @@
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
+import Toast from "../../components/Toast";
+import { fmtDate } from "@/lib/fmt";
+import { BackIcon } from "../../components/TrainerFormUI";
 import {
   getApplicationById,
   updateApplicationStatus,
@@ -42,13 +45,6 @@ const NEXT_STATUS: Partial<Record<AppStatus, { status: AppStatus; label: string;
 const STATUS_FLOW: AppStatus[] = ["received", "checking", "contact_scheduled", "scheduling", "confirmed", "completed"];
 
 /* ── 아이콘 ── */
-function BackIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <path d="M19 12H5M11 6L5 12L11 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 function SaveIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -79,12 +75,6 @@ function PersonIcon() {
       <path d="M4 20C4 17.24 7.58 15 12 15C16.42 15 20 17.24 20 20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
   );
-}
-
-/* ── 날짜 포맷 ── */
-function fmtDate(iso: string) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
 }
 
 /* ── 섹션 카드 ── */
@@ -135,17 +125,6 @@ function ConfirmModal({
           </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-/* ── 토스트 ── */
-function Toast({ message, type = "success" }: { message: string; type?: "success" | "error" }) {
-  return (
-    <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl text-[13px] font-semibold shadow-xl flex items-center gap-2"
-      style={{ background: type === "success" ? "#34d399" : "#f87171", color: "#fff" }}>
-      {type === "success" ? <CheckIcon /> : <AlertIcon />}
-      {message}
     </div>
   );
 }

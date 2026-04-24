@@ -3,21 +3,13 @@
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getTrainerById, addReview, updateReview, getReviewsByPhone, type Trainer } from "@/app/data/trainers";
+import { BackIcon } from "@/app/components/icons";
 import { getApplicationsByPhone } from "@/app/data/applications";
 import { notFound } from "next/navigation";
 
 /* ────────────── 상수 ────────────── */
 const STAR_LABELS = ["", "아쉬웠습니다.", "조금 아쉬웠습니다.", "보통이었습니다.", "만족스러웠습니다.", "매우 만족스러웠습니다."];
 const STAR_COLORS = ["", "#ef4444", "#f97316", "#eab308", "#22c55e", "#2f80ed"];
-
-/* ────────────── 아이콘 ────────────── */
-function BackIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M19 12H5M11 6L5 12L11 18" stroke="#fbfafa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function LockIcon() {
   return (

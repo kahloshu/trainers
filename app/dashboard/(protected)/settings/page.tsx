@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getCategories, addCategory, deleteCategory, type Category } from "@/app/data/categories";
+import Toast from "../components/Toast";
 
 function PlusIcon() {
   return (
@@ -15,15 +16,6 @@ function TrashIcon() {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
       <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-function Toast({ message, type = "success" }: { message: string; type?: "success" | "error" }) {
-  return (
-    <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl text-[13px] font-semibold shadow-xl"
-      style={{ background: type === "success" ? "#34d399" : "#f87171", color: "#fff" }}>
-      {message}
-    </div>
   );
 }
 

@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { hashPhone } from "@/lib/hash";
 
 /* ── 타입 ── */
 export type Trainer = {
@@ -81,7 +82,10 @@ function rowToReview(row: any): Review {
 const TRAINER_TTL = 30_000;
 let _trainersCache: { data: Trainer[]; ts: number } | null = null;
 
-export function invalidateTrainersCache() { _trainersCache = null; }
+export function invalidateTrainersCache() {
+  _trainersCache = null;
+  // getTrainersForList 서버 캐시는 TTL(minutes) 만료로 갱신됨
+}
 
 export async function getAllTrainers(): Promise<Trainer[]> {
   if (_trainersCache && Date.now() - _trainersCache.ts < TRAINER_TTL) return _trainersCache.data;
@@ -239,11 +243,11 @@ export async function getReviewsByTrainerId(trainerId: string): Promise<Review[]
 }
 
 export async function getReviewsByPhone(phone: string): Promise<Review[]> {
-  const normalized = phone.replace(/\D/g, "");
+  const hashed = await hashPhone(phone);
   const { data, error } = await supabase
     .from("reviews")
     .select("*")
-    .eq("reviewer_phone", normalized)
+    .eq("reviewer_phone", hashed)
     .order("created_at", { ascending: false });
   if (error) { console.error("[getReviewsByPhone]", error); return []; }
   return (data ?? []).map(rowToReview);
@@ -262,7 +266,7 @@ export async function addReview(review: {
     : review.authorName[0] + "*";
 
   const id = `r-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const normalized = review.reviewerPhone ? review.reviewerPhone.replace(/\D/g, "") : null;
+  const normalized = review.reviewerPhone ? await hashPhone(review.reviewerPhone) : null;
   const { error } = await supabase.from("reviews").insert({
     id,
     trainer_id:      review.trainerId,

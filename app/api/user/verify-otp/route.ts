@@ -1,7 +1,6 @@
-export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
 const MAX_ATTEMPTS = 5;
 
@@ -42,7 +41,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "인증코드가 올바르지 않습니다." }, { status: 400 });
   }
 
-  await supabase.from("trainer_otp").update({ used: true }).eq("id", otp.id);
+  await supabase.from("trainer_otp").delete().eq("id", otp.id);
 
   return NextResponse.json({ success: true, phone: phone.trim() });
 }

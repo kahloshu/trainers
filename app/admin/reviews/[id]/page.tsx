@@ -3,16 +3,9 @@
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getAllReviews, getTrainerById, type Review, type Trainer } from "@/app/data/trainers";
+import { BackIcon } from "@/app/components/icons";
 
 /* ── 아이콘 ── */
-function BackIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M19 12H5M11 6L5 12L11 18" stroke="#ffffff" strokeWidth="1.8"
-        strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 function GlobeIcon({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">

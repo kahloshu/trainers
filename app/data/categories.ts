@@ -6,24 +6,20 @@ export type Category = {
   displayOrder: number;
 };
 
-function rowToCategory(row: { id: string; label: string; display_order: number }): Category {
+export function rowToCategory(row: { id: string; label: string; display_order: number }): Category {
   return { id: row.id, label: row.label, displayOrder: row.display_order };
 }
 
-let _cache: Category[] | null = null;
-
 export async function getCategories(): Promise<Category[]> {
-  if (_cache) return _cache;
   const { data, error } = await supabase
     .from("categories")
     .select("*")
     .order("display_order", { ascending: true });
   if (error) { console.error("[getCategories]", error); return []; }
-  _cache = (data ?? []).map(rowToCategory);
-  return _cache;
+  return (data ?? []).map(rowToCategory);
 }
 
-export function invalidateCategoriesCache() { _cache = null; }
+export function invalidateCategoriesCache() {}
 
 export async function addCategory(id: string, label: string): Promise<boolean> {
   const { data: existing } = await supabase.from("categories").select("display_order").order("display_order", { ascending: false }).limit(1);

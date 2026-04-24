@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signIn, getSession } from "@/lib/auth";
+import { signIn, getSession } from "@/lib/admin-auth";
 
 export default function DashboardLoginPage() {
   const router = useRouter();

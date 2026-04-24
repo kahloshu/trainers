@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BackIcon } from "@/app/components/icons";
 import { getReviewsByPhone, getTrainersByIds, type Review } from "@/app/data/trainers";
 import BottomNav from "@/app/components/BottomNav";
 
@@ -27,14 +28,6 @@ function StarDisplay({ rating }: { rating: number }) {
         {rating}.0
       </span>
     </div>
-  );
-}
-
-function BackIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M19 12H5M11 6L5 12L11 18" stroke="#fbfafa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 

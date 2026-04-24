@@ -1,13 +1,10 @@
-import { getTrainersForList } from "@/app/data/trainers";
-import { getCategories } from "@/app/data/categories";
+import { getCategoriesCached, getTrainersForListCached } from "@/app/data/public-cache";
 import TrainerListClient from "@/app/components/TrainerListClient";
-
-export const dynamic = "force-dynamic";
 
 export default async function TrainerListPage() {
   const [trainers, categories] = await Promise.all([
-    getTrainersForList(),
-    getCategories(),
+    getTrainersForListCached(),
+    getCategoriesCached(),
   ]);
 
   return <TrainerListClient trainers={trainers} categories={categories} />;

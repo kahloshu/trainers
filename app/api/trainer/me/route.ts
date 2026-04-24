@@ -1,7 +1,6 @@
-export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { validateSession, SESSION_COOKIE } from "@/lib/trainer-session";
+import { validateSession, SESSION_COOKIE } from "@/lib/trainer-auth";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE)?.value;

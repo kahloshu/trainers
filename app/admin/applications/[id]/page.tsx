@@ -7,6 +7,7 @@ import {
   STATUS_LABEL, DAY_LABEL, TIME_LABEL, timeAgoLabel, maskPhone,
   type Application, type AppStatus,
 } from "@/app/data/applications";
+import { fmtDate } from "@/lib/fmt";
 
 const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string; border: string }> = {
   pending:           { bg: "rgba(96,165,250,0.10)",  text: "#60a5fa", dot: "#60a5fa", border: "rgba(96,165,250,0.2)"  },
@@ -18,11 +19,6 @@ const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string; b
   completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981", border: "rgba(52,211,153,0.2)"  },
   cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a", border: "rgba(90,90,90,0.2)"    },
 };
-
-function fmtDate(iso: string) {
-  const d = new Date(iso);
-  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
-}
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (

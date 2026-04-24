@@ -1,8 +1,7 @@
-export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/trainer-session";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import { SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/trainer-auth";
 
 const MAX_ATTEMPTS = 5;
 
@@ -45,8 +44,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "인증코드가 올바르지 않습니다." }, { status: 400 });
   }
 
-  // OTP 사용 처리
-  await supabase.from("trainer_otp").update({ used: true }).eq("id", otp.id);
+  // OTP 즉시 삭제 (사용 후 보관 불필요)
+  await supabase.from("trainer_otp").delete().eq("id", otp.id);
 
   // 트레이너 조회
   const { data: trainer } = await supabase

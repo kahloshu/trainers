@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import { getAllApplications, type Application, type AppStatus } from "@/app/data/applications";
 import { getAllTrainers, type Trainer } from "@/app/data/trainers";
-import { useTheme } from "@/app/dashboard/ThemeContext";
+import { useTheme } from "../components/ThemeContext";
 
 /* ── 공통 차트 색 (테마 무관) ── */
 const C = {

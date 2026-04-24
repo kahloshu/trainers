@@ -1,8 +1,7 @@
-export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { generateOtp, sendSms } from "@/lib/trainer-session";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import { generateOtp, sendSms } from "@/lib/otp";
 
 export async function POST(request: NextRequest) {
   const { phone } = await request.json();
@@ -20,12 +19,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "해당 번호로 접수된 신청 내역이 없습니다." }, { status: 404 });
   }
 
-  // 기존 미사용 OTP 정리
-  await supabase
-    .from("trainer_otp")
-    .delete()
-    .eq("phone", normalized)
-    .eq("used", false);
+  // 기존 OTP 전체 정리 (미사용 + 만료)
+  await supabase.from("trainer_otp").delete().eq("phone", normalized);
 
   // 새 OTP 생성 (5분 유효)
   const code = generateOtp();

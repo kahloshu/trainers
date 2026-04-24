@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useTheme } from "@/app/dashboard/ThemeContext";
+import { useTheme } from "./ThemeContext";
 
 /* ── 타입 ── */
 export interface FilterState {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { signOut } from "@/lib/admin-auth";
 
 function MenuIcon() {
   return (

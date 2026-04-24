@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { getSession, onAuthChange } from "@/lib/auth";
+import { getSession, onAuthChange } from "@/lib/admin-auth";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
-import { ThemeProvider, useTheme } from "@/app/dashboard/ThemeContext";
+import { ThemeProvider, useTheme } from "./components/ThemeContext";
 
 /* 각 경로별 헤더 타이틀 */
 function getTitle(pathname: string): string {
