@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     .insert({ phone: normalized, code, expires_at });
 
   if (insertErr) {
+    console.error("[user/send-otp] OTP insert failed:", insertErr.message);
     return NextResponse.json({ error: "인증코드 생성에 실패했습니다." }, { status: 500 });
   }
 

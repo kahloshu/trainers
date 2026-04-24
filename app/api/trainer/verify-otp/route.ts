@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (!trainer) {
+    console.error("[trainer/verify-otp] trainer not found after OTP verify:", { normalized });
     return NextResponse.json({ error: "트레이너 정보를 찾을 수 없습니다." }, { status: 404 });
   }
 
@@ -67,6 +68,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (sessErr || !session) {
+    console.error("[trainer/verify-otp] session create failed:", sessErr?.message);
     return NextResponse.json({ error: "세션 생성에 실패했습니다." }, { status: 500 });
   }
 

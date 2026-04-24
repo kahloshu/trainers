@@ -26,7 +26,10 @@ export async function PATCH(
     .eq("id", id)
     .eq("trainer_id", session.trainerId);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[trainer/applications/:id PATCH] status update failed:", error.message, { id, status });
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
   return NextResponse.json({ success: true });
 }
 

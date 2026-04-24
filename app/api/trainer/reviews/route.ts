@@ -14,7 +14,10 @@ export async function GET(request: NextRequest) {
     .eq("trainer_id", session.trainerId)
     .order("created_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[trainer/reviews] fetch failed:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   const now = new Date();
   const reviews = (data ?? []).map((row) => ({

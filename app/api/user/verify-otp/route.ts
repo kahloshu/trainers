@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error || !otp) {
+    if (error) console.error("[user/verify-otp] OTP fetch failed:", error.message);
     return NextResponse.json({ error: "인증코드가 없거나 만료되었습니다. 다시 요청해주세요." }, { status: 400 });
   }
 

@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
     .select("status")
     .eq("trainer_id", session.trainerId);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[trainer/stats] fetch failed:", error.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   const apps = data ?? [];
   return NextResponse.json({
