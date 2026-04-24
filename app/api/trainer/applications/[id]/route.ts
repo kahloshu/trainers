@@ -3,6 +3,33 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 import { validateSession, SESSION_COOKIE } from "@/lib/trainer-auth";
 
+const VALID_STATUSES = ["pending","received","checking","contact_scheduled","scheduling","confirmed","completed","cancelled"];
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  const session = await validateSession(token);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const { status } = await request.json();
+
+  if (!VALID_STATUSES.includes(status)) {
+    return NextResponse.json({ error: "올바르지 않은 상태값입니다." }, { status: 400 });
+  }
+
+  const { error } = await supabase
+    .from("applications")
+    .update({ status })
+    .eq("id", id)
+    .eq("trainer_id", session.trainerId);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

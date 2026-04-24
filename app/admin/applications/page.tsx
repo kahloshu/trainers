@@ -40,67 +40,104 @@ function StatusBadge({ status }: { status: AppStatus }) {
   );
 }
 
-function AppCard({ app }: { app: Application }) {
+function AppCard({ app, onStatusChange }: {
+  app: Application;
+  onStatusChange: (id: string, status: AppStatus) => void;
+}) {
   const days  = app.preferredDays.map((d) => DAY_LABEL[d] ?? d).join(", ");
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
+  const isActive    = ACTIVE_STATUSES.includes(app.status);
+  const isConfirmed = app.status === "confirmed";
+  const showActions = isActive || isConfirmed;
+
   return (
-    <Link href={`/admin/applications/${app.id}`}
-      className="flex flex-col gap-3 p-4 rounded-2xl border transition-opacity active:opacity-70"
-      style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}>
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-[14.5px] font-semibold" style={{ color: "#ffffff" }}>
-            {app.applicantName}
+    <div className="rounded-2xl overflow-hidden" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
+      <Link href={`/admin/applications/${app.id}`}
+        className="flex flex-col gap-3 p-4 transition-opacity active:opacity-70">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-[14.5px] font-semibold" style={{ color: "#ffffff" }}>
+              {app.applicantName}
+            </p>
+            <p className="text-[12px] mt-0.5" style={{ color: "#3a3a3a" }}>
+              {maskPhone(app.applicantPhone)}
+            </p>
+          </div>
+          <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+            <StatusBadge status={app.status} />
+            <span className="text-[11px]" style={{ color: "#3a3a3a" }}>
+              {timeAgoLabel(app.createdMinutesAgo)}
+            </span>
+          </div>
+        </div>
+        {(days || times) && (
+          <div className="flex flex-wrap gap-1.5">
+            {app.preferredDays.map((d) => (
+              <span key={d} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+                {DAY_LABEL[d] ?? d}
+              </span>
+            ))}
+            {app.preferredTimes.map((t) => (
+              <span key={t} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+                {TIME_LABEL[t] ?? t}
+              </span>
+            ))}
+          </div>
+        )}
+        {app.userMessage && (
+          <p className="text-[12px] leading-snug line-clamp-2 italic" style={{ color: "#5a5a5a" }}>
+            &ldquo;{app.userMessage}&rdquo;
           </p>
-          <p className="text-[12px] mt-0.5" style={{ color: "#3a3a3a" }}>
-            {maskPhone(app.applicantPhone)}
-          </p>
-        </div>
-        <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-          <StatusBadge status={app.status} />
-          <span className="text-[11px]" style={{ color: "#3a3a3a" }}>
-            {timeAgoLabel(app.createdMinutesAgo)}
-          </span>
-        </div>
-      </div>
-      {(days || times) && (
-        <div className="flex flex-wrap gap-1.5">
-          {app.preferredDays.map((d) => (
-            <span key={d} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
-              {DAY_LABEL[d] ?? d}
-            </span>
-          ))}
-          {app.preferredTimes.map((t) => (
-            <span key={t} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
-              {TIME_LABEL[t] ?? t}
-            </span>
-          ))}
+        )}
+        {app.purposes.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {app.purposes.map((p) => (
+              <span key={p} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
+                {p}
+              </span>
+            ))}
+          </div>
+        )}
+      </Link>
+
+      {showActions && (
+        <div className="flex gap-2 px-3 pb-3" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+          <div className="pt-2 flex gap-2 w-full">
+            {isActive && (
+              <button
+                onClick={() => onStatusChange(app.id, "confirmed")}
+                className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold"
+                style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                ✓ 확정
+              </button>
+            )}
+            {isConfirmed && (
+              <button
+                onClick={() => onStatusChange(app.id, "completed")}
+                className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold"
+                style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                ✓ 완료
+              </button>
+            )}
+            <button
+              onClick={() => onStatusChange(app.id, "cancelled")}
+              className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold"
+              style={{ background: "rgba(248,113,113,0.08)", color: "#f87171", border: "1px solid rgba(248,113,113,0.15)" }}>
+              ✗ 취소
+            </button>
+          </div>
         </div>
       )}
-      {app.userMessage && (
-        <p className="text-[12px] leading-snug line-clamp-2 italic" style={{ color: "#5a5a5a" }}>
-          &ldquo;{app.userMessage}&rdquo;
-        </p>
-      )}
-      {app.purposes.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {app.purposes.map((p) => (
-            <span key={p} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
-              {p}
-            </span>
-          ))}
-        </div>
-      )}
-    </Link>
+    </div>
   );
 }
 
 export default function TrainerApplicationsPage() {
-  const [apps, setApps]         = useState<Application[]>([]);
-  const [loading, setLoading]   = useState(true);
+  const [apps, setApps]           = useState<Application[]>([]);
+  const [loading, setLoading]     = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("all");
 
   useEffect(() => {
@@ -108,6 +145,17 @@ export default function TrainerApplicationsPage() {
       .then((r) => r.json())
       .then((d) => { setApps(d.applications ?? []); setLoading(false); });
   }, []);
+
+  async function handleStatusChange(id: string, newStatus: AppStatus) {
+    const prev = apps;
+    setApps((cur) => cur.map((a) => a.id === id ? { ...a, status: newStatus } : a));
+    const res = await fetch(`/api/trainer/applications/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (!res.ok) setApps(prev);
+  }
 
   const filtered = apps.filter((a) => {
     if (activeTab === "all")       return true;
@@ -168,7 +216,9 @@ export default function TrainerApplicationsPage() {
           </div>
         ) : filtered.length > 0 ? (
           <div className="flex flex-col gap-3">
-            {filtered.map((app) => <AppCard key={app.id} app={app} />)}
+            {filtered.map((app) => (
+              <AppCard key={app.id} app={app} onStatusChange={handleStatusChange} />
+            ))}
             <p className="text-center text-[12px] py-4" style={{ color: "#131313" }}>
               — 모두 확인했습니다 —
             </p>

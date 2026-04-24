@@ -35,11 +35,44 @@ function fmtShortDate(iso: string) {
   return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
 }
 
+const ACTIVE_STATUSES = ["pending","received","checking","contact_scheduled","scheduling"];
+
+const NEXT_STATUS: Partial<Record<AppStatus, AppStatus>> = {
+  pending:           "checking",
+  received:          "checking",
+  checking:          "contact_scheduled",
+  contact_scheduled: "scheduling",
+  scheduling:        "confirmed",
+};
+
+const NEXT_LABEL: Partial<Record<AppStatus, string>> = {
+  pending:           "확인중",
+  received:          "확인중",
+  checking:          "연락 예정",
+  contact_scheduled: "일정 조율",
+  scheduling:        "확정",
+};
+
 export default function TrainerAppDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
   const [app, setApp] = useState<Application | null | "loading">("loading");
   const [sessionLoading, setSessionLoading] = useState<1 | 2 | null>(null);
+  const [statusLoading, setStatusLoading] = useState(false);
+
+  async function handleStatusChange(newStatus: AppStatus) {
+    if (!app || app === "loading" || statusLoading) return;
+    const prev = app;
+    setStatusLoading(true);
+    setApp({ ...app, status: newStatus });
+    const res = await fetch(`/api/trainer/applications/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (!res.ok) setApp(prev);
+    setStatusLoading(false);
+  }
 
   useEffect(() => {
     fetch(`/api/trainer/applications/${id}`)
@@ -221,6 +254,51 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
             <p className="text-[13px] leading-relaxed" style={{ color: "#a0a0a0" }}>
               {app.adminNote}
             </p>
+          </div>
+        )}
+
+        {/* 상태 변경 */}
+        {(ACTIVE_STATUSES.includes(app.status) || app.status === "confirmed") && (
+          <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+              상태 변경
+            </p>
+            <div className="flex flex-col gap-2">
+              {ACTIVE_STATUSES.includes(app.status) && (
+                <button
+                  disabled={statusLoading}
+                  onClick={() => handleStatusChange("confirmed")}
+                  className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
+                  style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>
+                  {statusLoading ? "처리 중…" : "✓ 확정하기"}
+                </button>
+              )}
+              {app.status === "confirmed" && (
+                <button
+                  disabled={statusLoading}
+                  onClick={() => handleStatusChange("completed")}
+                  className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
+                  style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>
+                  {statusLoading ? "처리 중…" : "✓ 완료 처리"}
+                </button>
+              )}
+              {NEXT_STATUS[app.status] && app.status !== "scheduling" && (
+                <button
+                  disabled={statusLoading}
+                  onClick={() => handleStatusChange(NEXT_STATUS[app.status]!)}
+                  className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
+                  style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF", border: "1px solid rgba(47,107,255,0.2)" }}>
+                  {statusLoading ? "처리 중…" : `→ ${NEXT_LABEL[app.status]}으로 변경`}
+                </button>
+              )}
+              <button
+                disabled={statusLoading}
+                onClick={() => handleStatusChange("cancelled")}
+                className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
+                style={{ background: "rgba(248,113,113,0.08)", color: "#f87171", border: "1px solid rgba(248,113,113,0.15)" }}>
+                {statusLoading ? "처리 중…" : "✗ 취소 처리"}
+              </button>
+            </div>
           </div>
         )}
 
