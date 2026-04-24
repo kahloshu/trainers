@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   STATUS_LABEL, DAY_LABEL, TIME_LABEL, timeAgoLabel, maskPhone,
+  ACTIVE_STATUSES,
   type Application, type AppStatus,
 } from "@/app/data/applications";
 
@@ -27,7 +28,6 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-const ACTIVE_STATUSES = ["pending","received","checking","contact_scheduled","scheduling"];
 
 function StatusBadge({ status }: { status: AppStatus }) {
   const c = STATUS_COLOR[status];

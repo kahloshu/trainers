@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import {
   STATUS_LABEL, DAY_LABEL, TIME_LABEL, timeAgoLabel, maskPhone,
+  ACTIVE_STATUSES,
   type Application, type AppStatus,
 } from "@/app/data/applications";
 import { fmtDate } from "@/lib/fmt";
@@ -35,7 +36,6 @@ function fmtShortDate(iso: string) {
   return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
 }
 
-const ACTIVE_STATUSES = ["pending","received","checking","contact_scheduled","scheduling"];
 
 const NEXT_STATUS: Partial<Record<AppStatus, AppStatus>> = {
   pending:           "checking",

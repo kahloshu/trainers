@@ -222,6 +222,10 @@ export async function updateApplicationNote(
 }
 
 /* ── 레이블 ── */
+export const ACTIVE_STATUSES: AppStatus[] = [
+  "pending", "received", "checking", "contact_scheduled", "scheduling",
+];
+
 export const STATUS_LABEL: Record<AppStatus, string> = {
   pending:           "접수됨",
   received:          "접수됨",
