@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error || !trainer) {
+    console.error("[send-otp] trainer not found:", { normalized, error: error?.message, code: error?.code });
     return NextResponse.json({ error: "등록되지 않은 전화번호입니다." }, { status: 404 });
   }
 
