@@ -82,8 +82,8 @@ function StarRating({
             <svg width="44" height="44" viewBox="0 0 24 24">
               <path
                 d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                fill={display >= i ? (STAR_COLORS[display] ?? "#c9a96e") : "#2a2a2a"}
-                stroke={display >= i ? (STAR_COLORS[display] ?? "#c9a96e") : "#383838"}
+                fill={display >= i ? (STAR_COLORS[display] ?? "var(--gold)") : "#2a2a2a"}
+                stroke={display >= i ? (STAR_COLORS[display] ?? "var(--gold)") : "#383838"}
                 strokeWidth="0.5"
                 style={{ transition: "fill 0.15s ease" }}
               />
@@ -143,7 +143,7 @@ function FieldLabel({
         </span>
       )}
       {badge && (
-        <span className="flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md" style={{ background: badgeColor ?? "#252525", color: "#6b7280" }}>
+        <span className="flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md" style={{ background: badgeColor ?? "var(--surface-input)", color: "#6b7280" }}>
           {badge}
         </span>
       )}
@@ -249,7 +249,7 @@ export default function ReviewPage({
           </p>
           <div
             className="flex items-center gap-3 p-3.5 rounded-2xl border"
-            style={{ background: "#252525", borderColor: "#2f2f2f" }}
+            style={{ background: "var(--surface-input)", borderColor: "#2f2f2f" }}
           >
             <MiniAvatar name={trainer.name} />
             <div className="flex-1 min-w-0">
@@ -304,7 +304,7 @@ export default function ReviewPage({
             placeholder="다른 회원들에게 도움이 될 짧은 후기를 남겨주세요."
             rows={3}
             className="w-full px-4 py-3.5 rounded-xl text-[13.5px] outline-none resize-none leading-relaxed transition-all"
-            style={{ background: "#252525", border: "1.5px solid #383838", color: "#fbfafa" }}
+            style={{ background: "var(--surface-input)", border: "1.5px solid #383838", color: "#fbfafa" }}
             onFocus={(e) => (e.target.style.borderColor = "#2f80ed")}
             onBlur={(e) => (e.target.style.borderColor = "#383838")}
           />
@@ -325,7 +325,7 @@ export default function ReviewPage({
           {/* 비공개 안내 */}
           <div
             className="flex items-center gap-1.5 mb-3 px-3 py-2 rounded-xl"
-            style={{ background: "#252525", border: "1px solid #2f2f2f" }}
+            style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}
           >
             <LockIcon />
             <p className="text-[11.5px]" style={{ color: "#6b7280" }}>
@@ -339,7 +339,7 @@ export default function ReviewPage({
             placeholder={"수업 외 불편한 점이나 개선 의견을 편하게 남겨주세요."}
             rows={4}
             className="w-full px-4 py-3.5 rounded-xl text-[13.5px] outline-none resize-none leading-relaxed transition-all"
-            style={{ background: "#252525", border: "1.5px solid #383838", color: "#fbfafa" }}
+            style={{ background: "var(--surface-input)", border: "1.5px solid #383838", color: "#fbfafa" }}
             onFocus={(e) => (e.target.style.borderColor = "#383838")}
             onBlur={(e) => (e.target.style.borderColor = "#383838")}
           />
@@ -349,7 +349,7 @@ export default function ReviewPage({
         <div className="px-4 pt-1 pb-4">
           <div
             className="rounded-2xl p-4"
-            style={{ background: "#252525", border: "1px solid #2f2f2f" }}
+            style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}
           >
             <p className="text-[11px] font-semibold tracking-[0.1em] uppercase mb-3" style={{ color: "#4b5563" }}>
               공개 범위 안내
@@ -391,7 +391,7 @@ export default function ReviewPage({
           disabled={!isValid || submitting}
           className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-semibold text-[15px] transition-all duration-200"
           style={{
-            background: isValid && !submitting ? "#2f80ed" : "#252525",
+            background: isValid && !submitting ? "#2f80ed" : "var(--surface-input)",
             color: isValid && !submitting ? "#fff" : "#4b5563",
             cursor: isValid && !submitting ? "pointer" : "not-allowed",
           }}

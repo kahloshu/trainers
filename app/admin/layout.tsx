@@ -15,10 +15,10 @@ export const useTrainer = () => useContext(TrainerContext);
 
 function LoadingScreen() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#0e0e0e" }}>
+    <div className="fixed inset-0 flex items-center justify-center" style={{ background: "var(--bg)" }}>
       <div
         className="w-9 h-9 rounded-full border-2 animate-spin"
-        style={{ borderColor: "#2F6BFF", borderTopColor: "transparent" }}
+        style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }}
       />
     </div>
   );

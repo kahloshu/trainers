@@ -24,8 +24,8 @@ const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }>
   contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa" },
   scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c" },
   confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
-  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
-  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "var(--success)", dot: "#10b981" },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "var(--text-secondary)", dot: "var(--text-muted)" },
 };
 
 function StatusBadge({ status }: { status: AppStatus }) {
@@ -39,7 +39,7 @@ function StatusBadge({ status }: { status: AppStatus }) {
   );
 }
 
-function StarFilled({ color = "#c9a96e" }: { color?: string }) {
+function StarFilled({ color = "var(--gold)" }: { color?: string }) {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill={color} />
@@ -50,7 +50,7 @@ function StarFilled({ color = "#c9a96e" }: { color?: string }) {
 function ChevronRight() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18" stroke="#3a3a3a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 6L15 12L9 18" stroke="var(--text-dim)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -59,16 +59,16 @@ function SectionHeader({ title, href, count }: { title: string; href: string; co
   return (
     <div className="flex items-center justify-between px-4 mb-3">
       <div className="flex items-center gap-2">
-        <h2 className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>{title}</h2>
+        <h2 className="text-[14px] font-semibold" style={{ color: "var(--text-primary)" }}>{title}</h2>
         {count !== undefined && count > 0 && (
           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
-            style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF" }}>
+            style={{ background: "var(--accent-subtle-hi)", color: "var(--accent)" }}>
             {count}
           </span>
         )}
       </div>
       <Link href={href} className="flex items-center gap-0.5 text-[12px] font-medium"
-        style={{ color: "#5a5a5a" }}>
+        style={{ color: "var(--text-muted)" }}>
         전체 보기 <ChevronRight />
       </Link>
     </div>
@@ -82,25 +82,25 @@ function RecentAppCard({ app }: { app: Application }) {
   return (
     <Link href={`/admin/applications/${app.id}`}
       className="flex flex-col gap-2.5 p-4 rounded-2xl border transition-opacity active:opacity-70"
-      style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}>
+      style={{ background: "var(--surface)", borderColor: "var(--border-subtle)" }}>
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>
+          <span className="text-[14px] font-semibold" style={{ color: "var(--text-primary)" }}>
             {app.applicantName}
           </span>
           <StatusBadge status={app.status} />
         </div>
-        <span className="text-[11px] flex-shrink-0" style={{ color: "#3a3a3a" }}>
+        <span className="text-[11px] flex-shrink-0" style={{ color: "var(--text-dim)" }}>
           {timeAgoLabel(app.createdMinutesAgo)}
         </span>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-[12px]" style={{ color: "#5a5a5a" }}>
-          {days}{times && <span className="mx-1.5" style={{ color: "rgba(255,255,255,0.06)" }}>·</span>}{times}
+        <span className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+          {days}{times && <span className="mx-1.5" style={{ color: "var(--border)" }}>·</span>}{times}
         </span>
       </div>
       {app.userMessage && (
-        <p className="text-[11.5px] leading-snug line-clamp-1 italic" style={{ color: "#5a5a5a" }}>
+        <p className="text-[11.5px] leading-snug line-clamp-1 italic" style={{ color: "var(--text-muted)" }}>
           &ldquo;{app.userMessage}&rdquo;
         </p>
       )}
@@ -115,22 +115,22 @@ function RecentReviewCard({ review }: { review: Review }) {
     : `${Math.floor(review.daysAgo / 7)}주 전`;
   return (
     <div className="flex flex-col gap-2 p-4 rounded-2xl border"
-      style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}>
+      style={{ background: "var(--surface)", borderColor: "var(--border-subtle)" }}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           {[1,2,3,4,5].map((i) => (
-            <StarFilled key={i} color={i <= review.rating ? "#c9a96e" : "#131313"} />
+            <StarFilled key={i} color={i <= review.rating ? "var(--gold)" : "var(--bg-2)"} />
           ))}
-          <span className="ml-1 text-[12px] font-semibold" style={{ color: "#c9a96e" }}>
+          <span className="ml-1 text-[12px] font-semibold" style={{ color: "var(--gold)" }}>
             {review.rating}.0
           </span>
         </div>
-        <span className="text-[11px]" style={{ color: "#3a3a3a" }}>{label}</span>
+        <span className="text-[11px]" style={{ color: "var(--text-dim)" }}>{label}</span>
       </div>
-      <p className="text-[13px] leading-snug line-clamp-2 italic" style={{ color: "#a0a0a0" }}>
+      <p className="text-[13px] leading-snug line-clamp-2 italic" style={{ color: "var(--text-secondary)" }}>
         &ldquo;{review.comment}&rdquo;
       </p>
-      <span className="text-[11.5px]" style={{ color: "#5a5a5a" }}>{review.authorMasked}</span>
+      <span className="text-[11.5px]" style={{ color: "var(--text-muted)" }}>{review.authorMasked}</span>
     </div>
   );
 }
@@ -160,26 +160,26 @@ export default function TrainerHomePage() {
   const recentReviews = reviews.slice(0, 3);
 
   return (
-    <div className="min-h-dvh pb-24" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh pb-24" style={{ background: "var(--bg)" }}>
 
       {/* 헤더 */}
       <header className="sticky top-0 z-40 px-4 pt-5 pb-4"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--border-subtle)" }}>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "var(--accent)" }}>
               James Gym
             </p>
-            <h1 className="text-[20px] font-bold tracking-tight leading-tight" style={{ color: "#ffffff" }}>
+            <h1 className="text-[20px] font-bold tracking-tight leading-tight" style={{ color: "var(--text-primary)" }}>
               {trainer ? `${trainer.trainerName} 트레이너` : "내 대시보드"}
             </h1>
           </div>
           <div className="w-9 h-9 rounded-full flex items-center justify-center text-[14px] font-bold flex-shrink-0"
-            style={{ background: "rgba(47,107,255,0.12)", color: "#2F6BFF", border: "1px solid rgba(47,107,255,0.2)" }}>
+            style={{ background: "var(--accent-subtle-hi)", color: "var(--accent)", border: "1px solid rgba(47,107,255,0.2)" }}>
             {trainer?.trainerName?.charAt(0) ?? "T"}
           </div>
         </div>
-        <p className="text-[12px] mt-1" style={{ color: "#3a3a3a" }}>{todayLabel()}</p>
+        <p className="text-[12px] mt-1" style={{ color: "var(--text-dim)" }}>{todayLabel()}</p>
       </header>
 
       <main>
@@ -187,9 +187,9 @@ export default function TrainerHomePage() {
         {stats.pending > 0 && (
           <Link href="/admin/applications"
             className="mx-4 mt-4 flex items-center justify-between px-4 py-3 rounded-2xl transition-opacity active:opacity-70"
-            style={{ background: "rgba(47,107,255,0.08)", border: "1px solid rgba(47,107,255,0.16)" }}>
+            style={{ background: "var(--accent-glow)", border: "1px solid rgba(47,107,255,0.16)" }}>
             <div className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#2F6BFF" }} />
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
               <span className="text-[13px] font-semibold" style={{ color: "#60a5fa" }}>
                 새로운 신청 {stats.pending}건이 있습니다
               </span>
@@ -202,20 +202,20 @@ export default function TrainerHomePage() {
 
         {/* 통계 */}
         <div className="px-4 mt-4">
-          <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+          <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
             내 신청 현황
           </p>
           <div className="grid grid-cols-2 gap-2.5">
             {[
               { label: "신규·진행 중", count: stats.pending,   color: "#60a5fa", href: "/admin/applications" },
               { label: "확정됨",       count: stats.confirmed, color: "#fbbf24", href: "/admin/applications" },
-              { label: "완료",         count: stats.completed, color: "#34d399", href: "/admin/applications" },
-              { label: "전체 신청",    count: stats.total,     color: "#a0a0a0", href: "/admin/applications" },
+              { label: "완료",         count: stats.completed, color: "var(--success)", href: "/admin/applications" },
+              { label: "전체 신청",    count: stats.total,     color: "var(--text-secondary)", href: "/admin/applications" },
             ].map(({ label, count, color, href }) => (
               <Link key={label} href={href}
                 className="flex flex-col justify-between p-4 rounded-2xl border transition-opacity active:opacity-70"
-                style={{ background: "#1a1a1a", borderColor: "rgba(255,255,255,0.04)" }}>
-                <span className="text-[11px] font-medium" style={{ color: "#5a5a5a" }}>{label}</span>
+                style={{ background: "var(--surface)", borderColor: "var(--border-subtle)" }}>
+                <span className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>{label}</span>
                 <span className="text-[32px] font-bold leading-none tracking-tight mt-3" style={{ color }}>
                   {count}
                 </span>
@@ -232,8 +232,8 @@ export default function TrainerHomePage() {
               recentApps.map((app) => <RecentAppCard key={app.id} app={app} />)
             ) : (
               <div className="py-8 text-center rounded-2xl"
-                style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-                <p className="text-[13px]" style={{ color: "#3a3a3a" }}>아직 신청이 없습니다.</p>
+                style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+                <p className="text-[13px]" style={{ color: "var(--text-dim)" }}>아직 신청이 없습니다.</p>
               </div>
             )}
           </div>
@@ -247,8 +247,8 @@ export default function TrainerHomePage() {
               recentReviews.map((r) => <RecentReviewCard key={r.id} review={r} />)
             ) : (
               <div className="py-8 text-center rounded-2xl"
-                style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-                <p className="text-[13px]" style={{ color: "#3a3a3a" }}>아직 후기가 없습니다.</p>
+                style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+                <p className="text-[13px]" style={{ color: "var(--text-dim)" }}>아직 후기가 없습니다.</p>
               </div>
             )}
           </div>

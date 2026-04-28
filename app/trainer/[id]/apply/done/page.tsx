@@ -140,7 +140,7 @@ function DoneContent() {
 
       {/* 신청 요약 */}
       <div className="anim-card rounded-2xl overflow-hidden mb-3"
-        style={{ background: "#252525", border: "1px solid #2f2f2f" }}>
+        style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}>
         <div className="flex items-center gap-2 px-5 py-3.5" style={{ borderBottom: "1px solid #2a2a2a" }}>
           <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#2f80ed" }} />
           <span className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#4b5563" }}>신청 요약</span>
@@ -153,7 +153,7 @@ function DoneContent() {
       </div>
 
       {/* 안내 */}
-      <div className="anim-notice rounded-2xl p-4 mb-6" style={{ background: "#252525", border: "1px solid #2f2f2f" }}>
+      <div className="anim-notice rounded-2xl p-4 mb-6" style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}>
         <div className="flex items-center gap-2 mb-2.5">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="9" stroke="#2f80ed" strokeWidth="1.6" />
@@ -181,7 +181,7 @@ function DoneContent() {
         <Link
           href="/"
           className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-medium text-[14px] transition-opacity active:opacity-70"
-          style={{ background: "#252525", color: "#9ca3af", border: "1px solid #303030" }}>
+          style={{ background: "var(--surface-input)", color: "#9ca3af", border: "1px solid #303030" }}>
           <HomeIcon />
           <span>트레이너 더 둘러보기</span>
         </Link>

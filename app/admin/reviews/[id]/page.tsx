@@ -9,9 +9,9 @@ import { BackIcon } from "@/app/components/icons";
 function GlobeIcon({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke="#2F6BFF" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="9" stroke="var(--accent)" strokeWidth="1.6" />
       <path d="M12 3c-2 3-2 15 0 18M12 3c2 3 2 15 0 18M3 12h18"
-        stroke="#2F6BFF" strokeWidth="1.4" strokeLinecap="round" />
+        stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
@@ -43,15 +43,15 @@ function EyeOffIcon() {
 
 /* ── 별점 ── */
 function StarRow({ rating, size = 20 }: { rating: number; size?: number }) {
-  const COLORS = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#2F6BFF"];
-  const color = COLORS[rating] ?? "#c9a96e";
+  const COLORS = ["", "var(--danger)", "#f97316", "#eab308", "#22c55e", "var(--accent)"];
+  const color = COLORS[rating] ?? "var(--gold)";
   return (
     <div className="flex items-center gap-1.5">
       {[1, 2, 3, 4, 5].map((i) => (
         <svg key={i} width={size} height={size} viewBox="0 0 24 24">
           <path
             d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-            fill={i <= rating ? color : "#131313"}
+            fill={i <= rating ? color : "var(--bg-2)"}
           />
         </svg>
       ))}
@@ -73,14 +73,14 @@ function daysLabel(daysAgo: number) {
 /* ── 섹션 블록 ── */
 function Block({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
       {children}
     </div>
   );
 }
 function BlockHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-5 py-3 border-b flex items-center gap-2" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+    <div className="px-5 py-3 border-b flex items-center gap-2" style={{ borderColor: "var(--border-subtle)" }}>
       {children}
     </div>
   );
@@ -89,10 +89,10 @@ function InfoRow({ label, value, last = false }: { label: string; value: React.R
   return (
     <>
       <div className="flex items-start justify-between gap-4 py-3.5 px-5">
-        <span className="text-[13px] flex-shrink-0" style={{ color: "#5a5a5a" }}>{label}</span>
-        <span className="text-[13px] font-medium text-right leading-snug" style={{ color: "#ffffff" }}>{value}</span>
+        <span className="text-[13px] flex-shrink-0" style={{ color: "var(--text-muted)" }}>{label}</span>
+        <span className="text-[13px] font-medium text-right leading-snug" style={{ color: "var(--text-primary)" }}>{value}</span>
       </div>
-      {!last && <div className="h-px mx-5" style={{ background: "rgba(255,255,255,0.04)" }} />}
+      {!last && <div className="h-px mx-5" style={{ background: "var(--border-subtle)" }} />}
     </>
   );
 }
@@ -109,7 +109,7 @@ function MiniAvatar({ name }: { name: string }) {
 }
 
 /* ── 토스트 ── */
-function Toast({ message, color = "#34d399" }: { message: string; color?: string }) {
+function Toast({ message, color = "var(--success)" }: { message: string; color?: string }) {
   return (
     <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full text-[13px] font-semibold shadow-lg pointer-events-none"
       style={{ background: color, color: "#fff", whiteSpace: "nowrap" }}>
@@ -129,14 +129,14 @@ function ConfirmSheet({
     <div className="fixed inset-0 z-50 flex items-end justify-center"
       style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}>
       <div className="w-full max-w-[480px] rounded-t-3xl p-6 pb-10"
-        style={{ background: "#1a1a1a", border: "1px solid #1f1f1f" }}>
+        style={{ background: "var(--surface)", border: "1px solid #1f1f1f" }}>
         <div className="w-10 h-1 rounded-full mx-auto mb-6" style={{ background: "#262626" }} />
-        <h3 className="text-[17px] font-bold mb-2" style={{ color: "#ffffff" }}>{title}</h3>
-        <p className="text-[13px] leading-relaxed mb-7" style={{ color: "#5a5a5a" }}>{desc}</p>
+        <h3 className="text-[17px] font-bold mb-2" style={{ color: "var(--text-primary)" }}>{title}</h3>
+        <p className="text-[13px] leading-relaxed mb-7" style={{ color: "var(--text-muted)" }}>{desc}</p>
         <div className="flex gap-2.5">
           <button onClick={onCancel}
             className="flex-1 py-3.5 rounded-2xl text-[14px] font-medium"
-            style={{ background: "#131313", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+            style={{ background: "var(--bg-2)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
             취소
           </button>
           <button onClick={onConfirm}
@@ -153,16 +153,16 @@ function ConfirmSheet({
 /* ── 로딩 스켈레톤 ── */
 function Skeleton() {
   return (
-    <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh" style={{ background: "var(--bg)" }}>
       <header className="sticky top-0 z-40 flex items-center justify-between px-4 py-3"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-        <div className="w-9 h-9 rounded-full" style={{ background: "#131313" }} />
-        <div className="w-20 h-4 rounded-full" style={{ background: "#1a1a1a" }} />
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--border-subtle)" }}>
+        <div className="w-9 h-9 rounded-full" style={{ background: "var(--bg-2)" }} />
+        <div className="w-20 h-4 rounded-full" style={{ background: "var(--surface)" }} />
         <div className="w-9" />
       </header>
       <div className="flex flex-col gap-3 px-4 pt-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "#1a1a1a" }} />
+          <div key={i} className="h-24 rounded-2xl animate-pulse" style={{ background: "var(--surface)" }} />
         ))}
       </div>
     </div>
@@ -195,7 +195,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
     });
   }, [id]);
 
-  function fireToast(msg: string, color = "#34d399") {
+  function fireToast(msg: string, color = "var(--success)") {
     setToast({ msg, color });
     setTimeout(() => setToast(null), 2000);
   }
@@ -208,35 +208,35 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
   function confirmHide() {
     setVisible(false);
     setShowModal(false);
-    fireToast("비공개 처리되었습니다.", "#a0a0a0");
+    fireToast("비공개 처리되었습니다.", "var(--text-secondary)");
   }
 
   if (loading) return <Skeleton />;
   if (notFound || !review) {
     return (
-      <div className="min-h-dvh flex items-center justify-center" style={{ background: "#0e0e0e" }}>
-        <p className="text-[14px]" style={{ color: "#5a5a5a" }}>후기를 찾을 수 없습니다.</p>
+      <div className="min-h-dvh flex items-center justify-center" style={{ background: "var(--bg)" }}>
+        <p className="text-[14px]" style={{ color: "var(--text-muted)" }}>후기를 찾을 수 없습니다.</p>
       </div>
     );
   }
 
   const RATING_LABEL = ["", "아쉬웠습니다.", "조금 아쉬웠습니다.", "보통이었습니다.", "만족스러웠습니다.", "매우 만족스러웠습니다."];
-  const RATING_COLOR = ["", "#f87171", "#f97316", "#eab308", "#22c55e", "#2F6BFF"];
+  const RATING_COLOR = ["", "var(--danger)", "#f97316", "#eab308", "#22c55e", "var(--accent)"];
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh" style={{ background: "var(--bg)" }}>
 
       {/* ── 헤더 ── */}
       <header
         className="sticky top-0 z-40 flex items-center justify-between px-4 py-3"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--border-subtle)" }}
       >
         <button onClick={() => router.back()}
           className="w-9 h-9 flex items-center justify-center rounded-full"
-          style={{ background: "#131313" }}>
+          style={{ background: "var(--bg-2)" }}>
           <BackIcon />
         </button>
-        <span className="text-[15px] font-semibold" style={{ color: "#ffffff" }}>후기 상세</span>
+        <span className="text-[15px] font-semibold" style={{ color: "var(--text-primary)" }}>후기 상세</span>
         <div className="w-9" />
       </header>
 
@@ -250,10 +250,10 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
             border: `1px solid ${visible ? "rgba(47,107,255,0.18)" : "rgba(90,90,90,0.18)"}`,
           }}
         >
-          <span style={{ color: visible ? "#2F6BFF" : "#5a5a5a" }}>
-            {visible ? <GlobeIcon size={15} /> : <LockIcon size={15} color="#5a5a5a" />}
+          <span style={{ color: visible ? "var(--accent)" : "var(--text-muted)" }}>
+            {visible ? <GlobeIcon size={15} /> : <LockIcon size={15} color="var(--text-muted)" />}
           </span>
-          <p className="text-[12.5px] font-medium flex-1" style={{ color: visible ? "#2F6BFF" : "#5a5a5a" }}>
+          <p className="text-[12.5px] font-medium flex-1" style={{ color: visible ? "var(--accent)" : "var(--text-muted)" }}>
             {visible
               ? "현재 트레이너 상세 페이지에 공개 중입니다."
               : "비공개 처리됨 — 외부에서 노출되지 않습니다."}
@@ -263,30 +263,30 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         {/* ── 후기 정보 ── */}
         <Block>
           <BlockHeader>
-            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>
+            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--text-dim)" }}>
               후기 정보
             </p>
           </BlockHeader>
           <InfoRow label="작성자"   value={review.authorMasked} />
           <InfoRow label="작성일"   value={daysLabel(review.daysAgo)} />
-          <InfoRow label="신청번호" value={<span style={{ color: "#5a5a5a" }}>연결된 신청 건</span>} last />
+          <InfoRow label="신청번호" value={<span style={{ color: "var(--text-muted)" }}>연결된 신청 건</span>} last />
         </Block>
 
         {/* ── 대상 트레이너 ── */}
         {trainer && (
           <Block>
             <BlockHeader>
-              <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>
+              <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--text-dim)" }}>
                 대상 트레이너
               </p>
             </BlockHeader>
             <div className="flex items-center gap-3 px-5 py-4">
               <MiniAvatar name={trainer.name} />
               <div>
-                <p className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>
+                <p className="text-[14px] font-semibold" style={{ color: "var(--text-primary)" }}>
                   {trainer.name} 트레이너
                 </p>
-                <p className="text-[12px] mt-0.5" style={{ color: "#5a5a5a" }}>
+                <p className="text-[12px] mt-0.5" style={{ color: "var(--text-muted)" }}>
                   {trainer.specialty} · {trainer.careerYears}년차
                 </p>
               </div>
@@ -298,12 +298,12 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         <Block>
           <BlockHeader>
             <GlobeIcon size={13} />
-            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>
+            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--text-dim)" }}>
               공개 후기
             </p>
             <span
               className="ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full"
-              style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}
+              style={{ background: "var(--accent-subtle)", color: "var(--accent)" }}
             >
               외부 노출
             </span>
@@ -317,13 +317,13 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               </p>
             </div>
 
-            <div className="h-px" style={{ background: "rgba(255,255,255,0.04)" }} />
+            <div className="h-px" style={{ background: "var(--border-subtle)" }} />
 
             <div
               className="px-4 py-3.5 rounded-xl"
               style={{
-                background: "#0e0e0e",
-                border: "1px solid rgba(255,255,255,0.04)",
+                background: "var(--bg)",
+                border: "1px solid var(--border-subtle)",
                 opacity: visible ? 1 : 0.45,
               }}
             >
@@ -334,8 +334,8 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
 
             {!visible && (
               <div className="flex items-center justify-center gap-2">
-                <LockIcon size={12} color="#3a3a3a" />
-                <span className="text-[11.5px]" style={{ color: "#3a3a3a" }}>
+                <LockIcon size={12} color="var(--text-dim)" />
+                <span className="text-[11.5px]" style={{ color: "var(--text-dim)" }}>
                   비공개 처리로 인해 숨겨진 상태입니다.
                 </span>
               </div>
@@ -347,7 +347,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         <Block>
           <BlockHeader>
             <LockIcon size={13} />
-            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>
+            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--text-dim)" }}>
               비공개 메모
             </p>
             <span
@@ -365,7 +365,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
                   className="px-4 py-3.5 rounded-xl"
                   style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.12)" }}
                 >
-                  <p className="text-[13.5px] leading-relaxed" style={{ color: "#a0a0a0" }}>
+                  <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                     {review.rating === 1
                       ? "시설 샤워실 온수가 잘 안 나왔습니다. 개선 부탁드려요."
                       : review.rating === 2
@@ -373,16 +373,16 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
                       : "기대했던 것보다 강도가 낮았습니다. 다음엔 미리 말씀 드릴게요."}
                   </p>
                 </div>
-                <p className="text-[11px]" style={{ color: "#3a3a3a" }}>
+                <p className="text-[11px]" style={{ color: "var(--text-dim)" }}>
                   이 내용은 관리자만 확인할 수 있으며 외부에 공개되지 않습니다.
                 </p>
               </div>
             ) : (
               <div className="flex flex-col items-center py-4 gap-2">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#131313" }}>
-                  <LockIcon size={16} color="rgba(255,255,255,0.06)" />
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "var(--bg-2)" }}>
+                  <LockIcon size={16} color="var(--border)" />
                 </div>
-                <p className="text-[12.5px]" style={{ color: "#3a3a3a" }}>비공개 메모가 없습니다.</p>
+                <p className="text-[12.5px]" style={{ color: "var(--text-dim)" }}>비공개 메모가 없습니다.</p>
               </div>
             )}
           </div>
@@ -391,7 +391,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
         {/* ── 노출 관리 ── */}
         <Block>
           <BlockHeader>
-            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "#3a3a3a" }}>
+            <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase" style={{ color: "var(--text-dim)" }}>
               노출 관리
             </p>
           </BlockHeader>
@@ -401,17 +401,17 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               className="flex items-start gap-3 p-3.5 rounded-xl"
               style={{
                 background: visible ? "rgba(47,107,255,0.06)" : "rgba(90,90,90,0.06)",
-                border: `1px solid ${visible ? "rgba(47,107,255,0.10)" : "rgba(90,90,90,0.10)"}`,
+                border: `1px solid ${visible ? "var(--accent-subtle)" : "rgba(90,90,90,0.10)"}`,
               }}
             >
-              <span className="mt-0.5" style={{ color: visible ? "#2F6BFF" : "#5a5a5a" }}>
+              <span className="mt-0.5" style={{ color: visible ? "var(--accent)" : "var(--text-muted)" }}>
                 {visible ? <EyeIcon /> : <EyeOffIcon />}
               </span>
               <div>
-                <p className="text-[13px] font-semibold mb-0.5" style={{ color: visible ? "#2F6BFF" : "#a0a0a0" }}>
+                <p className="text-[13px] font-semibold mb-0.5" style={{ color: visible ? "var(--accent)" : "var(--text-secondary)" }}>
                   {visible ? "공개 중" : "비공개"}
                 </p>
-                <p className="text-[12px] leading-snug" style={{ color: "#3a3a3a" }}>
+                <p className="text-[12px] leading-snug" style={{ color: "var(--text-dim)" }}>
                   {visible
                     ? "트레이너 상세 페이지에서 누구나 볼 수 있습니다."
                     : "비공개 처리 상태로, 트레이너 페이지에서 숨겨져 있습니다."}
@@ -423,15 +423,15 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
               onClick={handleToggle}
               className="w-full py-3.5 rounded-2xl text-[14px] font-semibold flex items-center justify-center gap-2 transition-opacity active:opacity-80"
               style={{
-                background: visible ? "#1a1a1a" : "rgba(47,107,255,0.12)",
-                color:      visible ? "#a0a0a0" : "#2F6BFF",
-                border:     `1px solid ${visible ? "rgba(255,255,255,0.06)" : "rgba(47,107,255,0.3)"}`,
+                background: visible ? "var(--surface)" : "var(--accent-subtle-hi)",
+                color:      visible ? "var(--text-secondary)" : "var(--accent)",
+                border:     `1px solid ${visible ? "var(--border)" : "rgba(47,107,255,0.3)"}`,
               }}
             >
               {visible ? <><EyeOffIcon /> 비공개 처리</> : <><EyeIcon /> 공개 복원</>}
             </button>
 
-            <p className="text-[11.5px] text-center" style={{ color: "rgba(255,255,255,0.06)" }}>
+            <p className="text-[11.5px] text-center" style={{ color: "var(--border)" }}>
               {visible
                 ? "비공개 처리해도 데이터는 삭제되지 않습니다."
                 : "언제든지 다시 공개로 복원할 수 있습니다."}
@@ -446,7 +446,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
           title="이 후기를 비공개 처리하시겠습니까?"
           desc="비공개 처리 시 트레이너 상세 페이지에서 숨겨집니다. 데이터는 삭제되지 않으며, 언제든지 복원할 수 있습니다."
           confirmLabel="비공개 처리"
-          confirmColor="#5a5a5a"
+          confirmColor="var(--text-muted)"
           onConfirm={confirmHide}
           onCancel={() => setShowModal(false)}
         />

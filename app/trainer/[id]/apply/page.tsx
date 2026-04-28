@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 function StarFilled() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#c9a96e" />
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="var(--gold)" />
     </svg>
   );
 }
@@ -102,7 +102,7 @@ function ToggleBtn({
       onClick={onClick}
       className="flex-1 flex flex-col items-center justify-center py-3.5 px-2 rounded-xl border transition-all duration-150 active:scale-95"
       style={{
-        background: selected ? "#2f80ed" : "#252525",
+        background: selected ? "#2f80ed" : "var(--surface-input)",
         borderColor: selected ? "#2f80ed" : "#383838",
       }}
     >
@@ -206,7 +206,7 @@ export default function ApplyPage({
 
   if (trainer === "loading") return (
     <div className="min-h-dvh animate-pulse" style={{ background: "#1e1e1e" }}>
-      <div className="h-14 mx-4 mt-4 rounded-2xl" style={{ background: "#252525" }} />
+      <div className="h-14 mx-4 mt-4 rounded-2xl" style={{ background: "var(--surface-input)" }} />
     </div>
   );
   if (trainer === null) notFound();
@@ -272,7 +272,7 @@ export default function ApplyPage({
           </p>
           <div
             className="flex items-center gap-3 p-3.5 rounded-2xl border"
-            style={{ background: "#252525", borderColor: "#303030" }}
+            style={{ background: "var(--surface-input)", borderColor: "#303030" }}
           >
             <MiniAvatar name={trainer.name} />
             <div className="flex-1 min-w-0">
@@ -285,7 +285,7 @@ export default function ApplyPage({
             </div>
             <div className="flex items-center gap-1 flex-shrink-0">
               <StarFilled />
-              <span className="text-[12px] font-medium" style={{ color: "#c9a96e" }}>
+              <span className="text-[12px] font-medium" style={{ color: "var(--gold)" }}>
                 {trainer.ratingAvg.toFixed(1)}
               </span>
             </div>
@@ -308,7 +308,7 @@ export default function ApplyPage({
             placeholder="이름을 입력해 주세요"
             className="w-full px-4 py-3.5 rounded-xl text-[14px] outline-none transition-all"
             style={{
-              background: "#252525",
+              background: "var(--surface-input)",
               border: "1.5px solid #383838",
               color: "#fbfafa",
             }}
@@ -331,7 +331,7 @@ export default function ApplyPage({
             placeholder="010-0000-0000"
             className="w-full px-4 py-3.5 rounded-xl text-[14px] outline-none transition-all"
             style={{
-              background: "#252525",
+              background: "var(--surface-input)",
               border: "1.5px solid #383838",
               color: "#fbfafa",
             }}
@@ -358,7 +358,7 @@ export default function ApplyPage({
                   onClick={() => setPurposes(toggleArr(purposes, p))}
                   className="px-3.5 py-2 rounded-full text-[12.5px] font-medium border transition-all duration-150 active:scale-95"
                   style={{
-                    background: on ? "#2f80ed" : "#252525",
+                    background: on ? "#2f80ed" : "var(--surface-input)",
                     borderColor: on ? "#2f80ed" : "#383838",
                     color: on ? "#fff" : "#9ca3af",
                   }}
@@ -418,7 +418,7 @@ export default function ApplyPage({
             rows={4}
             className="w-full px-4 py-3.5 rounded-xl text-[13.5px] outline-none resize-none leading-relaxed transition-all"
             style={{
-              background: "#252525",
+              background: "var(--surface-input)",
               border: "1.5px solid #383838",
               color: "#fbfafa",
             }}
@@ -434,7 +434,7 @@ export default function ApplyPage({
         <div className="px-4 pt-1 pb-4">
           <div
             className="rounded-2xl p-4"
-            style={{ background: "#252525", border: "1px solid #2f2f2f" }}
+            style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}
           >
             <div className="flex items-start gap-2.5">
               <span className="mt-0.5 flex-shrink-0">
@@ -472,7 +472,7 @@ export default function ApplyPage({
           disabled={!isValid || submitting}
           className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-semibold text-[15px] transition-all duration-200"
           style={{
-            background: isValid && !submitting ? "#2f80ed" : "#252525",
+            background: isValid && !submitting ? "#2f80ed" : "var(--surface-input)",
             color: isValid && !submitting ? "#fff" : "#4b5563",
             cursor: isValid && !submitting ? "pointer" : "not-allowed",
           }}

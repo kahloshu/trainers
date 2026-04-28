@@ -169,7 +169,7 @@ function DoneContent({ trainerId }: { trainerId: string }) {
       {/* ── 내가 남긴 후기 카드 ── */}
       <div
         className="fu3 rounded-2xl overflow-hidden mb-3"
-        style={{ background: "#252525", border: "1px solid #2f2f2f" }}
+        style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}
       >
         {/* 카드 헤더 */}
         <div
@@ -209,7 +209,7 @@ function DoneContent({ trainerId }: { trainerId: string }) {
       {/* ── 안내 박스 ── */}
       <div
         className="fu4 rounded-2xl p-4 mb-8"
-        style={{ background: "#252525", border: "1px solid #2f2f2f" }}
+        style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}
       >
         <div className="flex items-start gap-2.5">
           <svg className="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -239,7 +239,7 @@ function DoneContent({ trainerId }: { trainerId: string }) {
         <Link
           href="/"
           className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-medium text-[14px] transition-opacity active:opacity-70"
-          style={{ background: "#252525", color: "#9ca3af", border: "1px solid #303030" }}
+          style={{ background: "var(--surface-input)", color: "#9ca3af", border: "1px solid #303030" }}
         >
           <HomeIcon />
           <span>트레이너 둘러보기</span>

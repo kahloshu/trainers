@@ -5,6 +5,7 @@
   --bg:              #0e0e0e;   /* base layer */
   --bg-2:            #131313;   /* structural sections */
   --surface:         #1a1a1a;   /* containers */
+  --surface-input:   #252525;   /* input fields */
   --surface-2:       #1f1f1f;
   --surface-high:    #262626;   /* floating / active */
   --surface-bright:  #2c2c2c;   /* hover states */
@@ -17,13 +18,16 @@
   --text-primary:    #ffffff;
   --text-secondary:  #a0a0a0;
   --text-muted:      #5a5a5a;
+  --text-dim:        #3a3a3a;
 
   /* ── Primary: high-frequency pulse blue ── */
   --accent:          #2F6BFF;
   --accent-2:        #1a55d4;
   --accent-hover:    #0066ff;
-  --accent-subtle:   rgba(47,107,255,0.10);
-  --accent-glow:     rgba(47,107,255,0.08);
+  --accent-subtle:    rgba(47,107,255,0.10);
+  --accent-subtle-hi: rgba(47,107,255,0.12);
+  --accent-border:    rgba(47,107,255,0.25);
+  --accent-glow:      rgba(47,107,255,0.08);
 
   /* ── Gold (rating) ── */
   --gold:            #c9a96e;

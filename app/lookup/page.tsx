@@ -73,7 +73,7 @@ function ResultCard({ app }: { app: Application }) {
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "#252525", border: "1px solid #2f2f2f" }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}>
 
       {/* 신청번호 헤더 */}
       {app.applicationNumber && (
@@ -133,14 +133,14 @@ function ResultCard({ app }: { app: Application }) {
         {/* 관리자 메모 */}
         {app.adminNote && (
           <div className="rounded-xl px-3.5 py-3"
-            style={{ background: "rgba(47,107,255,0.06)", border: "1px solid rgba(47,107,255,0.12)" }}>
-            <p className="text-[10.5px] font-semibold mb-1" style={{ color: "#2F6BFF" }}>관리자 메모</p>
+            style={{ background: "rgba(47,107,255,0.06)", border: "1px solid var(--accent-subtle-hi)" }}>
+            <p className="text-[10.5px] font-semibold mb-1" style={{ color: "var(--accent)" }}>관리자 메모</p>
             <p className="text-[12.5px] leading-relaxed" style={{ color: "#6b7280" }}>{app.adminNote}</p>
           </div>
         )}
 
         {/* 연락처 (마스킹) */}
-        <p className="text-[11.5px]" style={{ color: "#3a3a3a" }}>
+        <p className="text-[11.5px]" style={{ color: "var(--text-dim)" }}>
           연락처: {maskPhone(app.applicantPhone)}
         </p>
       </div>
@@ -217,7 +217,7 @@ function LookupContent() {
   }
 
   const inputClass = "w-full px-4 py-3.5 rounded-xl text-[14px] outline-none transition-all";
-  const inputStyle = { background: "#252525", border: "1.5px solid #383838", color: "#fbfafa" };
+  const inputStyle = { background: "var(--surface-input)", border: "1.5px solid #383838", color: "#fbfafa" };
 
   return (
     <div className="min-h-dvh" style={{ background: "#1e1e1e" }}>
@@ -237,13 +237,13 @@ function LookupContent() {
       <div className="px-4 pt-6 pb-32 flex flex-col gap-5">
 
         {/* 탭 */}
-        <div className="flex gap-1.5 p-1 rounded-2xl" style={{ background: "#252525" }}>
+        <div className="flex gap-1.5 p-1 rounded-2xl" style={{ background: "var(--surface-input)" }}>
           {([["number", "신청번호 조회"], ["contact", "이름 + 전화번호"]] as [Tab, string][]).map(([id, label]) => (
             <button key={id} onClick={() => switchTab(id)}
               className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all"
               style={{
                 background: tab === id ? "#2f80ed" : "transparent",
-                color:      tab === id ? "#ffffff" : "#6b7280",
+                color:      tab === id ? "var(--text-primary)" : "#6b7280",
               }}>
               {label}
             </button>
@@ -274,7 +274,7 @@ function LookupContent() {
               disabled={!appNoInput.trim() || loading}
               className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-semibold text-[15px] transition-all"
               style={{
-                background: appNoInput.trim() && !loading ? "#2f80ed" : "#252525",
+                background: appNoInput.trim() && !loading ? "#2f80ed" : "var(--surface-input)",
                 color:      appNoInput.trim() && !loading ? "#fff"    : "#4b5563",
               }}>
               {loading ? "조회 중..." : <><SearchIcon /><span>조회하기</span></>}
@@ -315,7 +315,7 @@ function LookupContent() {
               disabled={!nameInput.trim() || phoneInput.length < 12 || loading}
               className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-semibold text-[15px] transition-all"
               style={{
-                background: nameInput.trim() && phoneInput.length >= 12 && !loading ? "#2f80ed" : "#252525",
+                background: nameInput.trim() && phoneInput.length >= 12 && !loading ? "#2f80ed" : "var(--surface-input)",
                 color:      nameInput.trim() && phoneInput.length >= 12 && !loading ? "#fff"    : "#4b5563",
               }}>
               {loading ? "조회 중..." : <><SearchIcon /><span>조회하기</span></>}
@@ -337,11 +337,11 @@ function LookupContent() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-14 rounded-2xl gap-3"
-                style={{ background: "#252525", border: "1px solid #2f2f2f" }}>
+                style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}>
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-                  <circle cx="11" cy="11" r="7" stroke="#3a3a3a" strokeWidth="1.5" />
-                  <path d="M16.5 16.5L21 21" stroke="#3a3a3a" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M9 9l4 4M13 9l-4 4" stroke="#3a3a3a" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="11" cy="11" r="7" stroke="var(--text-dim)" strokeWidth="1.5" />
+                  <path d="M16.5 16.5L21 21" stroke="var(--text-dim)" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M9 9l4 4M13 9l-4 4" stroke="var(--text-dim)" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
                 <div className="text-center">
                   <p className="text-[14px] font-medium" style={{ color: "#383838" }}>
@@ -358,7 +358,7 @@ function LookupContent() {
 
         {/* 첫 화면 안내 */}
         {!searched && !loading && (
-          <div className="rounded-2xl p-4" style={{ background: "#252525", border: "1px solid #2f2f2f" }}>
+          <div className="rounded-2xl p-4" style={{ background: "var(--surface-input)", border: "1px solid #2f2f2f" }}>
             <div className="flex items-center gap-2 mb-2.5">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="9" stroke="#2f80ed" strokeWidth="1.6" />
@@ -374,7 +374,7 @@ function LookupContent() {
                 "동일 번호로 여러 건 신청한 경우 전체 내역이 표시됩니다.",
               ].map((t, i) => (
                 <li key={i} className="flex items-start gap-2 text-[12.5px] leading-relaxed" style={{ color: "#6b7280" }}>
-                  <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "#3a3a3a" }} />
+                  <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "var(--text-dim)" }} />
                   {t}
                 </li>
               ))}
@@ -383,7 +383,7 @@ function LookupContent() {
         )}
 
         <Link href="/" className="text-center text-[12.5px] font-medium py-2 transition-opacity active:opacity-70"
-          style={{ color: "#3a3a3a" }}>
+          style={{ color: "var(--text-dim)" }}>
           트레이너 둘러보기 →
         </Link>
       </div>

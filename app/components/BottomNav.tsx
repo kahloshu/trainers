@@ -8,9 +8,9 @@ function HomeIcon({ active }: { active: boolean }) {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path
         d="M3 12L12 3L21 12V20C21 20.5523 20.5523 21 20 21H15V16H9V21H4C3.44772 21 3 20.5523 3 20V12Z"
-        stroke={active ? "#2F6BFF" : "#5a5a5a"}
+        stroke={active ? "var(--accent)" : "var(--text-muted)"}
         strokeWidth="1.8"
-        fill={active ? "rgba(47,107,255,0.12)" : "none"}
+        fill={active ? "var(--accent-subtle-hi)" : "none"}
         strokeLinejoin="round"
       />
     </svg>
@@ -21,11 +21,11 @@ function SearchIcon({ active }: { active: boolean }) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="11" cy="11" r="7"
-        stroke={active ? "#2F6BFF" : "#5a5a5a"}
+        stroke={active ? "var(--accent)" : "var(--text-muted)"}
         strokeWidth="1.8"
-        fill={active ? "rgba(47,107,255,0.12)" : "none"} />
+        fill={active ? "var(--accent-subtle-hi)" : "none"} />
       <path d="M16.5 16.5L21 21"
-        stroke={active ? "#2F6BFF" : "#5a5a5a"} strokeWidth="1.8" strokeLinecap="round" />
+        stroke={active ? "var(--accent)" : "var(--text-muted)"} strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -34,11 +34,11 @@ function PersonIcon({ active }: { active: boolean }) {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
       <circle cx="12" cy="8" r="4"
-        stroke={active ? "#2F6BFF" : "#5a5a5a"}
+        stroke={active ? "var(--accent)" : "var(--text-muted)"}
         strokeWidth="1.8"
-        fill={active ? "rgba(47,107,255,0.12)" : "none"} />
+        fill={active ? "var(--accent-subtle-hi)" : "none"} />
       <path d="M4 20C4 17.2386 7.58172 15 12 15C16.4183 15 20 17.2386 20 20"
-        stroke={active ? "#2F6BFF" : "#5a5a5a"} strokeWidth="1.8" strokeLinecap="round" />
+        stroke={active ? "var(--accent)" : "var(--text-muted)"} strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -66,7 +66,7 @@ export default function BottomNav() {
               <Icon active={active} />
               <span
                 className="text-[10px] font-semibold tracking-[0.05em] uppercase transition-colors"
-                style={{ color: active ? "#2F6BFF" : "#5a5a5a" }}
+                style={{ color: active ? "var(--accent)" : "var(--text-muted)" }}
               >
                 {label}
               </span>

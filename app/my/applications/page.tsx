@@ -33,15 +33,15 @@ const STATUS_STYLE: Record<AppStatus, { bg: string; text: string; dot: string }>
   contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa" },
   scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c" },
   confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
-  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
-  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "var(--success)", dot: "#10b981" },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "var(--text-secondary)", dot: "var(--text-muted)" },
 };
 
 /* ── 아이콘 ── */
 function ChevronRight() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18" stroke="#3a3a3a" strokeWidth="1.6"
+      <path d="M9 6L15 12L9 18" stroke="var(--text-dim)" strokeWidth="1.6"
         strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -49,10 +49,10 @@ function ChevronRight() {
 function ClipboardEmpty() {
   return (
     <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-      <rect x="5" y="4" width="14" height="17" rx="2" stroke="#131313" strokeWidth="1.5" />
+      <rect x="5" y="4" width="14" height="17" rx="2" stroke="var(--bg-2)" strokeWidth="1.5" />
       <path d="M9 4V3C9 2.45 9.45 2 10 2H14C14.55 2 15 2.45 15 3V4"
-        stroke="#131313" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M9 11H15M9 15H13" stroke="#131313" strokeWidth="1.5" strokeLinecap="round" />
+        stroke="var(--bg-2)" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M9 11H15M9 15H13" stroke="var(--bg-2)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -60,7 +60,7 @@ function StarIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-        fill="#c9a96e" />
+        fill="var(--gold)" />
     </svg>
   );
 }
@@ -74,15 +74,15 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
   return (
     <div
       className="rounded-2xl overflow-hidden"
-      style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}
+      style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}
     >
       {/* 상단: 트레이너 + 상태 */}
       <div className="flex items-center justify-between px-4 pt-4 pb-3">
         <div>
-          <p className="text-[13px] font-semibold" style={{ color: "#ffffff" }}>
+          <p className="text-[13px] font-semibold" style={{ color: "var(--text-primary)" }}>
             {app.trainerName} 트레이너
           </p>
-          <p className="text-[11.5px] mt-0.5" style={{ color: "#5a5a5a" }}>
+          <p className="text-[11.5px] mt-0.5" style={{ color: "var(--text-muted)" }}>
             {app.purposes.join(" · ")}
           </p>
         </div>
@@ -95,7 +95,7 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
         </span>
       </div>
 
-      <div className="h-px mx-4" style={{ background: "rgba(255,255,255,0.04)" }} />
+      <div className="h-px mx-4" style={{ background: "var(--border-subtle)" }} />
 
       {/* 희망 일정 */}
       <div className="px-4 py-3 flex flex-wrap gap-1.5">
@@ -103,7 +103,7 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
           <span
             key={d}
             className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-            style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}
+            style={{ background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}
           >
             {DAY_LABEL[d] ?? d}
           </span>
@@ -112,7 +112,7 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
           <span
             key={t}
             className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-            style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}
+            style={{ background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}
           >
             {TIME_LABEL[t] ?? t}
           </span>
@@ -123,32 +123,32 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
       {app.adminNote && (
         <div
           className="mx-4 mb-3 px-3 py-2.5 rounded-xl"
-          style={{ background: "rgba(47,107,255,0.06)", border: "1px solid rgba(47,107,255,0.12)" }}
+          style={{ background: "rgba(47,107,255,0.06)", border: "1px solid var(--accent-subtle-hi)" }}
         >
-          <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#2F6BFF" }}>관리자 메모</p>
-          <p className="text-[12px] leading-relaxed" style={{ color: "#a0a0a0" }}>{app.adminNote}</p>
+          <p className="text-[11px] font-semibold mb-0.5" style={{ color: "var(--accent)" }}>관리자 메모</p>
+          <p className="text-[12px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>{app.adminNote}</p>
         </div>
       )}
 
       {/* 세션 진행 현황 (confirmed/completed) */}
       {(app.status === "confirmed" || app.status === "completed") && (
         <div className="mx-4 mb-3 p-3 rounded-xl flex items-center gap-3"
-          style={{ background: "#0e0e0e", border: "1px solid rgba(255,255,255,0.05)" }}>
-          <p className="text-[11px] font-semibold flex-shrink-0" style={{ color: "#3a3a3a" }}>운동 진행</p>
+          style={{ background: "var(--bg)", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <p className="text-[11px] font-semibold flex-shrink-0" style={{ color: "var(--text-dim)" }}>운동 진행</p>
           <div className="flex items-center gap-2 flex-1">
             {([1, 2] as const).map((n) => {
               const done = n === 1 ? !!app.session1CompletedAt : !!app.session2CompletedAt;
               return (
                 <div key={n} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg flex-1 justify-center"
-                  style={{ background: done ? "rgba(52,211,153,0.08)" : "#1a1a1a", border: `1px solid ${done ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.05)"}` }}>
+                  style={{ background: done ? "rgba(52,211,153,0.08)" : "var(--surface)", border: `1px solid ${done ? "rgba(52,211,153,0.2)" : "rgba(255,255,255,0.05)"}` }}>
                   {done ? (
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 13L9 17L19 7" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M5 13L9 17L19 7" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
                     <div className="w-3 h-3 rounded-full border" style={{ borderColor: "#2a2a2a" }} />
                   )}
-                  <span className="text-[11.5px] font-semibold" style={{ color: done ? "#34d399" : "#3a3a3a" }}>
+                  <span className="text-[11.5px] font-semibold" style={{ color: done ? "var(--success)" : "var(--text-dim)" }}>
                     {n}차 {done ? "완료" : "미완료"}
                   </span>
                 </div>
@@ -160,7 +160,7 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
 
       {/* 하단: 시간 + 버튼 */}
       <div className="flex items-center justify-between px-4 pb-3.5">
-        <p className="text-[11px]" style={{ color: "#3a3a3a" }}>
+        <p className="text-[11px]" style={{ color: "var(--text-dim)" }}>
           {timeAgoLabel(app.createdMinutesAgo)} 신청
         </p>
         {canWriteReview ? (
@@ -169,7 +169,7 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
             className="flex items-center gap-1 text-[12px] font-semibold px-3 py-1.5 rounded-xl transition-opacity active:opacity-70"
             style={{
               background: hasReview ? "rgba(52,211,153,0.10)" : "rgba(201,169,110,0.12)",
-              color:      hasReview ? "#34d399"               : "#c9a96e",
+              color:      hasReview ? "var(--success)"               : "var(--gold)",
             }}
           >
             <StarIcon />
@@ -179,7 +179,7 @@ function AppCard({ app, reviewedTrainerIds }: { app: Application; reviewedTraine
           <Link
             href={`/trainer/${app.trainerId}`}
             className="flex items-center gap-0.5 text-[12px] font-medium transition-opacity active:opacity-70"
-            style={{ color: "#3a3a3a" }}
+            style={{ color: "var(--text-dim)" }}
           >
             트레이너 보기 <ChevronRight />
           </Link>
@@ -202,11 +202,11 @@ function EmptyState({ tab }: { tab: TabId }) {
     <div className="flex flex-col items-center justify-center py-20 gap-4">
       <ClipboardEmpty />
       <div className="text-center">
-        <p className="text-[14px] font-medium mb-1" style={{ color: "rgba(255,255,255,0.06)" }}>
+        <p className="text-[14px] font-medium mb-1" style={{ color: "var(--border)" }}>
           {msg[tab]}
         </p>
         {tab === "all" && (
-          <p className="text-[12.5px]" style={{ color: "#131313" }}>
+          <p className="text-[12.5px]" style={{ color: "var(--bg-2)" }}>
             트레이너를 찾아 OT를 신청해보세요.
           </p>
         )}
@@ -215,7 +215,7 @@ function EmptyState({ tab }: { tab: TabId }) {
         <Link
           href="/"
           className="mt-1 px-5 py-2.5 rounded-2xl text-[13px] font-semibold transition-opacity active:opacity-80"
-          style={{ background: "linear-gradient(135deg, #2F6BFF 0%, #1a55d4 100%)", color: "#fff" }}
+          style={{ background: "linear-gradient(135deg, var(--accent) 0%, #1a55d4 100%)", color: "#fff" }}
         >
           트레이너 찾기
         </Link>
@@ -255,7 +255,7 @@ export default function MyApplicationsPage() {
   };
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh" style={{ background: "var(--bg)" }}>
 
       {/* ── 헤더 ── */}
       <header
@@ -263,13 +263,13 @@ export default function MyApplicationsPage() {
         style={{
           background: "rgba(14,14,14,0.92)",
           backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.04)",
+          borderBottom: "1px solid var(--border-subtle)",
         }}
       >
         <div className="px-4 pt-5 pb-3">
           <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1"
-            style={{ color: "#2F6BFF" }}>MY</p>
-          <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>
+            style={{ color: "var(--accent)" }}>MY</p>
+          <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
             내 신청 내역
           </h1>
         </div>
@@ -285,17 +285,17 @@ export default function MyApplicationsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-150"
                 style={{
-                  background: isActive ? "#1a55d4" : "#1a1a1a",
-                  color:      isActive ? "#fff"    : "#5a5a5a",
-                  border:     `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
+                  background: isActive ? "#1a55d4" : "var(--surface)",
+                  color:      isActive ? "#fff"    : "var(--text-muted)",
+                  border:     `1.5px solid ${isActive ? "#1a55d4" : "var(--border)"}`,
                 }}
               >
                 {tab.label}
                 <span
                   className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
                   style={{
-                    background: isActive ? "rgba(255,255,255,0.2)" : "#131313",
-                    color:      isActive ? "#fff" : "#5a5a5a",
+                    background: isActive ? "rgba(255,255,255,0.2)" : "var(--bg-2)",
+                    color:      isActive ? "#fff" : "var(--text-muted)",
                   }}
                 >
                   {count}
@@ -313,7 +313,7 @@ export default function MyApplicationsPage() {
             {filtered.map((app: Application) => (
               <AppCard key={app.id} app={app} reviewedTrainerIds={reviewedTrainerIds} />
             ))}
-            <p className="text-center text-[12px] py-4" style={{ color: "#131313" }}>
+            <p className="text-center text-[12px] py-4" style={{ color: "var(--bg-2)" }}>
               — 모두 확인했습니다 —
             </p>
           </div>

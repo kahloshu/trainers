@@ -29,10 +29,10 @@ export default function TrainerCard({ trainer }: Props) {
   return (
     <div
       className="mx-4 rounded-2xl overflow-hidden"
-      style={{ background: "#1a1a1a" }}
+      style={{ background: "var(--surface)" }}
     >
       {/* 프로필 이미지 */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden">
+      <Link href={`/trainer/${trainer.id}`} className="relative block w-full aspect-[4/3] overflow-hidden">
         {trainer.profileImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={trainer.profileImage} alt={trainer.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
@@ -45,10 +45,10 @@ export default function TrainerCard({ trainer }: Props) {
           className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full px-3 py-1.5"
           style={{ background: "rgba(14,14,14,0.75)", backdropFilter: "blur(24px)" }}
         >
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="#c9a96e">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--gold)">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
           </svg>
-          <span className="text-[12px] font-semibold" style={{ color: "#c9a96e" }}>
+          <span className="text-[12px] font-semibold" style={{ color: "var(--gold)" }}>
             {trainer.ratingAvg.toFixed(1)}
           </span>
           <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
@@ -82,24 +82,24 @@ export default function TrainerCard({ trainer }: Props) {
             {trainer.careerYears}yr
           </span>
         </div>
-      </div>
+      </Link>
 
       {/* 정보 영역 */}
-      <div className="px-4 pt-4 pb-4" style={{ background: "#1a1a1a" }}>
+      <div className="px-4 pt-4 pb-4" style={{ background: "var(--surface)" }}>
         {/* 전문분야 오버라인 */}
-        <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-1.5" style={{ color: "#2F6BFF" }}>
+        <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-1.5" style={{ color: "var(--accent)" }}>
           {trainer.specialty}
         </p>
 
         {/* 이름 */}
-        <h3 className="text-[18px] font-bold tracking-tight mb-3" style={{ color: "#ffffff" }}>
+        <h3 className="text-[18px] font-bold tracking-tight mb-3" style={{ color: "var(--text-primary)" }}>
           {trainer.name} 트레이너
         </h3>
 
         {/* 한줄 소개 */}
         <p
           className="text-[13px] leading-relaxed mb-3 pl-3 italic"
-          style={{ color: "#a0a0a0", borderLeft: "2px solid rgba(47,107,255,0.3)" }}
+          style={{ color: "var(--text-secondary)", borderLeft: "2px solid rgba(47,107,255,0.3)" }}
         >
           &ldquo;{trainer.shortBio}&rdquo;
         </p>
@@ -110,7 +110,7 @@ export default function TrainerCard({ trainer }: Props) {
             <span
               key={tag}
               className="text-[11px] font-medium px-2.5 py-1 rounded-full tracking-[0.03em]"
-              style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF" }}
+              style={{ background: "var(--accent-subtle)", color: "var(--accent)" }}
             >
               {tag}
             </span>
@@ -126,7 +126,7 @@ export default function TrainerCard({ trainer }: Props) {
         <Link
           href={`/trainer/${trainer.id}`}
           className="flex items-center justify-center w-full mt-2.5 py-2 text-[13px] font-medium transition-colors active:opacity-70"
-          style={{ color: "#5a5a5a" }}
+          style={{ color: "var(--text-muted)" }}
         >
           트레이너 자세히 보기
         </Link>

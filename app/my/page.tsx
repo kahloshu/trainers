@@ -14,8 +14,8 @@ const STATUS_COLOR: Record<AppStatus, { text: string; bg: string }> = {
   contact_scheduled: { text: "#a78bfa", bg: "rgba(167,139,250,0.10)" },
   scheduling:        { text: "#fb923c", bg: "rgba(251,146,60,0.10)"  },
   confirmed:         { text: "#fbbf24", bg: "rgba(234,179,8,0.10)"   },
-  completed:         { text: "#34d399", bg: "rgba(52,211,153,0.10)"  },
-  cancelled:         { text: "#a0a0a0", bg: "rgba(90,90,90,0.10)"    },
+  completed:         { text: "var(--success)", bg: "rgba(52,211,153,0.10)"  },
+  cancelled:         { text: "var(--text-secondary)", bg: "rgba(90,90,90,0.10)"    },
 };
 const STATUS_LABEL: Record<AppStatus, string> = {
   pending:           "대기 중",
@@ -38,7 +38,7 @@ function formatPhone(raw: string) {
 function ChevronRight() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-      <path d="M9 6L15 12L9 18" stroke="#3a3a3a" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 6L15 12L9 18" stroke="var(--text-dim)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -149,17 +149,17 @@ export default function MyPage() {
   }
 
   return (
-    <div className="min-h-dvh" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh" style={{ background: "var(--bg)" }}>
       <header className="sticky top-0 z-40 px-4"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--border-subtle)" }}>
         <div className="pt-5 pb-4 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>MY</p>
-            <h1 className="text-[22px] font-bold tracking-tight" style={{ color: "#ffffff" }}>마이페이지</h1>
+            <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "var(--accent)" }}>MY</p>
+            <h1 className="text-[22px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>마이페이지</h1>
           </div>
           {step === "done" && (
             <button onClick={handleLogout} className="text-[12px] px-3 py-1.5 rounded-xl"
-              style={{ background: "#1a1a1a", color: "#5a5a5a", border: "1px solid rgba(255,255,255,0.06)" }}>
+              style={{ background: "var(--surface)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>
               전화번호 변경
             </button>
           )}
@@ -172,14 +172,14 @@ export default function MyPage() {
         {step === "phone" && (
           <div className="px-4 pt-10 flex flex-col items-center">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-              style={{ background: "rgba(47,107,255,0.10)" }}>
+              style={{ background: "var(--accent-subtle)" }}>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-                  stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h2 className="text-[18px] font-bold mb-1.5" style={{ color: "#ffffff" }}>신청 내역 확인</h2>
-            <p className="text-[13px] text-center mb-8 leading-relaxed" style={{ color: "#5a5a5a" }}>
+            <h2 className="text-[18px] font-bold mb-1.5" style={{ color: "var(--text-primary)" }}>신청 내역 확인</h2>
+            <p className="text-[13px] text-center mb-8 leading-relaxed" style={{ color: "var(--text-muted)" }}>
               OT 신청 시 입력한 전화번호로<br />인증 후 내 신청 내역을 확인할 수 있습니다.
             </p>
             <form onSubmit={handleSendOtp} className="w-full flex flex-col gap-3">
@@ -189,12 +189,12 @@ export default function MyPage() {
                 onChange={(e) => { setPhoneInput(formatPhone(e.target.value)); setError(""); }}
                 placeholder="010-0000-0000"
                 className="w-full px-4 py-4 rounded-2xl text-[15px] outline-none text-center tracking-widest"
-                style={{ background: "#1a1a1a", border: `1.5px solid ${error ? "#f87171" : "rgba(255,255,255,0.08)"}`, color: "#ffffff" }}
+                style={{ background: "var(--surface)", border: `1.5px solid ${error ? "var(--danger)" : "rgba(255,255,255,0.08)"}`, color: "var(--text-primary)" }}
               />
-              {error && <p className="text-[12.5px] text-center" style={{ color: "#f87171" }}>{error}</p>}
+              {error && <p className="text-[12.5px] text-center" style={{ color: "var(--danger)" }}>{error}</p>}
               <button type="submit" disabled={loading}
                 className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg,#2F6BFF,#1a55d4)", color: "#fff" }}>
+                style={{ background: "linear-gradient(135deg,var(--accent),#1a55d4)", color: "#fff" }}>
                 {loading ? "전송 중…" : "인증코드 받기"}
               </button>
             </form>
@@ -205,14 +205,14 @@ export default function MyPage() {
         {step === "otp" && (
           <div className="px-4 pt-10 flex flex-col items-center">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
-              style={{ background: "rgba(47,107,255,0.10)" }}>
+              style={{ background: "var(--accent-subtle)" }}>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                <rect x="5" y="11" width="14" height="10" rx="2" stroke="#2F6BFF" strokeWidth="1.6" />
-                <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#2F6BFF" strokeWidth="1.6" strokeLinecap="round" />
+                <rect x="5" y="11" width="14" height="10" rx="2" stroke="var(--accent)" strokeWidth="1.6" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="var(--accent)" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
             </div>
-            <h2 className="text-[18px] font-bold mb-1.5" style={{ color: "#ffffff" }}>인증코드 입력</h2>
-            <p className="text-[13px] text-center mb-8 leading-relaxed" style={{ color: "#5a5a5a" }}>
+            <h2 className="text-[18px] font-bold mb-1.5" style={{ color: "var(--text-primary)" }}>인증코드 입력</h2>
+            <p className="text-[13px] text-center mb-8 leading-relaxed" style={{ color: "var(--text-muted)" }}>
               <span style={{ color: "#9ca3af" }}>{phoneInput}</span>으로<br />발송된 6자리 코드를 입력해 주세요.
             </p>
 
@@ -228,9 +228,9 @@ export default function MyPage() {
                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
                   className="w-11 h-14 text-center text-[20px] font-bold rounded-xl outline-none"
                   style={{
-                    background: "#1a1a1a",
-                    border: `1.5px solid ${error ? "#f87171" : d ? "#2F6BFF" : "rgba(255,255,255,0.08)"}`,
-                    color: "#ffffff",
+                    background: "var(--surface)",
+                    border: `1.5px solid ${error ? "var(--danger)" : d ? "var(--accent)" : "rgba(255,255,255,0.08)"}`,
+                    color: "var(--text-primary)",
                   }}
                 />
               ))}
@@ -243,20 +243,20 @@ export default function MyPage() {
                 <p className="text-[22px] font-bold tracking-[0.3em]" style={{ color: "#fbbf24" }}>{devCode}</p>
               </div>
             )}
-            {error && <p className="text-[12.5px] text-center mb-3" style={{ color: "#f87171" }}>{error}</p>}
+            {error && <p className="text-[12.5px] text-center mb-3" style={{ color: "var(--danger)" }}>{error}</p>}
 
             <button
               onClick={() => handleVerifyOtp()}
               disabled={loading || otpDigits.join("").length < 6}
               className="w-full py-4 rounded-2xl text-[15px] font-semibold disabled:opacity-40 mb-4"
-              style={{ background: "linear-gradient(135deg,#2F6BFF,#1a55d4)", color: "#fff" }}
+              style={{ background: "linear-gradient(135deg,var(--accent),#1a55d4)", color: "#fff" }}
             >
               {loading ? "확인 중…" : "인증하기"}
             </button>
 
             <div className="flex items-center gap-3 mt-2">
               <button onClick={() => { setStep("phone"); setError(""); }}
-                className="text-[12.5px]" style={{ color: "#5a5a5a" }}>
+                className="text-[12.5px]" style={{ color: "var(--text-muted)" }}>
                 번호 변경
               </button>
               <span style={{ color: "#2a2a2a" }}>|</span>
@@ -264,7 +264,7 @@ export default function MyPage() {
                 onClick={() => { setStep("phone"); setTimeout(() => { document.querySelector("form")?.requestSubmit(); }, 50); }}
                 disabled={resendCooldown > 0}
                 className="text-[12.5px] disabled:opacity-40"
-                style={{ color: resendCooldown > 0 ? "#5a5a5a" : "#2F6BFF" }}>
+                style={{ color: resendCooldown > 0 ? "var(--text-muted)" : "var(--accent)" }}>
                 {resendCooldown > 0 ? `재전송 (${resendCooldown}s)` : "재전송"}
               </button>
             </div>
@@ -275,14 +275,14 @@ export default function MyPage() {
         {step === "done" && (
           <>
             <div className="px-4 pt-5">
-              <p className="text-[11px] mb-1" style={{ color: "#3a3a3a" }}>{phone}</p>
-              <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>신청 현황</p>
+              <p className="text-[11px] mb-1" style={{ color: "var(--text-dim)" }}>{phone}</p>
+              <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>신청 현황</p>
               <Link href="/my/applications"
                 className="block rounded-2xl p-4 transition-opacity active:opacity-70"
                 style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[13px] font-semibold" style={{ color: "#ffffff" }}>전체 신청</span>
-                  <span className="text-[24px] font-bold" style={{ color: "#2F6BFF" }}>{counts.total}</span>
+                  <span className="text-[13px] font-semibold" style={{ color: "var(--text-primary)" }}>전체 신청</span>
+                  <span className="text-[24px] font-bold" style={{ color: "var(--accent)" }}>{counts.total}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {(["pending","confirmed","completed"] as AppStatus[]).map((s) => (
@@ -301,7 +301,7 @@ export default function MyPage() {
             </div>
 
             <div className="px-4 mt-6">
-              <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>메뉴</p>
+              <p className="text-[10.5px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>메뉴</p>
               <div className="rounded-2xl overflow-hidden" style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.05)" }}>
                 {[
                   { href: "/my/applications", label: "내 신청 내역", sub: "OT 신청 현황 확인" },
@@ -310,10 +310,10 @@ export default function MyPage() {
                 ].map((item, i, arr) => (
                   <Link key={item.href} href={item.href}
                     className="flex items-center gap-3.5 px-4 py-4 transition-opacity active:opacity-70"
-                    style={{ borderBottom: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                    style={{ borderBottom: i < arr.length - 1 ? "1px solid var(--border-subtle)" : "none" }}>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-semibold" style={{ color: "#ffffff" }}>{item.label}</p>
-                      <p className="text-[12px] mt-0.5" style={{ color: "#5a5a5a" }}>{item.sub}</p>
+                      <p className="text-[14px] font-semibold" style={{ color: "var(--text-primary)" }}>{item.label}</p>
+                      <p className="text-[12px] mt-0.5" style={{ color: "var(--text-muted)" }}>{item.sub}</p>
                     </div>
                     <ChevronRight />
                   </Link>

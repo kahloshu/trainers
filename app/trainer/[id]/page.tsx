@@ -12,7 +12,7 @@ import GallerySlider from "@/app/components/GallerySlider";
 function StarFilled({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#c9a96e" />
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="var(--gold)" />
     </svg>
   );
 }
@@ -72,9 +72,9 @@ function InstagramIcon() {
 function InitialAvatar({ name }: { name: string }) {
   const gradients = [
     "linear-gradient(135deg, #0f1f3d 0%, #1a4a8a 50%, #2f80ed 100%)",
-    "linear-gradient(135deg, #0f2d1a 0%, #1a6a3a 50%, #34d399 100%)",
+    "linear-gradient(135deg, #0f2d1a 0%, #1a6a3a 50%, var(--success) 100%)",
     "linear-gradient(135deg, #1f0f3d 0%, #4a1a8a 50%, #a78bfa 100%)",
-    "linear-gradient(135deg, #3d0f0f 0%, #8a1a1a 50%, #f87171 100%)",
+    "linear-gradient(135deg, #3d0f0f 0%, #8a1a1a 50%, var(--danger) 100%)",
     "linear-gradient(135deg, #2d2d0f 0%, #6a6a1a 50%, #fbbf24 100%)",
     "linear-gradient(135deg, #0f2d2d 0%, #1a6a6a 50%, #22d3ee 100%)",
   ];
@@ -141,7 +141,7 @@ function ReviewCard({ review }: { review: Review }) {
 function LoadingSkeleton() {
   return (
     <div className="min-h-dvh animate-pulse" style={{ background: "#1e1e1e" }}>
-      <div className="w-full" style={{ aspectRatio: "1/1", maxHeight: 360, background: "#252525" }} />
+      <div className="w-full" style={{ aspectRatio: "1/1", maxHeight: 360, background: "var(--surface-input)" }} />
       <div className="px-4 pt-6 flex flex-col gap-4">
         <div className="h-4 rounded-full w-1/3" style={{ background: "#2a2a2a" }} />
         <div className="h-3 rounded-full w-2/3" style={{ background: "#2a2a2a" }} />
@@ -211,7 +211,7 @@ export default function TrainerDetailPage({
           </h1>
           <div className="flex items-center gap-2 mt-1.5">
             <Stars rating={trainer.ratingAvg} size={13} />
-            <span className="text-[13px] font-semibold" style={{ color: "#c9a96e" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "var(--gold)" }}>
               {trainer.ratingAvg.toFixed(1)}
             </span>
             <span style={{ color: "#6b7280" }}>·</span>
@@ -254,7 +254,7 @@ export default function TrainerDetailPage({
               >
                 <KakaoIcon />
                 <div>
-                  <p className="text-[10.5px] font-semibold tracking-[0.12em] uppercase mb-0.5" style={{ color: "#5a5a5a" }}>카카오톡</p>
+                  <p className="text-[10.5px] font-semibold tracking-[0.12em] uppercase mb-0.5" style={{ color: "var(--text-muted)" }}>카카오톡</p>
                   <p className="text-[13px]" style={{ color: "#d1d5db" }}>{trainer.kakaoId}</p>
                 </div>
               </a>
@@ -268,7 +268,7 @@ export default function TrainerDetailPage({
               >
                 <InstagramIcon />
                 <div>
-                  <p className="text-[10.5px] font-semibold tracking-[0.12em] uppercase mb-0.5" style={{ color: "#5a5a5a" }}>인스타그램</p>
+                  <p className="text-[10.5px] font-semibold tracking-[0.12em] uppercase mb-0.5" style={{ color: "var(--text-muted)" }}>인스타그램</p>
                   <p className="text-[13px]" style={{ color: "#d1d5db" }}>{trainer.instagramId}</p>
                 </div>
               </a>
@@ -352,6 +352,16 @@ export default function TrainerDetailPage({
           )}
         </div>
 
+        {/* 커리큘럼 */}
+        {trainer.curriculum && (
+          <div className="section-block">
+            <SectionLabel>커리큘럼</SectionLabel>
+            <p className="text-[13.5px] leading-[1.75] whitespace-pre-line" style={{ color: "#c9cacc" }}>
+              {trainer.curriculum}
+            </p>
+          </div>
+        )}
+
         {/* 후기 */}
         <div className="section-block">
           <div className="flex items-center justify-between mb-3">
@@ -360,7 +370,7 @@ export default function TrainerDetailPage({
             </div>
             <div className="flex items-center gap-1.5 -mt-3">
               <StarFilled size={13} />
-              <span className="text-[13px] font-semibold" style={{ color: "#c9a96e" }}>
+              <span className="text-[13px] font-semibold" style={{ color: "var(--gold)" }}>
                 {trainer.ratingAvg.toFixed(1)}
               </span>
               <span className="text-[12px]" style={{ color: "#6b7280" }}>

@@ -50,6 +50,7 @@ export default function DashboardTrainerEditPage({
   const [categories, setCategories]     = useState<Category[]>([]);
   const [kakaoId, setKakaoId]           = useState("");
   const [instagramId, setInstagramId]   = useState("");
+  const [curriculum, setCurriculum]     = useState("");
   const [saving, setSaving]             = useState(false);
   const [saved, setSaved]               = useState(false);
   const [error, setError]               = useState("");
@@ -71,6 +72,7 @@ export default function DashboardTrainerEditPage({
       setProfileImage(found.profileImage);
       setKakaoId(found.kakaoId ?? "");
       setInstagramId(found.instagramId ?? "");
+      setCurriculum(found.curriculum ?? "");
       setCareer([...(found.career ?? [])]);
       setCertifications([...found.certifications]);
       setTags([...found.tags]);
@@ -128,6 +130,7 @@ export default function DashboardTrainerEditPage({
       careerYears:   Number(careerYears) || 1,
       shortBio:      shortBio.trim(),
       introduction:  introduction.trim(),
+      curriculum:    curriculum.trim(),
       branch,
       profileImage:  uploadedProfileUrl ?? profileImage,
       kakaoId,
@@ -261,6 +264,11 @@ export default function DashboardTrainerEditPage({
                 <Label>상세 소개</Label>
                 <Textarea value={introduction} onChange={setIntroduction} rows={5}
                   placeholder="트레이너 상세 소개글을 입력하세요." />
+              </div>
+              <div>
+                <Label>커리큘럼</Label>
+                <Textarea value={curriculum} onChange={setCurriculum} rows={6}
+                  placeholder={"예:\n1주차 - 체력 측정 및 목표 설정\n2주차 - 기초 근력 운동\n3주차 - 유산소 + 근력 복합 훈련\n..."} />
               </div>
             </div>
           </Card>

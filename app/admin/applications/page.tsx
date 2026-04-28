@@ -15,8 +15,8 @@ const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string }>
   contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa" },
   scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c" },
   confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308" },
-  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981" },
-  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a" },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "var(--success)", dot: "#10b981" },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "var(--text-secondary)", dot: "var(--text-muted)" },
 };
 
 const TABS = [
@@ -51,21 +51,21 @@ function AppCard({ app, onStatusChange }: {
   const showActions = isActive || isConfirmed;
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
       <Link href={`/admin/applications/${app.id}`}
         className="flex flex-col gap-3 p-4 transition-opacity active:opacity-70">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-[14.5px] font-semibold" style={{ color: "#ffffff" }}>
+            <p className="text-[14.5px] font-semibold" style={{ color: "var(--text-primary)" }}>
               {app.applicantName}
             </p>
-            <p className="text-[12px] mt-0.5" style={{ color: "#3a3a3a" }}>
+            <p className="text-[12px] mt-0.5" style={{ color: "var(--text-dim)" }}>
               {maskPhone(app.applicantPhone)}
             </p>
           </div>
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
             <StatusBadge status={app.status} />
-            <span className="text-[11px]" style={{ color: "#3a3a3a" }}>
+            <span className="text-[11px]" style={{ color: "var(--text-dim)" }}>
               {timeAgoLabel(app.createdMinutesAgo)}
             </span>
           </div>
@@ -74,20 +74,20 @@ function AppCard({ app, onStatusChange }: {
           <div className="flex flex-wrap gap-1.5">
             {app.preferredDays.map((d) => (
               <span key={d} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-                style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+                style={{ background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
                 {DAY_LABEL[d] ?? d}
               </span>
             ))}
             {app.preferredTimes.map((t) => (
               <span key={t} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-                style={{ background: "#0e0e0e", color: "#a0a0a0", border: "1px solid rgba(255,255,255,0.06)" }}>
+                style={{ background: "var(--bg)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
                 {TIME_LABEL[t] ?? t}
               </span>
             ))}
           </div>
         )}
         {app.userMessage && (
-          <p className="text-[12px] leading-snug line-clamp-2 italic" style={{ color: "#5a5a5a" }}>
+          <p className="text-[12px] leading-snug line-clamp-2 italic" style={{ color: "var(--text-muted)" }}>
             &ldquo;{app.userMessage}&rdquo;
           </p>
         )}
@@ -95,7 +95,7 @@ function AppCard({ app, onStatusChange }: {
           <div className="flex flex-wrap gap-1">
             {app.purposes.map((p) => (
               <span key={p} className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-                style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
+                style={{ background: "var(--accent-glow)", color: "var(--accent)" }}>
                 {p}
               </span>
             ))}
@@ -104,13 +104,13 @@ function AppCard({ app, onStatusChange }: {
       </Link>
 
       {showActions && (
-        <div className="flex gap-2 px-3 pb-3" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div className="flex gap-2 px-3 pb-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <div className="pt-2 flex gap-2 w-full">
             {isActive && (
               <button
                 onClick={() => onStatusChange(app.id, "confirmed")}
                 className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold"
-                style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                style={{ background: "rgba(52,211,153,0.12)", color: "var(--success)", border: "1px solid rgba(52,211,153,0.2)" }}>
                 ✓ 확정
               </button>
             )}
@@ -118,14 +118,14 @@ function AppCard({ app, onStatusChange }: {
               <button
                 onClick={() => onStatusChange(app.id, "completed")}
                 className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold"
-                style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                style={{ background: "rgba(52,211,153,0.12)", color: "var(--success)", border: "1px solid rgba(52,211,153,0.2)" }}>
                 ✓ 완료
               </button>
             )}
             <button
               onClick={() => onStatusChange(app.id, "cancelled")}
               className="flex-1 py-2 rounded-xl text-[12.5px] font-semibold"
-              style={{ background: "rgba(248,113,113,0.08)", color: "#f87171", border: "1px solid rgba(248,113,113,0.15)" }}>
+              style={{ background: "rgba(248,113,113,0.08)", color: "var(--danger)", border: "1px solid rgba(248,113,113,0.15)" }}>
               ✗ 취소
             </button>
           </div>
@@ -175,12 +175,12 @@ export default function TrainerApplicationsPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-24" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh pb-24" style={{ background: "var(--bg)" }}>
       <header className="sticky top-0 z-40"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--border-subtle)" }}>
         <div className="px-4 pt-5 pb-3">
-          <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "#2F6BFF" }}>MY</p>
-          <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "#ffffff" }}>내 신청 목록</h1>
+          <p className="text-[10px] font-semibold tracking-[0.22em] uppercase mb-1" style={{ color: "var(--accent)" }}>MY</p>
+          <h1 className="text-[20px] font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>내 신청 목록</h1>
         </div>
         <div className="flex gap-1.5 overflow-x-auto scrollbar-hide px-4 pb-3">
           {TABS.map((tab) => {
@@ -189,15 +189,15 @@ export default function TrainerApplicationsPage() {
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-medium transition-all duration-150"
                 style={{
-                  background: isActive ? "#1a55d4" : "#1a1a1a",
-                  color:      isActive ? "#fff"    : "#5a5a5a",
-                  border:     `1.5px solid ${isActive ? "#1a55d4" : "rgba(255,255,255,0.06)"}`,
+                  background: isActive ? "#1a55d4" : "var(--surface)",
+                  color:      isActive ? "#fff"    : "var(--text-muted)",
+                  border:     `1.5px solid ${isActive ? "#1a55d4" : "var(--border)"}`,
                 }}>
                 {tab.label}
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
                   style={{
-                    background: isActive ? "rgba(255,255,255,0.2)" : "#131313",
-                    color:      isActive ? "#fff" : "#5a5a5a",
+                    background: isActive ? "rgba(255,255,255,0.2)" : "var(--bg-2)",
+                    color:      isActive ? "#fff" : "var(--text-muted)",
                   }}>
                   {counts[tab.id]}
                 </span>
@@ -211,7 +211,7 @@ export default function TrainerApplicationsPage() {
         {loading ? (
           <div className="flex flex-col gap-3">
             {[1,2,3].map((i) => (
-              <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "#1a1a1a" }} />
+              <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "var(--surface)" }} />
             ))}
           </div>
         ) : filtered.length > 0 ? (
@@ -219,7 +219,7 @@ export default function TrainerApplicationsPage() {
             {filtered.map((app) => (
               <AppCard key={app.id} app={app} onStatusChange={handleStatusChange} />
             ))}
-            <p className="text-center text-[12px] py-4" style={{ color: "#131313" }}>
+            <p className="text-center text-[12px] py-4" style={{ color: "var(--bg-2)" }}>
               — 모두 확인했습니다 —
             </p>
           </div>

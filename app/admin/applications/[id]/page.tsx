@@ -17,16 +17,16 @@ const STATUS_COLOR: Record<AppStatus, { bg: string; text: string; dot: string; b
   contact_scheduled: { bg: "rgba(167,139,250,0.10)", text: "#a78bfa", dot: "#a78bfa", border: "rgba(167,139,250,0.2)" },
   scheduling:        { bg: "rgba(251,146,60,0.10)",  text: "#fb923c", dot: "#fb923c", border: "rgba(251,146,60,0.2)"  },
   confirmed:         { bg: "rgba(234,179,8,0.10)",   text: "#fbbf24", dot: "#eab308", border: "rgba(234,179,8,0.2)"   },
-  completed:         { bg: "rgba(52,211,153,0.10)",  text: "#34d399", dot: "#10b981", border: "rgba(52,211,153,0.2)"  },
-  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "#a0a0a0", dot: "#5a5a5a", border: "rgba(90,90,90,0.2)"    },
+  completed:         { bg: "rgba(52,211,153,0.10)",  text: "var(--success)", dot: "#10b981", border: "rgba(52,211,153,0.2)"  },
+  cancelled:         { bg: "rgba(90,90,90,0.10)",    text: "var(--text-secondary)", dot: "var(--text-muted)", border: "rgba(90,90,90,0.2)"    },
 };
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4 py-3"
-      style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-      <span className="text-[12.5px] flex-shrink-0" style={{ color: "#5a5a5a" }}>{label}</span>
-      <span className="text-[13px] font-medium text-right leading-snug" style={{ color: "#a0a0a0" }}>{value}</span>
+      style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+      <span className="text-[12.5px] flex-shrink-0" style={{ color: "var(--text-muted)" }}>{label}</span>
+      <span className="text-[13px] font-medium text-right leading-snug" style={{ color: "var(--text-secondary)" }}>{value}</span>
     </div>
   );
 }
@@ -82,9 +82,9 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
 
   if (app === "loading") {
     return (
-      <div className="min-h-dvh pb-24 animate-pulse px-4 pt-6" style={{ background: "#0e0e0e" }}>
-        <div className="h-8 w-32 rounded-xl mb-6" style={{ background: "#1a1a1a" }} />
-        <div className="h-40 rounded-2xl" style={{ background: "#1a1a1a" }} />
+      <div className="min-h-dvh pb-24 animate-pulse px-4 pt-6" style={{ background: "var(--bg)" }}>
+        <div className="h-8 w-32 rounded-xl mb-6" style={{ background: "var(--surface)" }} />
+        <div className="h-40 rounded-2xl" style={{ background: "var(--surface)" }} />
       </div>
     );
   }
@@ -95,21 +95,21 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
   const times = app.preferredTimes.map((t) => TIME_LABEL[t] ?? t).join(", ");
 
   return (
-    <div className="min-h-dvh pb-24" style={{ background: "#0e0e0e" }}>
+    <div className="min-h-dvh pb-24" style={{ background: "var(--bg)" }}>
 
       {/* 헤더 */}
       <header className="sticky top-0 z-40 px-4 pt-5 pb-4 flex items-center gap-3"
-        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        style={{ background: "rgba(14,14,14,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--border-subtle)" }}>
         <button onClick={() => router.back()}
           className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-          style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M11 6L5 12L11 18" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M19 12H5M11 6L5 12L11 18" stroke="var(--text-primary)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-[17px] font-bold" style={{ color: "#ffffff" }}>신청 상세</h1>
-          <p className="text-[11px]" style={{ color: "#3a3a3a" }}>
+          <h1 className="text-[17px] font-bold" style={{ color: "var(--text-primary)" }}>신청 상세</h1>
+          <p className="text-[11px]" style={{ color: "var(--text-dim)" }}>
             #{app.applicationNumber || app.id.slice(-8).toUpperCase()}
           </p>
         </div>
@@ -123,23 +123,23 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
       <main className="px-4 pt-4 flex flex-col gap-3">
 
         {/* 신청자 정보 */}
-        <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-          <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+        <div className="p-4 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+          <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
             신청자 정보
           </p>
           <InfoRow label="이름"   value={app.applicantName} />
           <InfoRow label="연락처" value={maskPhone(app.applicantPhone)} />
           <InfoRow label="신청일" value={fmtDate(app.createdAt)} />
           <div className="pt-2">
-            <p className="text-[11px]" style={{ color: "#3a3a3a" }}>
+            <p className="text-[11px]" style={{ color: "var(--text-dim)" }}>
               {timeAgoLabel(app.createdMinutesAgo)} 신청
             </p>
           </div>
         </div>
 
         {/* 희망 일정 */}
-        <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-          <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+        <div className="p-4 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+          <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
             희망 일정
           </p>
           <InfoRow label="희망 요일"   value={days  || "—"} />
@@ -148,14 +148,14 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
 
         {/* 운동 목적 */}
         {app.purposes.length > 0 && (
-          <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+          <div className="p-4 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
               운동 목적
             </p>
             <div className="flex flex-wrap gap-2">
               {app.purposes.map((p) => (
                 <span key={p} className="px-3 py-1.5 rounded-full text-[12.5px] font-medium"
-                  style={{ background: "rgba(47,107,255,0.08)", color: "#2F6BFF" }}>
+                  style={{ background: "var(--accent-glow)", color: "var(--accent)" }}>
                   {p}
                 </span>
               ))}
@@ -165,11 +165,11 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
 
         {/* 요청사항 */}
         {app.userMessage && (
-          <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+          <div className="p-4 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
               요청사항
             </p>
-            <p className="text-[13.5px] leading-relaxed italic" style={{ color: "#a0a0a0" }}>
+            <p className="text-[13.5px] leading-relaxed italic" style={{ color: "var(--text-secondary)" }}>
               &ldquo;{app.userMessage}&rdquo;
             </p>
           </div>
@@ -177,8 +177,8 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
 
         {/* 운동 진행 세션 */}
         {(app.status === "confirmed" || app.status === "completed") && (
-          <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+          <div className="p-4 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
               운동 진행 현황
             </p>
             <div className="flex flex-col gap-2.5">
@@ -188,24 +188,24 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
                 const isLoading = sessionLoading === n;
                 return (
                   <div key={n} className="flex items-center justify-between gap-3 px-3 py-3 rounded-xl"
-                    style={{ background: done ? "rgba(52,211,153,0.06)" : "#131313", border: `1px solid ${done ? "rgba(52,211,153,0.18)" : "rgba(255,255,255,0.04)"}` }}>
+                    style={{ background: done ? "rgba(52,211,153,0.06)" : "var(--bg-2)", border: `1px solid ${done ? "rgba(52,211,153,0.18)" : "var(--border-subtle)"}` }}>
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-                        style={{ background: done ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.04)" }}>
+                        style={{ background: done ? "rgba(52,211,153,0.15)" : "var(--border-subtle)" }}>
                         {done ? (
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                            <path d="M5 13L9 17L19 7" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M5 13L9 17L19 7" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         ) : (
-                          <span className="text-[11px] font-bold" style={{ color: "#3a3a3a" }}>{n}</span>
+                          <span className="text-[11px] font-bold" style={{ color: "var(--text-dim)" }}>{n}</span>
                         )}
                       </div>
                       <div>
-                        <p className="text-[13px] font-semibold" style={{ color: done ? "#34d399" : "#5a5a5a" }}>
+                        <p className="text-[13px] font-semibold" style={{ color: done ? "var(--success)" : "var(--text-muted)" }}>
                           {n}차 운동 {done ? "완료" : "미완료"}
                         </p>
                         {done && completedAt && (
-                          <p className="text-[11px]" style={{ color: "#3a3a3a" }}>{fmtShortDate(completedAt)}</p>
+                          <p className="text-[11px]" style={{ color: "var(--text-dim)" }}>{fmtShortDate(completedAt)}</p>
                         )}
                       </div>
                     </div>
@@ -231,7 +231,7 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
                       className="flex-shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-semibold transition-opacity disabled:opacity-40"
                       style={{
                         background: done ? "rgba(248,113,113,0.10)" : "rgba(52,211,153,0.12)",
-                        color:      done ? "#f87171" : "#34d399",
+                        color:      done ? "var(--danger)" : "var(--success)",
                         border:     `1px solid ${done ? "rgba(248,113,113,0.2)" : "rgba(52,211,153,0.2)"}`,
                       }}
                     >
@@ -247,11 +247,11 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
         {/* 관리자 안내 메모 (읽기 전용) */}
         {app.adminNote && (
           <div className="p-4 rounded-2xl"
-            style={{ background: "rgba(47,107,255,0.04)", border: "1px solid rgba(47,107,255,0.10)" }}>
-            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-2" style={{ color: "#2F6BFF" }}>
+            style={{ background: "rgba(47,107,255,0.04)", border: "1px solid var(--accent-subtle)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-2" style={{ color: "var(--accent)" }}>
               안내 메모
             </p>
-            <p className="text-[13px] leading-relaxed" style={{ color: "#a0a0a0" }}>
+            <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>
               {app.adminNote}
             </p>
           </div>
@@ -259,8 +259,8 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
 
         {/* 상태 변경 */}
         {(ACTIVE_STATUSES.includes(app.status) || app.status === "confirmed") && (
-          <div className="p-4 rounded-2xl" style={{ background: "#1a1a1a", border: "1px solid rgba(255,255,255,0.04)" }}>
-            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "#3a3a3a" }}>
+          <div className="p-4 rounded-2xl" style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)" }}>
+            <p className="text-[10px] font-semibold tracking-[0.15em] uppercase mb-3" style={{ color: "var(--text-dim)" }}>
               상태 변경
             </p>
             <div className="flex flex-col gap-2">
@@ -269,7 +269,7 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
                   disabled={statusLoading}
                   onClick={() => handleStatusChange("confirmed")}
                   className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
-                  style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>
+                  style={{ background: "rgba(52,211,153,0.12)", color: "var(--success)", border: "1px solid rgba(52,211,153,0.25)" }}>
                   {statusLoading ? "처리 중…" : "✓ 확정하기"}
                 </button>
               )}
@@ -278,7 +278,7 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
                   disabled={statusLoading}
                   onClick={() => handleStatusChange("completed")}
                   className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
-                  style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>
+                  style={{ background: "rgba(52,211,153,0.12)", color: "var(--success)", border: "1px solid rgba(52,211,153,0.25)" }}>
                   {statusLoading ? "처리 중…" : "✓ 완료 처리"}
                 </button>
               )}
@@ -287,7 +287,7 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
                   disabled={statusLoading}
                   onClick={() => handleStatusChange(NEXT_STATUS[app.status]!)}
                   className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
-                  style={{ background: "rgba(47,107,255,0.10)", color: "#2F6BFF", border: "1px solid rgba(47,107,255,0.2)" }}>
+                  style={{ background: "var(--accent-subtle)", color: "var(--accent)", border: "1px solid rgba(47,107,255,0.2)" }}>
                   {statusLoading ? "처리 중…" : `→ ${NEXT_LABEL[app.status]}으로 변경`}
                 </button>
               )}
@@ -295,7 +295,7 @@ export default function TrainerAppDetailPage({ params }: { params: Promise<{ id:
                 disabled={statusLoading}
                 onClick={() => handleStatusChange("cancelled")}
                 className="w-full py-3 rounded-2xl text-[14px] font-semibold disabled:opacity-40"
-                style={{ background: "rgba(248,113,113,0.08)", color: "#f87171", border: "1px solid rgba(248,113,113,0.15)" }}>
+                style={{ background: "rgba(248,113,113,0.08)", color: "var(--danger)", border: "1px solid rgba(248,113,113,0.15)" }}>
                 {statusLoading ? "처리 중…" : "✗ 취소 처리"}
               </button>
             </div>
